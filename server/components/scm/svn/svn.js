@@ -47,7 +47,7 @@ function getCommitsFromUpdate(svn, callback) {
 			repo_user	- user name for repository
 			repo_pass	- password for repository
 
-		returns an error or array of commit objects
+		returns an error or array of commit objects. First object is string - 'update' or 'checkout'
 */
 function checkSVN(repo_url, repo_cwd, repo_user, repo_pass, callback) {
 
@@ -69,7 +69,9 @@ function checkSVN(repo_url, repo_cwd, repo_user, repo_pass, callback) {
 		svn.co(repo_url, function(err, info) {
 			if(callback) {
 				if(err) callback("Error: checkout\n"+err, null);	
-				else getCommits(svn, 'HEAD', function(err, info) { callback(err,info); });
+				else getCommits(svn, 'HEAD', function(err, info) { 
+					info.unshift('checkout');
+					callback(err,info); });
 			}
 		});
 	}
@@ -78,7 +80,10 @@ function checkSVN(repo_url, repo_cwd, repo_user, repo_pass, callback) {
 		getCommitsFromUpdate(svn, function(err, info) {
 			if(callback) {
 				if(err) callback(err, null)
-				else callback(null, info);
+				else {
+					info.unshift('update');
+					callback(null, info);
+				}
 			}
 		});
 	}
