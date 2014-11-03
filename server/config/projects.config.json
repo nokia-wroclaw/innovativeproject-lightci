@@ -1,0 +1,15 @@
+{
+  "projects": [
+    {
+      "projectName": "svn_test_01",
+      "repositoryUrl": "https://subversion.assembla.com/svn/mp-svntest/",
+      "repositoryType": "svn"
+    },
+    
+    {
+      "projectName": "git_test_01",
+      "repositoryUrl": "???",
+      "repositoryType": "git"
+    }
+  ]
+}
