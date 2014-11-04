@@ -20,6 +20,7 @@ require('./routes')(app);
 var svn = require('./components/scm/svn/svn');
 var git = require('./components/scm/git/git');
 var db = require('./components/db/db');
+var crontab = require('node-crontab');
 
 // Start server
 server.listen(config.port, config.ip, function () {
@@ -68,7 +69,9 @@ projectConfigs['projects'].forEach(function(project){
         if ( info[0] === 'update' ) {
           // ...
         }
-
+        var jobId = crontab.scheduleJob(project.cronePattern, function(cwd){
+          console.log("svn update...");
+        }, [projectDir+"/"+project.projectName]);
         // get the instance of the project
         var dbProject = db.findInstance('Project', { where: { project_name: project.projectName }});
 
@@ -89,14 +92,19 @@ projectConfigs['projects'].forEach(function(project){
       }
     });
   } else if ( project.repositoryType === 'git' ) {
+
     var dbProject = db.findInstance('Project', {where: {project_name: project.projectName}});
     dbProject.then(function(projects){
       if(projects.length==0){
         git.clone(project.repositoryUrl, projectDir + "/" + project.projectName);
         db.createInstance('Project', {url: project.repositoryUrl, name: project.projectName});
+
       }else{
         git.pull(projectDir+"/"+project.projectName);
       }
+      var jobId = crontab.scheduleJob(project.cronePattern, function(cwd){
+        git.pull(cwd);
+      }, [projectDir+"/"+project.projectName]);
     });
   }
   else {

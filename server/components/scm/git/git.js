@@ -18,9 +18,8 @@ module.exports = {
 function gitPull(repo_cwd){
   exec('cd '+repo_cwd+' && git pull origin master', function (error, stdout, stderr){
     console.log(stdout);
-    //process.stderr.write(err);
-    //process.stdout.write(out);
-    getInfo(repo_cwd);
+    if(stdout!="Already up-to-date.")
+      getInfo(repo_cwd);
   });
 }
 function gitClone(repo_url, repo_cwd){
@@ -47,7 +46,6 @@ function getInfo(repo_cwd){
         });
       });
       history.start();
-    //});
   });
 });
 }
