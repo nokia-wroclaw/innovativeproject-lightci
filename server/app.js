@@ -18,8 +18,9 @@ require('./routes')(app);
 
 // Our modules
 var svn = require('./components/scm/svn/svn');
+var git = require('./components/scm/git/git');
 var db = require('./components/db/db');
- 
+
 // Start server
 server.listen(config.port, config.ip, function () {
     console.log('Express server listening on %d, in %s mode', config.port, app.get('env'));
@@ -35,12 +36,12 @@ db.createTables(globalConfigs['databaseDir']);
 var projectConfigs = require("./config/projects.config.json");
 
 // Get only first entry (for testing)
-var repoUrl = projectConfigs['projects'][0]['repositoryUrl'];
+/*var repoUrl = projectConfigs['projects'][0]['repositoryUrl'];
 var repoType = projectConfigs['projects'][0]['repositoryType'];
-var projectName = projectConfigs['projects'][0]['projectName'];
+var projectName = projectConfigs['projects'][0]['projectName'];*/
 
 // Create the directory path for the project
-var projectDir = globalConfigs['checkoutDir']+projectName;
+var projectDir = globalConfigs['checkoutDir'];
 
 /*
 // Create directory for storing the projects
@@ -54,49 +55,56 @@ try {
 */
 
 // Check the repo (SVN)
-if ( repoType === 'svn' ) {
-    
-    svn.checkSVN(repoUrl, projectDir, '', '', function(err, info) {
-      
-	if (!err) {
-	   
-	    // project has been checked out - save project instance to database
-	    if ( info[0] === 'checkout' ) {
-		db.createInstance('Project', { url: repoUrl, name: projectName });
-	    } 
-	    else
-	    if ( info[0] === 'update' ) {
-		// ...
-	    }
-	    
-	    // get the instance of the project 
-	    var dbProject = db.findInstance('Project', { where: { project_name: projectName }});
-	    
-	    // project has some new commits - save commits to database
-	    if ( info.length > 1 ) {
-		for (var c=1; c<info.length; c++) {
-		    db.createInstance('Commit', info[c]);
-		}
-		
-		// and save build with new version (change date to current datetime!)
-		db.createInstance('Build', { revision: info[info.length-1]['revision'], date: info[info.length-1]['date'] });
-	    }
-	    // project does not have any new commits
-	    else
-	    {
-	      // wat do...
-	    }
-	}
+projectConfigs['projects'].forEach(function(project){
+  if(project.repositoryType === 'svn'){
+    svn.checkSVN(project.repositoryUrl, projectDir+"/"+project.projectName, '', '', function(err, info) {
+      if (!err) {
+
+        // project has been checked out - save project instance to database
+        if ( info[0] === 'checkout' ) {
+          db.createInstance('Project', { url: project.repositoryUrl, name: project.projectName });
+        }
+        else
+        if ( info[0] === 'update' ) {
+          // ...
+        }
+
+        // get the instance of the project
+        var dbProject = db.findInstance('Project', { where: { project_name: project.projectName }});
+
+        // project has some new commits - save commits to database
+        if ( info.length > 1 ) {
+          for (var c=1; c<info.length; c++) {
+            db.createInstance('Commit', info[c]);
+          }
+
+          // and save build with new version (change date to current datetime!)
+          db.createInstance('Build', { revision: info[info.length-1]['revision'], date: info[info.length-1]['date'] });
+        }
+        // project does not have any new commits
+        else
+        {
+          // wat do...
+        }
+      }
     });
-}
-else
-// Check the repo (GIT)
-if ( repoType === 'git' ) {
-    console.log("Git not yet supported ...");
-}
-else {
+  } else if ( project.repositoryType === 'git' ) {
+    var dbProject = db.findInstance('Project', {where: {project_name: project.projectName}});
+    dbProject.then(function(projects){
+      if(projects.length==0){
+        git.clone(project.repositoryUrl, projectDir + "/" + project.projectName);
+        db.createInstance('Project', {url: project.repositoryUrl, name: project.projectName});
+      }else{
+        git.pull(projectDir+"/"+project.projectName);
+      }
+    });
+  }
+  else {
     console.log("Unsupported repository: "+repoType);
-}
+  }
+});
+
+
 
 // Expose app
 exports = module.exports = app;

@@ -1,87 +1,21 @@
 0 info it worked if it ends with ok
-1 verbose cli [ '/usr/local/bin/node',
-1 verbose cli   '/usr/local/bin/npm',
-1 verbose cli   'install',
-1 verbose cli   'grint-cli' ]
+1 verbose cli [ '/usr/local/bin/node', '/usr/local/bin/npm', 'install' ]
 2 info using npm@1.4.28
 3 info using node@v0.10.33
-4 verbose readDependencies using package.json deps
-5 verbose cache add [ 'grint-cli', null ]
-6 verbose cache add name=undefined spec="grint-cli" args=["grint-cli",null]
-7 verbose parsed url { protocol: null,
-7 verbose parsed url   slashes: null,
-7 verbose parsed url   auth: null,
-7 verbose parsed url   host: null,
-7 verbose parsed url   port: null,
-7 verbose parsed url   hostname: null,
-7 verbose parsed url   hash: null,
-7 verbose parsed url   search: null,
-7 verbose parsed url   query: null,
-7 verbose parsed url   pathname: 'grint-cli',
-7 verbose parsed url   path: 'grint-cli',
-7 verbose parsed url   href: 'grint-cli' }
-8 silly lockFile b50717cf-grint-cli grint-cli
-9 verbose lock grint-cli /home/ms/.npm/b50717cf-grint-cli.lock
-10 silly lockFile b50717cf-grint-cli grint-cli
-11 silly lockFile b50717cf-grint-cli grint-cli
-12 verbose addNamed [ 'grint-cli', '' ]
-13 verbose addNamed [ null, '*' ]
-14 silly lockFile a69b9529-grint-cli grint-cli@
-15 verbose lock grint-cli@ /home/ms/.npm/a69b9529-grint-cli.lock
-16 silly addNameRange { name: 'grint-cli', range: '*', hasData: false }
-17 verbose request where is /grint-cli
-18 verbose request registry https://registry.npmjs.org/
-19 verbose request id 56879794b8081c55
-20 verbose url raw /grint-cli
-21 verbose url resolving [ 'https://registry.npmjs.org/', './grint-cli' ]
-22 verbose url resolved https://registry.npmjs.org/grint-cli
-23 verbose request where is https://registry.npmjs.org/grint-cli
-24 info trying registry request attempt 1 at 19:25:02
-25 http GET https://registry.npmjs.org/grint-cli
-26 http 404 https://registry.npmjs.org/grint-cli
-27 verbose headers { date: 'Wed, 29 Oct 2014 18:25:03 GMT',
-27 verbose headers   server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
-27 verbose headers   'content-type': 'application/json',
-27 verbose headers   'cache-control': 'max-age=0',
-27 verbose headers   'content-length': '52',
-27 verbose headers   'accept-ranges': 'bytes',
-27 verbose headers   via: '1.1 varnish',
-27 verbose headers   age: '0',
-27 verbose headers   'x-served-by': 'cache-fra1236-FRA',
-27 verbose headers   'x-cache': 'MISS',
-27 verbose headers   'x-cache-hits': '0',
-27 verbose headers   'x-timer': 'S1414607103.258736,VS0,VE716',
-27 verbose headers   'keep-alive': 'timeout=10, max=50',
-27 verbose headers   connection: 'Keep-Alive' }
-28 silly registry.get cb [ 404,
-28 silly registry.get   { date: 'Wed, 29 Oct 2014 18:25:03 GMT',
-28 silly registry.get     server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
-28 silly registry.get     'content-type': 'application/json',
-28 silly registry.get     'cache-control': 'max-age=0',
-28 silly registry.get     'content-length': '52',
-28 silly registry.get     'accept-ranges': 'bytes',
-28 silly registry.get     via: '1.1 varnish',
-28 silly registry.get     age: '0',
-28 silly registry.get     'x-served-by': 'cache-fra1236-FRA',
-28 silly registry.get     'x-cache': 'MISS',
-28 silly registry.get     'x-cache-hits': '0',
-28 silly registry.get     'x-timer': 'S1414607103.258736,VS0,VE716',
-28 silly registry.get     'keep-alive': 'timeout=10, max=50',
-28 silly registry.get     connection: 'Keep-Alive' } ]
-29 silly lockFile a69b9529-grint-cli grint-cli@
-30 silly lockFile a69b9529-grint-cli grint-cli@
-31 error 404 404 Not Found: grint-cli
-31 error 404
-31 error 404 'grint-cli' is not in the npm registry.
-31 error 404 You should bug the author to publish it
-31 error 404 It was specified as a dependency of 'lightci'
-31 error 404
-31 error 404 Note that you can also install from a
-31 error 404 tarball, folder, or http url, or git url.
-32 error System Linux 3.13.0-32-generic
-33 error command "/usr/local/bin/node" "/usr/local/bin/npm" "install" "grint-cli"
-34 error cwd /home/ms/lightci
-35 error node -v v0.10.33
-36 error npm -v 1.4.28
-37 error code E404
-38 verbose exit [ 1, true ]
+4 error install Couldn't read dependencies
+5 error Failed to parse json
+5 error Unexpected string
+6 error File: /home/ms/lightci/package.json
+7 error Failed to parse package.json data.
+7 error package.json must be actual JSON, not just JavaScript.
+7 error
+7 error This is not a bug in npm.
+7 error Tell the package author to fix their package.json file. JSON.parse
+8 error System Linux 3.13.0-32-generic
+9 error command "/usr/local/bin/node" "/usr/local/bin/npm" "install"
+10 error cwd /home/ms/lightci
+11 error node -v v0.10.33
+12 error npm -v 1.4.28
+13 error file /home/ms/lightci/package.json
+14 error code EJSONPARSE
+15 verbose exit [ 1, true ]

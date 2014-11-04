@@ -5,10 +5,10 @@
       "repositoryUrl": "https://subversion.assembla.com/svn/mp-svntest/",
       "repositoryType": "svn"
     },
-    
+
     {
       "projectName": "git_test_01",
-      "repositoryUrl": "???",
+      "repositoryUrl": "git://github.com/test1git/test",
       "repositoryType": "git"
     }
   ]

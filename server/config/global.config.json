@@ -1,4 +1,4 @@
 {
-  "checkoutDir": "/home/jacek-stachurski/lightci-repositories/",
+  "checkoutDir": "repos",
   "databaseDir": "database.sqlite"
 }
