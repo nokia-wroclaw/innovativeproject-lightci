@@ -44,52 +44,36 @@ var projectName = projectConfigs['projects'][0]['projectName'];*/
 // Create the directory path for the project
 var projectDir = globalConfigs['checkoutDir'];
 
-/*
-// Create directory for storing the projects
-var fs = require('fs');
-
-try {
-    fs.mkdirSync(mainDir);
-} catch(e) {
-    if ( e.code != 'EEXIST' ) throw e;
+// callback after SVN module checkout/update
+function svnCallback(err, info) {
+  if (!err) {
+    // project has some new commits - save commits to database
+    if ( info.length > 0 ) {
+      for (var c=0; c<info.length; c++) {
+	db.createInstance('Commit', info[c]);
+      }
+      // and save build with new version (change date to current datetime!)
+      db.createInstance('Build', { revision: info[info.length-1]['revision'], date: info[info.length-1]['date'] });   
+    }
+  }
 }
-*/
 
-// Check the repo (SVN)
+// Check the repo
 projectConfigs['projects'].forEach(function(project){
   if(project.repositoryType === 'svn'){
-    svn.checkSVN(project.repositoryUrl, projectDir+"/"+project.projectName, '', '', function(err, info) {
-      if (!err) {
+    
+    var dbProject = db.findInstance('Project', {where: {project_name: project.projectName}});
+    dbProject.then(function(projects){
+      if(projects.length==0){
+        svn.checkout(project.repositoryUrl, projectDir + "/" + project.projectName, '', '', svnCallback);
+        db.createInstance('Project', {url: project.repositoryUrl, name: project.projectName});
 
-        // project has been checked out - save project instance to database
-        if ( info[0] === 'checkout' ) {
-          db.createInstance('Project', { url: project.repositoryUrl, name: project.projectName });
-        }
-        else
-        if ( info[0] === 'update' ) {
-          // ...
-        }
-        var jobId = crontab.scheduleJob(project.cronePattern, function(cwd){
-          console.log("svn update...");
-        }, [projectDir+"/"+project.projectName]);
-        // get the instance of the project
-        var dbProject = db.findInstance('Project', { where: { project_name: project.projectName }});
-
-        // project has some new commits - save commits to database
-        if ( info.length > 1 ) {
-          for (var c=1; c<info.length; c++) {
-            db.createInstance('Commit', info[c]);
-          }
-
-          // and save build with new version (change date to current datetime!)
-          db.createInstance('Build', { revision: info[info.length-1]['revision'], date: info[info.length-1]['date'] });
-        }
-        // project does not have any new commits
-        else
-        {
-          // wat do...
-        }
+      }else{
+        svn.update(project.repositoryUrl, projectDir + "/" + project.projectName, '', '', svnCallback);
       }
+      var jobId = crontab.scheduleJob(project.cronePattern, function(url, cwd){
+        svn.update(url, cwd, '', '', svnCallback);
+      }, [project.repositoryUrl, projectDir+"/"+project.projectName]);
     });
   } else if ( project.repositoryType === 'git' ) {
 
