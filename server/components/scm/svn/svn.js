@@ -1,7 +1,7 @@
 /* get revision number using svn command info */
 function getRevision(svn, callback) {
 	svn.info('', function(err, info) {
-		callback.call(info[Object.keys(info)[6]]);	
+		callback.call(info[Object.keys(info)[6]]);
 	});
 }
 
@@ -21,21 +21,21 @@ function getCommits(svn, revision, callback)	{
 			}
 			callback(null, arr);
 		}
-	});	
+	});
 }
 
 /* get commit list from update command */
 function getCommitsFromUpdate(svn, callback) {
 	getRevision(svn, function() {
-		revision = (parseInt(this.toString())+1);		
+		revision = (parseInt(this.toString())+1);
 		svn.up('', function(err, info) {
-			if(err) callback("Error: update\n"+err, null);	
+			if(err) callback("Error: update\n"+err, null);
 			else {
 				if(info[0])
 					getCommits(svn, revision, function(err, info) { callback(err,info); });
 				else
 					callback(null, []);
-			}	
+			}
 		});
 	});
 }
@@ -49,45 +49,44 @@ function getCommitsFromUpdate(svn, callback) {
 
 		returns an error or array of commit objects. First object is string - 'update' or 'checkout'
 */
-function checkSVN(repo_url, repo_cwd, repo_user, repo_pass, callback) {
 
-	var fs = require('fs');
-	var action = '';
+function checkout(repo_url, repo_cwd, repo_user, repo_pass, callback) {
+  // SVN object
+  var SVN = require('node.svn');
+  var svn = new SVN({
+    cwd: repo_cwd,
+    username: repo_user,
+    password: repo_pass
+  });
 
-	// if repo_cwd directory exists, update repository. Otherwise, checkout with this cwd.
-	if(fs.existsSync(repo_cwd)) action = 'update';
-	else action = 'checkout';
-
-	// SVN object
-	var SVN = require('node.svn');
-	var svn = new SVN({
-		cwd:		repo_cwd,
-		username:	repo_user,
-		password:	repo_pass });
-
-	if(action === 'checkout') {
-		svn.co(repo_url, function(err, info) {
-			if(callback) {
-				if(err) callback("Error: checkout\n"+err, null);	
-				else getCommits(svn, 'HEAD', function(err, info) { 
-					info.unshift('checkout');
-					callback(err,info); });
-			}
-		});
-	}
-
-	if(action === 'update') {
-		getCommitsFromUpdate(svn, function(err, info) {
-			if(callback) {
-				if(err) callback(err, null)
-				else {
-					info.unshift('update');
-					callback(null, info);
-				}
-			}
-		});
-	}
-
+  svn.co(repo_url, function(err, info) {
+    if(callback) {
+      if(err)
+        callback("Error: checkout\n"+err, null);
+      else
+        getCommits(svn, 'HEAD', function(err, info) {
+          callback(err,info); });
+    }
+  });
 }
 
-exports.checkSVN = checkSVN;
+function update(repo_url, repo_cwd, repo_user, repo_pass, callback) {
+  // SVN object
+  var SVN = require('node.svn');
+  var svn = new SVN({
+    cwd:		repo_cwd,
+    username:	repo_user,
+    password:	repo_pass });
+
+  getCommitsFromUpdate(svn, function(err, info) {
+    if(callback) {
+      if(err)
+        callback(err, null);
+      else
+        callback(null, info);
+    }
+  });
+}
+
+exports.checkout = checkout;
+exports.update = update;
