@@ -75,51 +75,38 @@ function createInstance(wich, info) {
 function createInstance(wich, info, assignTo) {
 
     if ( wich === cCommits ) {
-	return Commits.create({
+	Commits.create({
 	    commit_id: info['revision'],
 	    commit_author: info['author'],
 	    commit_date: info['date'],
 	    commit_comment: info['message']
-	})/*
-	.complete(function(err, c) {
-	  console.log("assignTo: ", assignTo);
-	    if (assignTo) {
-		
-		assignTo.setCommits(c).success(function() {
-		    // ...
-		    console.log("success assigning commit: "+c);
-		});
-	    }
-	})*/
+	}).then(function(commit) {
+	  if (assignTo) {
+	    assignTo.setCommits([commit]).success(function() {
+	      // asssociation succesful!
+	    });
+	  }
+	});
     }
     else
     if ( wich == cProjects ) {
 	return Projects.create({
 	    project_url: info['url'],
 	    project_name: info['name']
-	})/*
-	.complete(function(err, p) {
-	    if (assignTo) {
-		assignTo.setCommits(p).success(function() {
-		    // ...
-		});
-	    }
-	})*/
-
+	})
     }
     else
     if ( wich == cBuilds ) {
 	return Builds.create({
 	    build_revision: info['revision'],
 	    build_date: info['date']
-	})/*
-	.complete(function(err, b) {
-	    if (assignTo) {
-		assignTo.setBuilds(b).success(function() {
-		    // ...
-		});
-	    }
-	})*/
+	}).then(function(build) {
+	  if (assignTo) {
+	    assignTo.setBuilds([build]).success(function() {
+	      // asssociation succesful!
+	    });
+	  }
+	});
 
     }
 }

@@ -42,20 +42,10 @@ function svnCallback(err, info, dbProject) {
     // project has some new commits - save commits to database
     if ( info.length > 0 ) {
       for (var c=0; c<info.length; c++) {
-	var dbCommit = db.createInstance('Commit', info[c]);
-	dbCommit.then(function(commit) {
-	  dbProject.setCommits([commit]).success(function() {
-	    // asssociation succesful!
-	  });
-	});
+	var dbCommit = db.createInstance('Commit', info[c], dbProject);
       }
       // and save build with new version (change date to current datetime!)
-      var dbBuild = db.createInstance('Build', { revision: info[info.length-1]['revision'], date: info[info.length-1]['date'] }); 
-      dbBuild.then(function(build) {
-	  dbProject.setBuilds([build]).success(function() {
-	    // asssociation succesful!
-	  });
-	});
+      var dbBuild = db.createInstance('Build', { revision: info[info.length-1]['revision'], date: info[info.length-1]['date'] }, dbProject); 
     }
   }
 }
