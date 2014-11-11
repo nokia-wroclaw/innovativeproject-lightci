@@ -1,19 +1,11 @@
 {
   "projects": [
     {
-      "projectName": "svn_test_02",
+      "projectName": "svn_test_11",
       "repositoryUrl": "https://subversion.assembla.com/svn/mp-svntest/",
       "repositoryType": "svn",
       "cronePattern": "* * * * *",
       "scriptPath": "buildscripts/test_script.sh"
-    },
-
-    {
-      "projectName": "git_test_01",
-      "repositoryUrl": "git://github.com/test1git/test",
-      "repositoryType": "git",
-      "cronePattern": "* * * * *",
-      "scriptPath": ""
     }
   ]
 }

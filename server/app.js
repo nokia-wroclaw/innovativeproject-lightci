@@ -42,10 +42,20 @@ function svnCallback(err, info, dbProject) {
     // project has some new commits - save commits to database
     if ( info.length > 0 ) {
       for (var c=0; c<info.length; c++) {
-	db.createInstance('Commit', info[c], dbProject);
+	var dbCommit = db.createInstance('Commit', info[c]);
+	dbCommit.then(function(commit) {
+	  dbProject.setCommits([commit]).success(function() {
+	    // asssociation succesful!
+	  });
+	});
       }
       // and save build with new version (change date to current datetime!)
-      db.createInstance('Build', { revision: info[info.length-1]['revision'], date: info[info.length-1]['date'] }, dbProject);   
+      var dbBuild = db.createInstance('Build', { revision: info[info.length-1]['revision'], date: info[info.length-1]['date'] }); 
+      dbBuild.then(function(build) {
+	  dbProject.setBuilds([build]).success(function() {
+	    // asssociation succesful!
+	  });
+	});
     }
   }
 }
@@ -76,12 +86,16 @@ db.createTables(globalConfigs['databaseDir'], function() {
       var dbProject = db.findInstance('Project', {where: {project_name: project.projectName}});
       dbProject.then(function(projects){
 	if(projects.length==0){
-	  svn.checkout(project.repositoryUrl, projectDir + "/" + project.projectName, '', '', svnCallback);
-	  db.createInstance('Project', {url: project.repositoryUrl, name: project.projectName});
+	  var dbCreatedProject = db.createInstance('Project', {url: project.repositoryUrl, name: project.projectName});
+	  dbCreatedProject.then(function(projects){
+	    svn.checkout(project.repositoryUrl, projectDir + "/" + project.projectName, '', '', function (err, info) {    
+	      svnCallback(err, info, projects);
+	    });
+	  });
 
 	}else{
 	  svn.update(project.repositoryUrl, projectDir + "/" + project.projectName, '', '', function (err, info) {
-	    svnCallback(err, info, dbProject);
+	    svnCallback(err, info, projects);
 	  });
 	}
 	addCrontabJob(project.projectName, function() {

@@ -69,60 +69,57 @@ function syncTables(sequelize, callback) {
 }
 
 function createInstance(wich, info) {
-    createInstance(wich, info, null);
+    return createInstance(wich, info, null);
 }
 
 function createInstance(wich, info, assignTo) {
 
     if ( wich === cCommits ) {
-	Commits.create({
+	return Commits.create({
 	    commit_id: info['revision'],
 	    commit_author: info['author'],
 	    commit_date: info['date'],
 	    commit_comment: info['message']
-	})
+	})/*
 	.complete(function(err, c) {
+	  console.log("assignTo: ", assignTo);
 	    if (assignTo) {
+		
 		assignTo.setCommits(c).success(function() {
 		    // ...
+		    console.log("success assigning commit: "+c);
 		});
 	    }
-
-	    return c;
-	})
+	})*/
     }
     else
     if ( wich == cProjects ) {
-	Projects.create({
+	return Projects.create({
 	    project_url: info['url'],
 	    project_name: info['name']
-	})
+	})/*
 	.complete(function(err, p) {
 	    if (assignTo) {
 		assignTo.setCommits(p).success(function() {
 		    // ...
 		});
 	    }
-
-	    return p;
-	})
+	})*/
 
     }
     else
     if ( wich == cBuilds ) {
-	Builds.create({
+	return Builds.create({
 	    build_revision: info['revision'],
 	    build_date: info['date']
-	})
+	})/*
 	.complete(function(err, b) {
 	    if (assignTo) {
 		assignTo.setBuilds(b).success(function() {
 		    // ...
 		});
 	    }
-
-	    return b;
-	})
+	})*/
 
     }
 }
