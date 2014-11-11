@@ -30,10 +30,9 @@ function establishConnection(dbDir, dbName) {
 	if (!!err) {
 	  console.log('Unable to connect to the database:', err)
 	} else {
-	  // SUCCESS
 	}
       });
-
+      
     return sequelize;
 }
 
@@ -53,9 +52,10 @@ function defineTables(sequelize) {
 
     Projects.hasMany(Commits, {as: 'Commits'});
     Projects.hasMany(Builds, {as: 'Builds'});
+    Builds.hasMany(Commits, {as: 'Commits'});
 }
 
-function syncTables(sequelize) {
+function syncTables(sequelize, callback) {
 
     sequelize
       .sync()
@@ -63,7 +63,7 @@ function syncTables(sequelize) {
 	if (!!err) {
 	  console.log('An error occurred while creating the table:', err)
 	} else {
-	  // SUCCESS
+	  callback();
 	}
       });
 }
@@ -146,15 +146,24 @@ function findInstance(wich, where) {
 	      return f;
 	    })*/
       }
+      else
+      if ( wich === cBuilds ) {
+	  return Builds.findAll(where)
+/*	    .complete(function(err, f) {
+	      //console.log("Fetching result:");
+	      //console.log(f);
+	      return f;
+	    })*/
+      }
 }
 
 
-function createTables(dbDir) {
+function createTables(dbDir, callback) {
 
     var sequelize = establishConnection(dbDir, 'lightci_db');
 
     defineTables(sequelize);
-    syncTables(sequelize);
+    syncTables(sequelize, callback);
 }
 
 exports.createTables = createTables;

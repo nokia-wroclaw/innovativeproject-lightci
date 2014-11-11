@@ -30,72 +30,89 @@ server.listen(config.port, config.ip, function () {
 // Read the app's config file
 var globalConfigs = require("./config/global.config.json");
 
-// Prepare database tables if not existing
-db.createTables(globalConfigs['databaseDir']);
-
 // Read the projects' config file
 var projectConfigs = require("./config/projects.config.json");
-
-// Get only first entry (for testing)
-/*var repoUrl = projectConfigs['projects'][0]['repositoryUrl'];
-var repoType = projectConfigs['projects'][0]['repositoryType'];
-var projectName = projectConfigs['projects'][0]['projectName'];*/
 
 // Create the directory path for the project
 var projectDir = globalConfigs['checkoutDir'];
 
 // callback after SVN module checkout/update
-function svnCallback(err, info) {
+function svnCallback(err, info, dbProject) {
   if (!err) {
     // project has some new commits - save commits to database
     if ( info.length > 0 ) {
       for (var c=0; c<info.length; c++) {
-	db.createInstance('Commit', info[c]);
+	db.createInstance('Commit', info[c], dbProject);
       }
       // and save build with new version (change date to current datetime!)
-      db.createInstance('Build', { revision: info[info.length-1]['revision'], date: info[info.length-1]['date'] });   
+      db.createInstance('Build', { revision: info[info.length-1]['revision'], date: info[info.length-1]['date'] }, dbProject);   
     }
   }
 }
 
-// Check the repo
-projectConfigs['projects'].forEach(function(project){
-  if(project.repositoryType === 'svn'){
-    
-    var dbProject = db.findInstance('Project', {where: {project_name: project.projectName}});
-    dbProject.then(function(projects){
-      if(projects.length==0){
-        svn.checkout(project.repositoryUrl, projectDir + "/" + project.projectName, '', '', svnCallback);
-        db.createInstance('Project', {url: project.repositoryUrl, name: project.projectName});
+// A map with crontab jobId's for every running project
+var jobsMap = {};
 
-      }else{
-        svn.update(project.repositoryUrl, projectDir + "/" + project.projectName, '', '', svnCallback);
-      }
-      var jobId = crontab.scheduleJob(project.cronePattern, function(url, cwd){
-        svn.update(url, cwd, '', '', svnCallback);
-      }, [project.repositoryUrl, projectDir+"/"+project.projectName]);
-    });
-  } else if ( project.repositoryType === 'git' ) {
+// Create new job and add jobId to the map
+function addCrontabJob(key, jobCallback) {
+  var jobId = jobCallback();
+  jobsMap[key] = jobId;
+  console.log("Current Crontab Jobs: ", jobsMap);
+}
 
-    var dbProject = db.findInstance('Project', {where: {project_name: project.projectName}});
-    dbProject.then(function(projects){
-      if(projects.length==0){
-        git.clone(project.repositoryUrl, projectDir + "/" + project.projectName);
-        db.createInstance('Project', {url: project.repositoryUrl, name: project.projectName});
+// Cancel job and remove it from the map
+function removeCrontabJob(key) {
+  crontab.cancelJob(jobsMap[key]);
+  jobsMap[key] = null;
+  console.log("Current Crontab Jobs: ", jobsMap);
+}
 
-      }else{
-        git.pull(projectDir+"/"+project.projectName);
-      }
-      var jobId = crontab.scheduleJob(project.cronePattern, function(cwd){
-        git.pull(cwd);
-      }, [projectDir+"/"+project.projectName]);
-    });
-  }
-  else {
-    console.log("Unsupported repository: "+repoType);
-  }
+// Prepare database tables if not existing
+db.createTables(globalConfigs['databaseDir'], function() {
+  // Check the repo
+  projectConfigs['projects'].forEach(function(project){
+    if(project.repositoryType === 'svn'){
+      
+      var dbProject = db.findInstance('Project', {where: {project_name: project.projectName}});
+      dbProject.then(function(projects){
+	if(projects.length==0){
+	  svn.checkout(project.repositoryUrl, projectDir + "/" + project.projectName, '', '', svnCallback);
+	  db.createInstance('Project', {url: project.repositoryUrl, name: project.projectName});
+
+	}else{
+	  svn.update(project.repositoryUrl, projectDir + "/" + project.projectName, '', '', function (err, info) {
+	    svnCallback(err, info, dbProject);
+	  });
+	}
+	addCrontabJob(project.projectName, function() {
+	  return crontab.scheduleJob(project.cronePattern, function(url, cwd){
+	    svn.update(url, cwd, '', '', svnCallback);
+	    }, [project.repositoryUrl, projectDir+"/"+project.projectName]);
+	});
+      });
+    } else if ( project.repositoryType === 'git' ) {
+
+      var dbProject = db.findInstance('Project', {where: {project_name: project.projectName}});
+      dbProject.then(function(projects){
+	if(projects.length==0){
+	  git.clone(project.repositoryUrl, projectDir + "/" + project.projectName);
+	  db.createInstance('Project', {url: project.repositoryUrl, name: project.projectName});
+
+	}else{
+	  git.pull(projectDir+"/"+project.projectName);
+	}
+	addCrontabJob(project.projectName, function() {
+	  return crontab.scheduleJob(project.cronePattern, function(cwd){
+	    git.pull(cwd);
+	    }, [projectDir+"/"+project.projectName]);
+	});
+      });
+    }
+    else {
+      console.log("Unsupported repository: "+repoType);
+    }
+  });
 });
-
 
 
 // Expose app
