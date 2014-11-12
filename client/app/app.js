@@ -1,17 +1,16 @@
 'use strict';
 
 angular.module('lightciApp', [
-  'ngCookies',
-  'ngResource',
-  'ngSanitize',
-  'ngRoute',
-  'ui.bootstrap'
+
+  'ngRoute'
 ])
-  .config(function ($routeProvider, $locationProvider) {
+  .config(function ($routeProvider) {
     $routeProvider
-      .otherwise({
+      .when('/', {
+        templateUrl: 'components/projectsTable/projectsTable.html',
+        controller: 'ProjTableCtrl'
+      }).otherwise({
         redirectTo: '/'
       });
 
-    $locationProvider.html5Mode(true);
   });
