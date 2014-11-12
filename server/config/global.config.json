@@ -1,4 +1,5 @@
 {
   "checkoutDir": "repos",
-  "databaseDir": "database.sqlite"
+  "databaseDir": "database.sqlite",
+  "databaseName": "lightci_db"
 }

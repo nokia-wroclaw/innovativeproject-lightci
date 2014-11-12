@@ -6,14 +6,15 @@
       "repositoryType": "svn",
       "cronePattern": "* * * * *",
       "scriptPath": "buildscripts/test_script.sh"
+
     },
-    
+
     {
       "projectName": "git_test_1",
       "repositoryUrl": "git://github.com/test1git/test",
       "repositoryType": "git",
       "cronePattern": "* * * * *",
-      "scriptPath": "buildscripts/test_script.sh"
+      "scriptPath": "buildscripts/git_test_1.sh"
     }
   ]
 }

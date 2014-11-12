@@ -1,53 +1,65 @@
 /**
  * Created by ms on 29.10.14.
  */
-
-var clone = require("nodegit").Repo.clone;
-var open = require("nodegit").Repo.open;
-var db = require('./../../db/db');
-var exec = require('child_process').exec;
+var exec = require('child-process-promise').exec;
 
 module.exports = {
   clone: function (repo_url, repo_cwd) {
-    gitClone(repo_url, repo_cwd);
+    return gitClone(repo_url, repo_cwd);
   },
   pull: function (repo_cwd) {
-    gitPull(repo_cwd);
+   return gitPull(repo_cwd);
+  },
+  logLastCommit: function(repo_cwd){
+    return gitLogLastCommit(repo_cwd);
+  },
+  logFull: function(repo_cwd,since){
+    return gitLogFull(repo_cwd,since);
   }
 };
-function gitPull(repo_cwd){
-  exec('cd '+repo_cwd+' && git pull origin master', function (error, stdout, stderr){
-    console.log(stdout);
-    if(stdout!="Already up-to-date.")
-      getInfo(repo_cwd);
-  });
+function gitPull(repo_cwd) {
+  return exec('cd ' + repo_cwd + ' && git pull origin master')
+    .then(function (result) {
+      return result;
+  })
+    .fail(function(err) {
+      console.error("ERROR: ", err);
+    });
 }
-function gitClone(repo_url, repo_cwd){
-  clone(repo_url, repo_cwd, null,function(repo){
-  getInfo(repo_cwd);
-
-  });
+function gitClone(repo_url, repo_cwd) {
+  return exec('git clone ' + repo_url +' '+repo_cwd)
+    .then(function (result) {
+      return result;
+    })
+    .fail(function(err) {
+      console.error("ERROR: ", err);
+    });
 }
-function getInfo(repo_cwd){
-  open(repo_cwd,function(error,repo) {
-    repo.getMaster(function(error,master){
-      var history = master.history();
-      history.on("commit", function(commit) {
-        var dbProject = db.findInstance('Commit', {where: {commit_id: commit.sha(),commit_author:commit.author().name(),commit_date:commit.date(),commit_comment:commit.message()}});
-        dbProject.then(function(commits){
-          if(commits.length==0) {
-            db.createInstance('Commit', {
-              "revision": commit.sha(),
-              "date": commit.date(),
-              "author": commit.author().name(),
-              "message": commit.message()
-            });
-          }
-        });
-      });
-      history.start();
-  });
-});
+function gitLogLastCommit(repo_cwd){
+  return exec('cd ' + repo_cwd + ' && git --no-pager log -1 --pretty=format:"%H,%cn,%ce,%cd,%s" --date=local')
+    .then(function (result) {
+      var commit = result.stdout.split(',');
+      return commit;
+    })
+    .fail(function(err) {
+      console.error("ERROR: ", err);
+    });
 }
-
-
+function gitLogFull(repo_cwd,since) {
+  var date = new Date(since);
+  return exec('cd ' + repo_cwd + ' && git --no-pager log --full-history --since="'+date.toString()+'" --pretty=format:"%H,%cn,%ce,%cd,%s" --date=local')
+    .then(function (result) {
+      if(result.stdout.length>0){
+      var commits = result.stdout.split('\n');
+      for (var i = 0; i < commits.length; ++i) {
+        commits[i] = commits[i].split(',');
+      }
+        return commits;
+      } else {
+        console.log("Nothing to do");
+      }
+    })
+    .fail(function(err) {
+      console.error("ERROR: ", err);
+    });
+}
