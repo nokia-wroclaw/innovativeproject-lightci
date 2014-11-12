@@ -64,7 +64,7 @@ function createInstance(wich, info, assignTo) {
       commit_comment: info['message']
     }).then(function (commit) {
       if (assignTo) {
-        assignTo.setCommits([commit]).success(function () {
+        assignTo.addCommit([commit]).success(function () {
           // asssociation succesful!
         });
       }
@@ -82,7 +82,7 @@ function createInstance(wich, info, assignTo) {
       build_date: info['date']
     }).then(function (build) {
       if (assignTo) {
-        assignTo.setBuilds([build]).success(function () {
+        assignTo.addBuild([build]).success(function () {
           // asssociation succesful!
         });
       }

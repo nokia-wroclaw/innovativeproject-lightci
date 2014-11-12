@@ -1,11 +1,11 @@
 {
   "projects": [
     {
-      "projectName": "svn_test_2",
+      "projectName": "svn_test_11",
       "repositoryUrl": "https://subversion.assembla.com/svn/mp-svntest/",
       "repositoryType": "svn",
       "cronePattern": "* * * * *",
-      "scriptPath": "buildscripts/test_script.sh"
+      "scriptPath": "buildscripts/svn_test_9.sh"
 
     },
 

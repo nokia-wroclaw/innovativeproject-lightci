@@ -38,19 +38,24 @@ var projectConfigs = require("./config/projects.config.json");
 var projectDir = globalConfigs['checkoutDir'];
 
 // callback after SVN module checkout/update
-function svnCallback(err, info, dbProject) {
+function svnSaveCommitsAndBuild(err, info, project) {
   if (!err) {
-    // project has some new commits - save commits to database
-    if (info.length > 0) {
-      for (var c = 0; c < info.length; c++) {
-        var dbCommit = db.createInstance('Commit', info[c], dbProject);
-      }
-      // and save build with new version (change date to current datetime!)
-      var dbBuild = db.createInstance('Build', {
-        revision: info[info.length - 1]['revision'],
-        date: info[info.length - 1]['date']
-      }, dbProject);
-    }
+    var dbProject = db.findInstance('Project', {where: {project_name: project.projectName}});
+      dbProject.then(function (proj) {
+	// project has some new commits - save commits to database
+	if (info.length > 0) {
+	  for (var c = 0; c < info.length; c++) {
+	    var dbCommit = db.createInstance('Commit', info[c], proj[0]);
+	  }
+	  // and save build with new version (change date to current datetime!)
+	  var dbBuild = db.createInstance('Build', {
+	    revision: info[info.length - 1]['revision'],
+	    date: new Date()
+	  }, proj[0]);
+	  // run build script
+	  runBuildScript(project.projectName);
+	}
+      });
   }
 }
 
@@ -83,19 +88,21 @@ db.createTables(globalConfigs['databaseDir'], function () {
           var dbCreatedProject = db.createInstance('Project', {url: project.repositoryUrl, name: project.projectName});
           dbCreatedProject.then(function (projects) {
             svn.checkout(project.repositoryUrl, projectDir + "/" + project.projectName, '', '', function (err, info) {
-              svnCallback(err, info, projects);
+              svnSaveCommitsAndBuild(err, info, project);
             });
           });
 
         } else {
           svn.update(project.repositoryUrl, projectDir + "/" + project.projectName, '', '', function (err, info) {
-            svnCallback(err, info, projects);
+            svnSaveCommitsAndBuild(err, info, project);
           });
         }
         addCrontabJob(project.projectName, function () {
-          return crontab.scheduleJob(project.cronePattern, function (url, cwd) {
-            svn.update(url, cwd, '', '', svnCallback);
-          }, [project.repositoryUrl, projectDir + "/" + project.projectName]);
+          return crontab.scheduleJob(project.cronePattern, function (url, cwd, proj) {
+            svn.update(url, cwd, '', '', function (err, info) {
+	      svnSaveCommitsAndBuild(err, info, proj);
+	    });
+          }, [project.repositoryUrl, projectDir + "/" + project.projectName, project]);
         });
       });
     } else if (project.repositoryType === 'git') {
@@ -164,6 +171,7 @@ function gitPull(project) {
 }
 
 function runBuildScript(projectName){
+  console.log("Running build script for: ", projectName);
   return exec('cd repos/'+projectName+' && sh ../../buildscripts/'+projectName+'.sh')
     .then(function (result) {
       console.log("[BUILD]: "+result.stdout);
