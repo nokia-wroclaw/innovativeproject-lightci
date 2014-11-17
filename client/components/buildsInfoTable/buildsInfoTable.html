@@ -12,8 +12,35 @@
             <th data-field="date">Output</th>
           </tr>
           </thead>
+        </table>
 
-
+        <table class="table table-striped table-bordered table-condensed" ng-controller="BuildInfoTableCtrl">
+          <thead>
+          <tr>
+            <th data-field="id">CommitID</th>
+            <th data-field="author">Commit Author</th>
+            <th data-field="date">Commit Date</th>
+            <th data-field="comment">Commit Message</th>
+          </tr>
+          </thead>
+          <tbody ng-repeat="commit in commits">
+          <tr >
+            <td>
+              <a href={{baseUrl}}>
+                {{commit.id}}
+              </a>
+            </td>
+            <td>
+              {{commit.commit_author}}
+            </td>
+            <td>
+              {{commit.commit_date}}
+            </td>
+            <td>
+              {{commit.commit_comment}}
+            </td>
+          </tr>
+          </tbody>
         </table>
       </div>
     </div>

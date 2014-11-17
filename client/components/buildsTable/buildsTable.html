@@ -10,6 +10,8 @@
           <tr>
             <th data-field="id">Build ID</th>
             <th data-field="date">Build Date</th>
+            <th data-field="date">Build Status</th>
+            <th data-field="date">Build Result</th>
           </tr>
           </thead>
           <tbody ng-repeat="build in builds">
@@ -22,6 +24,12 @@
             <td>
               {{build.build_date}}
             </td>
+            <td>
+              {{build.build_ispending == true ? "Pending" : "Finished"}}
+            </td>
+            <td>
+              {{build.build_ispending == false ? (build.build_issuccess == true ? "Successful" : "Failed") : "..."}}
+            </td>
           </tr>
           </tbody>
 
@@ -31,3 +39,4 @@
     </div>
   </div>
 </div>
+

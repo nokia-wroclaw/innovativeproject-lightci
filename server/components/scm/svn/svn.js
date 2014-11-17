@@ -11,16 +11,31 @@ function svnSaveCommitsAndBuild(db, err, info, project) {
     dbProject.then(function (proj) {
       // project has some new commits - save commits to database
       if (info.length > 0) {
-        for (var c = 0; c < info.length; c++) {
-          var dbCommit = db.createInstance('Commit', info[c], proj[0]);
-        }
-        // and save build with new version (change date to current datetime!)
+
+        // and save build with pending state
         var dbBuild = db.createInstance('Build', {
-          revision: info[info.length - 1]['revision'],
+          issuccess: false,
+          ispending: true,
           date: new Date()
-        }, proj[0]);
+        });
+
         // run build script
         run.runBuildScript(project.projectName);
+
+        dbBuild.then(function (build) {
+
+          db.updateInstance(build, { build_ispending: false, build_issuccess: true });
+          proj[0].addBuild([build]);
+
+          for (var c = 0; c < info.length; c++) {
+            var dbCommit = db.createInstance('Commit', info[c]);
+
+            dbCommit.then(function (commit) {
+              proj[0].addCommit([commit]);
+              build.addCommit([commit]);
+            });
+          }
+        });
       }
     });
   }

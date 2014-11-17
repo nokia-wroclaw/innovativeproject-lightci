@@ -10,9 +10,9 @@ angular.module('lightciApp')
     $scope.project_name = $routeParams.project_name;
 
     $scope.baseUrl = '#'+$location.path();
-/*
-    $http.get('/api/builds', { params: { project_id: $routeParams.project_id } }).success(function(build) {
-      $scope.builds = build;
+
+    $http.get('/api/commits', { params: { build_id: $routeParams.build_id } }).success(function(commit) {
+      $scope.commits = commit;
     });
-*/
+
   });
