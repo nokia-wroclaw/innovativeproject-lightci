@@ -1,90 +1,46 @@
-/* get revision number using svn command info */
-function getRevision(svn, callback) {
-	svn.info('', function(err, info) {
-		callback.call(info[Object.keys(info)[6]]);
-	});
+/**
+ * Created by michal on 17.11.14.
+ */
+var core = require("./svnCore");
+var run = require("../../run-script/run-script");
+
+// callback after SVN module checkout/update
+function svnSaveCommitsAndBuild(db, err, info, project) {
+  if (!err) {
+    var dbProject = db.findInstance('Project', {where: {project_name: project.projectName}});
+    dbProject.then(function (proj) {
+      // project has some new commits - save commits to database
+      if (info.length > 0) {
+        for (var c = 0; c < info.length; c++) {
+          var dbCommit = db.createInstance('Commit', info[c], proj[0]);
+        }
+        // and save build with new version (change date to current datetime!)
+        var dbBuild = db.createInstance('Build', {
+          revision: info[info.length - 1]['revision'],
+          date: new Date()
+        }, proj[0]);
+        // run build script
+        run.runBuildScript(project.projectName);
+      }
+    });
+  }
 }
 
-/* get commit list using svn command log (revisions from [revision] to HEAD)
-	param revision: revision you want to start log
-*/
-function getCommits(svn, revision, callback)	{
-	svn.log('-r '+revision+':HEAD', function(err,info) {
-		if(err) { callback("Error: log\n"+err, null); } else {
-			// construct array of commits
-			var arr = [];
-			for(i in info) {
-				arr.push({revision: info[i]['revision'],
-					author: info[i]['author'],
-					date: info[i]['date'],
-					message: info[i]['message']});
-			}
-			callback(null, arr);
-		}
-	});
-}
-
-/* get commit list from update command */
-function getCommitsFromUpdate(svn, callback) {
-	getRevision(svn, function() {
-		revision = (parseInt(this.toString())+1);
-		svn.up('', function(err, info) {
-			if(err) callback("Error: update\n"+err, null);
-			else {
-				if(info[0])
-					getCommits(svn, revision, function(err, info) { callback(err,info); });
-				else
-					callback(null, []);
-			}
-		});
-	});
-}
-
-/*	checkout or update repo
-		params:
-			repo_url 	- url of svn repository
-			repo_cwd 	- working directory
-			repo_user	- user name for repository
-			repo_pass	- password for repository
-
-		returns an error or array of commit objects. First object is string - 'update' or 'checkout'
-*/
-
-function checkout(repo_url, repo_cwd, repo_user, repo_pass, callback) {
-  // SVN object
-  var SVN = require('node.svn');
-  var svn = new SVN({
-    cwd: repo_cwd,
-    username: repo_user,
-    password: repo_pass
-  });
-
-  svn.co(repo_url, function(err, info) {
-    if(callback) {
-      if(err)
-        callback("Error: checkout\n"+err, null);
-      else
-        getCommits(svn, 'HEAD', function(err, info) {
-          callback(err,info); });
-    }
+function update(db, project, projectDir)
+{
+  core.update(project.repositoryUrl, projectDir + "/" + project.projectName, '', '', function (err, info) {
+    svnSaveCommitsAndBuild(db, err, info, project);
   });
 }
 
-function update(repo_url, repo_cwd, repo_user, repo_pass, callback) {
-  // SVN object
-  var SVN = require('node.svn');
-  var svn = new SVN({
-    cwd:		repo_cwd,
-    username:	repo_user,
-    password:	repo_pass });
 
-  getCommitsFromUpdate(svn, function(err, info) {
-    if(callback) {
-      if(err)
-        callback(err, null);
-      else
-        callback(null, info);
-    }
+function checkout(db, project, projectDir)
+{
+  var dbCreatedProject = db.createInstance('Project', {url: project.repositoryUrl, name: project.projectName});
+  dbCreatedProject.then(function () {
+    core.checkout(project.repositoryUrl, projectDir + "/" + project.projectName, '', '', function (err, info) {
+      svnSaveCommitsAndBuild(db, err, info, project);
+    });
   });
 }
 
