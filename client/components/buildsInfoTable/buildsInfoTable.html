@@ -18,6 +18,7 @@
           <thead>
           <tr>
             <th data-field="id">CommitID</th>
+            <th data-field="id">Commit Rev/Hash</th>
             <th data-field="author">Commit Author</th>
             <th data-field="date">Commit Date</th>
             <th data-field="comment">Commit Message</th>
@@ -29,6 +30,9 @@
               <a href={{baseUrl}}>
                 {{commit.id}}
               </a>
+            </td>
+            <td>
+              {{commit.commit_id}}
             </td>
             <td>
               {{commit.commit_author}}
