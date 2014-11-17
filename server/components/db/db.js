@@ -98,3 +98,4 @@ function createTables(dbDir, callback) {
 exports.createTables = createTables;
 exports.createInstance = createInstance;
 exports.findInstance = findInstance;
+exports.updateInstance = updateInstance;
