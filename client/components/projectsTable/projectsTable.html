@@ -14,8 +14,16 @@
           </thead>
           <tbody ng-repeat="project in projects">
           <tr >
-            <td>{{project.id}}</td>
-            <td>{{project.project_name}}</td>
+            <td>
+              <a href={{baseUrl+"/project/"+project.id+"/"+project.project_name}}>
+                {{project.id}}
+              </a>
+            </td>
+            <td>
+              <a href={{baseUrl+"/project/"+project.id+"/"+project.project_name}}>
+                {{project.project_name}}
+              </a>
+            </td>
           </tr>
           </tbody>
 

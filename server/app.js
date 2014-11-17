@@ -37,28 +37,6 @@ var projectConfigs = require("./config/projects.config.json");
 // Create the directory path for the project
 var projectDir = globalConfigs['checkoutDir'];
 
-// callback after SVN module checkout/update
-function svnSaveCommitsAndBuild(err, info, project) {
-  if (!err) {
-    var dbProject = db.findInstance('Project', {where: {project_name: project.projectName}});
-      dbProject.then(function (proj) {
-	// project has some new commits - save commits to database
-	if (info.length > 0) {
-	  for (var c = 0; c < info.length; c++) {
-	    var dbCommit = db.createInstance('Commit', info[c], proj[0]);
-	  }
-	  // and save build with new version (change date to current datetime!)
-	  var dbBuild = db.createInstance('Build', {
-	    revision: info[info.length - 1]['revision'],
-	    date: new Date()
-	  }, proj[0]);
-	  // run build script
-	  runBuildScript(project.projectName);
-	}
-      });
-  }
-}
-
 // A map with crontab jobId's for every running project
 var jobsMap = {};
 
@@ -140,6 +118,28 @@ db.createTables(globalConfigs['databaseDir'], function () {
     }
   });
 });
+
+// callback after SVN module checkout/update
+function svnSaveCommitsAndBuild(err, info, project) {
+  if (!err) {
+    var dbProject = db.findInstance('Project', {where: {project_name: project.projectName}});
+      dbProject.then(function (proj) {
+	// project has some new commits - save commits to database
+	if (info.length > 0) {
+	  for (var c = 0; c < info.length; c++) {
+	    var dbCommit = db.createInstance('Commit', info[c], proj[0]);
+	  }
+	  // and save build with new version (change date to current datetime!)
+	  var dbBuild = db.createInstance('Build', {
+	    revision: info[info.length - 1]['revision'],
+	    date: new Date()
+	  }, proj[0]);
+	  // run build script
+	  runBuildScript(project.projectName);
+	}
+      });
+  }
+}
 
 function gitPull(project) {
   git.pull(projectDir + "/" + project.projectName)
