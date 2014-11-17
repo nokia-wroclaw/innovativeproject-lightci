@@ -124,6 +124,5 @@ db.createTables(globalConfigs['databaseDir'], function () {
   });
 });
 
-
 // Expose app
 exports = module.exports = app;
