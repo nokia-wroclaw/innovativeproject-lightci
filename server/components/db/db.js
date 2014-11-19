@@ -18,7 +18,10 @@ function establishConnection(dbDir, dbName) {
   var sequelize = new Sequelize(dbName, 'root', 'root', {
     dialect: "sqlite",
     port: 3306,
-    storage: dbDir
+    storage: dbDir,
+    dialectOptions: {
+      charset: 'utf8'
+    }
   });
   sequelize
     .authenticate()
@@ -88,7 +91,7 @@ function createInstance(wich, info) {
   else if (wich == cBuildOutputs) {
     return BuildOutputs.create({
       scriptName: info['scriptName'],
-      output: info['output']
+      output: require('querystring').escape((info['output']))
     })
   }
 }

@@ -22,7 +22,16 @@
       "repositoryUrl": "git://github.com/test1git/mvntest",
       "repositoryType": "git",
       "cronePattern": "* * * * *",
-      "scripts": ["1.sh", "2.sh", "3.sh"]
+      "scripts": ["test.sh","test2.sh"]
+    },
+
+    {
+      "projectName": "lightci",
+      "repositoryUrl": "git://github.com/nokia-wroclaw/innovativeproject-lightci",
+      "repositoryType": "git",
+      "cronePattern": "* * * * *",
+      "scripts": ["install.sh","test.sh"]
+>>>>>>> 6ff3e20da06661e1b5c68ed923070cb59bd96ef0
     }
   ]
 }
