@@ -23,6 +23,14 @@
       "repositoryType": "git",
       "cronePattern": "* * * * *",
       "scripts": ["test.sh","test2.sh"]
+    },
+
+    {
+      "projectName": "lightci",
+      "repositoryUrl": "git://github.com/nokia-wroclaw/innovativeproject-lightci",
+      "repositoryType": "git",
+      "cronePattern": "* * * * *",
+      "scripts": ["install.sh","test.sh"]
     }
   ]
 }
