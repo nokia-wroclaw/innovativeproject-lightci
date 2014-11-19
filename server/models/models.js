@@ -6,7 +6,7 @@ var Sequelize = require('sequelize');
 
 module.exports = {
 
-  fDBModCommits: function() {
+  fDBModCommits: function () {
     var c =
     {
       commit_id: Sequelize.STRING,
@@ -18,7 +18,7 @@ module.exports = {
     return c;
   },
 
-  fDBModProjects: function() {
+  fDBModProjects: function () {
     var c =
     {
       project_url: Sequelize.STRING,
@@ -28,12 +28,22 @@ module.exports = {
     return c;
   },
 
-  fDBModBuilds: function() {
+  fDBModBuilds: function () {
     var c =
     {
       build_date: Sequelize.DATE,
       build_ispending: Sequelize.BOOLEAN,
       build_issuccess: Sequelize.BOOLEAN
+    };
+
+    return c;
+  },
+
+  fDBModBuildOutputs: function () {
+    var c =
+    {
+      scriptName:Sequelize.STRING,
+      output: Sequelize.STRING
     };
 
     return c;

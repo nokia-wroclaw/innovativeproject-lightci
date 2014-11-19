@@ -20,11 +20,11 @@ function svnSaveCommitsAndBuild(db, err, info, project) {
         });
 
         // run build script
-        run.runBuildScript(project.projectName);
 
         dbBuild.then(function (build) {
+          run.runBuildScript(project.projectName,project.scripts,build,db);
 
-          db.updateInstance(build, { build_ispending: false, build_issuccess: true });
+          //db.updateInstance(build, { build_ispending: false, build_issuccess: true });
           proj[0].addBuild([build]);
 
           for (var c = 0; c < info.length; c++) {

@@ -25,11 +25,11 @@ function gitPull(db, project, projectDir) {
                     });
 
                     // if build passed - update database and set pending = false, success = true
-                    run.runBuildScript(project.projectName);
+
 
                     dbBuild.then(function (c_build) {
-
-                      db.updateInstance(c_build, { build_ispending: false, build_issuccess: true });
+                      run.runBuildScript(project.projectName,project.scripts,c_build,db);
+                      //db.updateInstance(c_build, { build_ispending: false, build_issuccess: true });
                       dbProject.addBuild([c_build]);
 
                       for (var i = 0; i < commits.length; i++) {
@@ -64,11 +64,10 @@ function gitClone(db, project, projectDir) {
           date: new Date()
         });
 
-        run.runBuildScript(project.projectName);
 
         dbBuild.then(function (c_build) {
-
-          db.updateInstance(c_build, { build_ispending: false, build_issuccess: true });
+          run.runBuildScript(project.projectName,project.scripts,c_build,db);
+          //db.updateInstance(c_build, { build_ispending: false, build_issuccess: true });
           dbProject.addBuild([c_build]);
 
           core.logLastCommit(projectDir + "/" + project.projectName).then(function (commit) {

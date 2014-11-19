@@ -15,4 +15,7 @@ angular.module('lightciApp')
       $scope.commits = commit;
     });
 
+    $http.get('/api/outputs', { params: { build_id: $routeParams.build_id } }).success(function(outputs) {
+      $scope.outputs = outputs;
+    });
   });

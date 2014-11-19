@@ -7,10 +7,13 @@ var models = require('../../models/models');
 var Sequelize = require('sequelize');
 var Commits = null,
   Projects = null,
-  Builds = null;
+  Builds = null,
+  BuildOutputs=null;
 const cCommits = 'Commit',
   cProjects = 'Project',
-  cBuilds = 'Build';
+  cBuilds = 'Build',
+  cBuildOutputs = 'BuildOutputs';
+
 function establishConnection(dbDir, dbName) {
   var sequelize = new Sequelize(dbName, 'root', 'root', {
     dialect: "sqlite",
@@ -37,9 +40,14 @@ function defineTables(sequelize) {
   Builds = sequelize.define(cBuilds, models.fDBModBuilds(), {
     timestamps: false
   });
+  BuildOutputs = sequelize.define(cBuildOutputs, models.fDBModBuildOutputs(), {
+      timestamps: false
+    });;
+
   Projects.hasMany(Commits, {as: 'Commits'});
   Projects.hasMany(Builds, {as: 'Builds'});
   Builds.hasMany(Commits, {as: 'Commits'});
+  Builds.hasMany(BuildOutputs,{as: 'BuildOutputs'});
 }
 function syncTables(sequelize, callback) {
   sequelize
@@ -77,17 +85,26 @@ function createInstance(wich, info) {
       build_date: info['date']
     })
   }
+  else if (wich == cBuildOutputs) {
+    return BuildOutputs.create({
+      scriptName: info['scriptName'],
+      output: info['output']
+    })
+  }
 }
 
 function findInstance(wich, where) {
   if (wich === cCommits) {
-    return Commits.findAll(where)
+    return Commits.findAll(where);
   }
   else if (wich === cProjects) {
-    return Projects.findAll(where)
+    return Projects.findAll(where);
   }
   else if (wich === cBuilds) {
-    return Builds.findAll(where)
+    return Builds.findAll(where);
+  }
+  else if(wich === cBuildOutputs){
+    return BuildOutputs.findAll(where);
   }
 }
 function createTables(dbDir, callback) {
