@@ -15,6 +15,7 @@
           <tr>
             <th data-field="id">Project ID</th>
             <th data-field="name">Project Name</th>
+            <th data-field="name">Actions</th>
           </tr>
           </thead>
           <tbody ng-repeat="project in projects">
@@ -27,6 +28,11 @@
             <td>
               <a href={{baseUrl+"/project/"+project.id+"/"+project.project_name}}>
                 {{project.project_name}}
+              </a>
+            </td>
+            <td>
+              <a href={{baseUrl}} ng-click="buildNow(project.id)">
+                Build Now
               </a>
             </td>
           </tr>

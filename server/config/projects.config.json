@@ -5,7 +5,7 @@
       "repositoryUrl": "https://subversion.assembla.com/svn/mp-svntest/",
       "repositoryType": "svn",
       "cronePattern": "* * * * *",
-      "scripts": ["svn_test_9.sh"]
+      "scripts": ["1.sh", "2.sh"]
 
     },
 
@@ -14,7 +14,7 @@
       "repositoryUrl": "git://github.com/test1git/test",
       "repositoryType": "git",
       "cronePattern": "* * * * *",
-      "scripts": ["git_test_1.sh","2.sh"]
+      "scripts": ["git_test_1.sh"]
     },
 
     {
@@ -22,7 +22,7 @@
       "repositoryUrl": "git://github.com/test1git/mvntest",
       "repositoryType": "git",
       "cronePattern": "* * * * *",
-      "scripts": ["test.sh","test2.sh"]
+      "scripts": ["1.sh", "2.sh", "3.sh"]
     }
   ]
 }

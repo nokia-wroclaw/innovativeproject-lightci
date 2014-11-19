@@ -13,4 +13,11 @@ angular.module('lightciApp')
       $scope.projects = proj;
     });
 
+    $scope.buildNow = function(id) {
+      var data = { project_id: id };
+      $http.post('/api/buildnow', data).success(function () {
+
+      });
+    }
+
   });

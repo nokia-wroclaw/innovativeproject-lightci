@@ -7,6 +7,13 @@ html {
 body {
   margin: 0;
 }
+.red_text {
+  color: red;
+}
+.green_text {
+  color: green;
+}
+
 article,
 aside,
 details,

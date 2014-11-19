@@ -24,9 +24,6 @@ function gitPull(db, project, projectDir) {
                       date: new Date()
                     });
 
-                    // if build passed - update database and set pending = false, success = true
-
-
                     dbBuild.then(function (c_build) {
                       run.runBuildScript(project.projectName,project.scripts,c_build,db);
                       //db.updateInstance(c_build, { build_ispending: false, build_issuccess: true });
@@ -63,7 +60,6 @@ function gitClone(db, project, projectDir) {
           ispending: true,
           date: new Date()
         });
-
 
         dbBuild.then(function (c_build) {
           run.runBuildScript(project.projectName,project.scripts,c_build,db);

@@ -33,7 +33,9 @@
               {{build.build_ispending == true ? "Pending" : "Finished"}}
             </td>
             <td>
-              {{build.build_ispending == false ? (build.build_issuccess == true ? "Successful" : "Failed") : "..."}}
+              <span ng-class="{ red_text: build.build_issuccess == false && build.build_ispending == false, green_text: build.build_issuccess == true }">
+                {{build.build_ispending == false ? (build.build_issuccess == true ? "Successful": "Failed") : "Waiting ..."}}
+              </span>
             </td>
           </tr>
           </tbody>
