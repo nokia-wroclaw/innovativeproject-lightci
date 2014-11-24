@@ -2284,7 +2284,7 @@ fieldset[disabled] .btn-danger.active {
   background-color: #ffffff;
 }
 .btn-link {
-  color: #2a9fd6;
+  color: #ffffff;
   font-weight: normal;
   cursor: pointer;
   border-radius: 0;
@@ -2306,7 +2306,6 @@ fieldset[disabled] .btn-link {
 .btn-link:hover,
 .btn-link:focus {
   color: #2a9fd6;
-  text-decoration: underline;
   background-color: transparent;
 }
 .btn-link[disabled]:hover,

@@ -18,6 +18,14 @@ angular.module('lightciApp', [
         templateUrl: 'components/buildsInfoTable/buildsInfoTable.html',
         controller: 'BuildInfoTableCtrl'
       })
+      .when('/new', {
+        templateUrl: 'components/newProjectForm/newProjectForm.html',
+        controller: 'newProjFormCtrl'
+      })
+      .when('/project/:project_id/:project_name/edit', {
+        templateUrl: 'components/editProjectForm/editProjectForm.html',
+        controller: 'editProjFormCtrl'
+      })
       .otherwise({
         redirectTo: '/'
       });

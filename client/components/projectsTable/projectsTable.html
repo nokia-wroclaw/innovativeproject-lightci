@@ -7,32 +7,56 @@
   <div class="col-lg-12">
     <div class="panel panel-primary">
       <div class="panel-heading">
-        <h3 class="panel-title"><i class="fa fa-bar-chart-o"></i> Current projects </h3>
+        <h3 class="panel-title"><i class="fa fa-folder-open"></i> Current projects </h3>
       </div>
       <div class="panel-body">
+
         <table class="table table-striped table-bordered table-condensed" ng-controller="ProjTableCtrl">
           <thead>
           <tr>
             <th data-field="id">Project ID</th>
             <th data-field="name">Project Name</th>
-            <th data-field="name">Actions</th>
+            <th colspan="3" data-field="name">Actions</th>
           </tr>
           </thead>
-          <tbody ng-repeat="project in projects">
+          <tbody ng-repeat="project in projects" data-link="row" class="rowlink">
           <tr >
             <td>
-              <a href={{baseUrl+"/project/"+project.id+"/"+project.project_name}}>
+              <a style="display: block;" ng-href={{baseUrl+"/project/"+project.id+"/"+project.project_name}}>
+                <button type="button" class="btn btn-link">
                 {{project.id}}
+                </button>
               </a>
             </td>
+
             <td>
-              <a href={{baseUrl+"/project/"+project.id+"/"+project.project_name}}>
+              <a style="display: block;" ng-href={{baseUrl+"/project/"+project.id+"/"+project.project_name}}>
+                <button type="button" class="btn btn-link">
                 {{project.project_name}}
+                </button>
               </a>
             </td>
             <td>
-              <a href={{baseUrl}} ng-click="buildNow(project.id)">
-                Build Now
+              <a href={{baseUrl}} ng-click="buildProject(project.id)">
+                <button type="button" class="btn btn-link">
+                  <i class="fa fa-cog"></i>   Build
+                </button>
+              </a>
+            </td>
+            <td>
+
+              <a href={{baseUrl+"/project/"+project.id+"/"+project.project_name+"/edit"}}>
+                <button type="button" class="btn btn-link">
+                  <i class="fa fa-wrench"></i>   Configure
+                </button>
+              </a>
+            </td>
+            <td>
+
+              <a href={{baseUrl}} ng-click="removeProject(project.id)">
+                <button type="button" class="btn btn-link">
+                  <i class="fa fa-remove"></i>   Remove
+                </button>
               </a>
             </td>
           </tr>
