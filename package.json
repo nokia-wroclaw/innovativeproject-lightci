@@ -14,6 +14,7 @@
     "exec": "^0.1.2",
     "express": "~4.0.0",
     "express-session": "~1.0.2",
+    "junit-xml-parser": "0.0.3",
     "lodash": "~2.4.1",
     "method-override": "~1.0.0",
     "morgan": "~1.0.0",

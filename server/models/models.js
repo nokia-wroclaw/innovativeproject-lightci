@@ -47,5 +47,29 @@ module.exports = {
     };
 
     return c;
+  },
+  fDBModTestSuites: function () {
+    var c =
+    {
+      name:Sequelize.STRING,
+      time: Sequelize.STRING,
+      tests: Sequelize.INTEGER,
+      failures: Sequelize.INTEGER,
+      skipped: Sequelize.INTEGER,
+      errors: Sequelize.INTEGER
+    };
+
+    return c;
+  },
+  fDBModTests: function () {
+    var c =
+    {
+      name:Sequelize.STRING,
+      time: Sequelize.STRING,
+      type: Sequelize.STRING,
+      message: Sequelize.STRING
+    };
+
+    return c;
   }
 };

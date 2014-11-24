@@ -8,12 +8,17 @@ var Sequelize = require('sequelize');
 var Commits = null,
   Projects = null,
   Builds = null,
-  BuildOutputs=null;
+  BuildOutputs=null,
+  TestSuites=null,
+  Tests=null;
 const cCommits = 'Commit',
   cProjects = 'Project',
   cBuilds = 'Build',
-  cBuildOutputs = 'BuildOutputs';
+  cBuildOutputs = 'BuildOutputs',
+  cTestSuites = 'TestSuites',
+  cTests = 'Tests';
 
+var _ = require('lodash');
 function establishConnection(dbDir, dbName) {
   var sequelize = new Sequelize(dbName, 'root', 'root', {
     dialect: "sqlite",
@@ -45,12 +50,20 @@ function defineTables(sequelize) {
   });
   BuildOutputs = sequelize.define(cBuildOutputs, models.fDBModBuildOutputs(), {
       timestamps: false
-    });;
-
+    });
+  TestSuites = sequelize.define(cTestSuites, models.fDBModTestSuites(), {
+    timestamps: false
+  });
+  Tests = sequelize.define(cTests, models.fDBModTests(), {
+    timestamps: false
+  });
   Projects.hasMany(Commits, {as: 'Commits'});
   Projects.hasMany(Builds, {as: 'Builds'});
   Builds.hasMany(Commits, {as: 'Commits'});
   Builds.hasMany(BuildOutputs,{as: 'BuildOutputs'});
+  Builds.hasMany(TestSuites,{as: 'TestSuites'});
+  TestSuites.hasMany(Tests,{as: 'Tests'});
+
 }
 function syncTables(sequelize, callback) {
   sequelize
@@ -94,6 +107,26 @@ function createInstance(wich, info) {
       output: require('querystring').escape((info['output']))
     })
   }
+  else if (wich == cTestSuites) {
+    return TestSuites.create({
+      name: info['name'],
+      time: info['time'],
+      tests: info['summary'].tests,
+      failures:info['summary'].failures,
+      skipped:info['summary'].skipped,
+      errors:info['summary'].errors
+
+    })
+  }
+  else if (wich == cTests) {
+      return Tests.create({
+        name: info['name'],
+        time: info['time'],
+        type: _.has(info,'failure')?info['failure'].type:"",
+        massage:  _.has(info,'failure')?info['failure'].message:""
+      })
+
+  }
 }
 
 function findInstance(wich, where) {
@@ -108,6 +141,12 @@ function findInstance(wich, where) {
   }
   else if(wich === cBuildOutputs){
     return BuildOutputs.findAll(where);
+  }
+  else if(wich === cTestSuites){
+    return TestSuites.findAll(where);
+  }
+  else if(wich === cTests){
+    return Tests.findAll(where);
   }
 }
 function createTables(dbDir, callback) {

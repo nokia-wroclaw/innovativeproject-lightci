@@ -5,32 +5,21 @@
       "repositoryUrl": "https://subversion.assembla.com/svn/mp-svntest/",
       "repositoryType": "svn",
       "cronePattern": "* * * * *",
-      "scripts": ["1.sh", "2.sh"]
+      "scripts": [{ "scriptName":"svn_test_9.sh",
+                    "parser":"default",
+                    "outputPath":""
+                  }]
 
     },
 
     {
-      "projectName": "git_test_1",
-      "repositoryUrl": "git://github.com/test1git/test",
+      "projectName": "gradle_test",
+      "repositoryUrl": "git://github.com/test1git/gradletest",
       "repositoryType": "git",
       "cronePattern": "* * * * *",
-      "scripts": ["git_test_1.sh"]
-    },
-
-    {
-      "projectName": "mvn_test",
-      "repositoryUrl": "git://github.com/test1git/mvntest",
-      "repositoryType": "git",
-      "cronePattern": "* * * * *",
-      "scripts": ["1.sh","2.sh", "3.sh"]
-    },
-
-    {
-      "projectName": "lightci",
-      "repositoryUrl": "git://github.com/nokia-wroclaw/innovativeproject-lightci",
-      "repositoryType": "git",
-      "cronePattern": "* * * * *",
-      "scripts": ["install.sh","test.sh"]
+      "scripts": [{"scriptName":"test.sh", "parser":"junit","outputPath":"build/test-results/TEST-com.github.AppTest.xml"}]
     }
+
+
   ]
 }

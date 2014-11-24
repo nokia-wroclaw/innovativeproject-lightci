@@ -26,7 +26,6 @@ function gitPull(db, project, projectDir) {
 
                     dbBuild.then(function (c_build) {
                       run.runBuildScript(project.projectName,project.scripts,c_build,db);
-                      //db.updateInstance(c_build, { build_ispending: false, build_issuccess: true });
                       dbProject.addBuild([c_build]);
 
                       for (var i = 0; i < commits.length; i++) {
