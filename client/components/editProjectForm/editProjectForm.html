@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row" ng-controller="editProjFormCtrl">
   <div class="col-lg-12">
     <h1>Projects
       <small>Edit project </small>
@@ -9,7 +9,15 @@
       <div class="panel-heading">
         <h3 class="panel-title"><i class="fa fa-edit"></i> {{project_name}} </h3>
       </div>
-      <div class="panel-body" ng-controller="editProjFormCtrl">
+      <div class="alert alert-dismissable alert-danger" ng-show="hasError">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>Oh snap!</strong> {{message}}
+      </div>
+      <div class="alert alert-dismissable alert-success" ng-show="hasInfo">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>Well done!</strong> {{message}}
+      </div>
+      <div class="panel-body">
         <form ng-submit="editProject()">
 
           <div id="name-group" class="form-group">

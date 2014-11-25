@@ -83,6 +83,9 @@ function deleteInstance(instance, where) {
 function updateInstance(instance, attrs) {
   return instance.updateAttributes(attrs);
 }
+function deleteInstance(instance) {
+  return instance.destroy();
+}
 function createInstance(wich, info) {
   if (wich === cCommits) {
     return Commits.create({

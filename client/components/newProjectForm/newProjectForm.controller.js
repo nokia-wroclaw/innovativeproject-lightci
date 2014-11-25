@@ -9,10 +9,25 @@ angular.module('lightciApp')
     $scope.baseUrl = '#'+$location.path();
 
     $scope.formData = {};
+    $scope.formData.scripts = [ { scriptContent: "", parser: "default" } ];
 
     $scope.createProject = function() {
       var data = $scope.formData;
-      $http.post('/api/create', data).success(function () {
+      $http.post('/api/create', data).success(function (result) {
+
+        if (result.error) {
+          $scope.hasError = true;
+          $scope.hasInfo = false;
+          $scope.message = result.error;
+        }
+
+        if (result.info) {
+          $scope.hasInfo = true;
+          $scope.hasError = false;
+          $scope.message = result.info;
+
+          $location.path("#");
+        }
       });
     }
   });

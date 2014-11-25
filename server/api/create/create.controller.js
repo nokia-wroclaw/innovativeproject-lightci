@@ -11,7 +11,7 @@ exports.create = function(req,res) {
     repositoryUrl: req.body.project_url,
     repositoryType: req.body.project_repo,
     cronePattern: req.body.project_pattern,
-    scripts: [] //req.body.project_scripts
+    scripts: req.body.scripts
   };
 
   projectHandler.projectExists(project, function(exists) {

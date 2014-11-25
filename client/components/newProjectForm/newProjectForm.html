@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row" ng-controller="newProjFormCtrl">
   <div class="col-lg-12">
     <h1>Projects
       <small>New project </small>
@@ -9,7 +9,15 @@
       <div class="panel-heading">
         <h3 class="panel-title"><i class="fa fa-edit"></i> New project </h3>
       </div>
-      <div class="panel-body" ng-controller="newProjFormCtrl">
+      <div class="alert alert-dismissable alert-danger" ng-show="hasError">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>Oh snap!</strong> {{message}}
+      </div>
+      <div class="alert alert-dismissable alert-success" ng-show="hasInfo">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>Well done!</strong> {{message}}
+      </div>
+      <div class="panel-body">
         <form ng-submit="createProject()">
 
           <div id="name-group" class="form-group">
@@ -44,6 +52,29 @@
             <label>Crone Pattern</label>
             <input type="text" name="pattern" class="form-control" placeholder="* * * * *" ng-model="formData.project_pattern" ng-init="formData.project_pattern='* * * * *'">
             <span class="help-block"></span>
+          </div>
+
+          <div id="script-group" class="form-group">
+
+            <label>Post-Build Scripts</label>
+            <div ng-repeat="script in formData.scripts">
+              <textarea class="form-control" ng-model="script.scriptContent" rows="3" style="width: 507px; height: 149px;" >
+              </textarea>
+
+              <div class="radio">
+                <label>
+                  <input type="radio" id="optionsParser1" ng-model="script.parser" value="default" ng-init="script.parser='default'">
+                  Default Parser
+                </label>
+              </div>
+              <div class="radio">
+                <label>
+                  <input type="radio" id="optionsParser2" ng-model="script.parser" value="junit">
+                  JUnit Parser
+                </label>
+              </div>
+            </div>
+            <button type="button" ng-click="formData.scripts.push({ scriptContent: '', parser: 'default'})" class="btn btn-default">Add script ...</button>
           </div>
 
           <!-- SUBMIT BUTTON -->

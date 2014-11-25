@@ -10,10 +10,44 @@
         <h3 class="panel-title"><i class="fa fa-list-alt"></i> Scripts outputs</h3>
       </div>
       <div class="panel-body">
-  <div class="form-group" ng-repeat="out in outputs">
-    <label>{{out.scriptName}}</label>
-    <textarea class="form-control" rows="{{out.output.length/50>50?50:out.output.length/50}}">{{out.output}}</textarea>
-  </div>
+        <table class="table table-striped table-bordered table-condensed" >
+          <thead>
+          <tr>
+            <th data-field="name">Script Name</th>
+            <th data-field="result">Script Result</th>
+            <th data-field="details">Script Details</th>
+          </tr>
+          </thead>
+          <tbody ng-repeat="output in outputs">
+          <tr >
+            <td>
+              <a style="display: block;" ng-href={{baseUrl}}>
+                <button type="button" class="btn btn-link">
+                  {{output.scriptName}}
+                </button>
+              </a>
+            </td>
+            <td>
+              <a style="display: block;" ng-href={{baseUrl}}>
+                <button type="button" class="btn btn-link">
+                  <span ng-class="{ red_text: output.isSuccess == false, green_text: output.isSuccess == true }">
+                    <i class="fa fa-thumbs-up"  ng-show="output.isSuccess"></i>
+                    <i class="fa fa-thumbs-down"  ng-hide="output.isSuccess"></i>
+                    {{output.isSuccess == true ? "Successful": "Failed"}}
+                  </span>
+                </button>
+              </a>
+            </td>
+            <td>
+              <a style="display: block;" ng-href={{baseUrl}}>
+                <button type="button" class="btn btn-link">
+                  <i class="fa fa-search"></i>   Details
+                </button>
+              </a>
+            </td>
+          </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
@@ -23,13 +57,9 @@
         <h3 class="panel-title"><i class="fa fa-signal"></i> Commit history</h3>
       </div>
       <div class="panel-body">
-
-
-
         <table class="table table-striped table-bordered table-condensed" >
           <thead>
           <tr>
-            <th data-field="id">CommitID</th>
             <th data-field="id">Commit Rev/Hash</th>
             <th data-field="author">Commit Author</th>
             <th data-field="date">Commit Date</th>
@@ -39,21 +69,34 @@
           <tbody ng-repeat="commit in commits">
           <tr >
             <td>
-              <a href={{baseUrl}}>
-                {{commit.id}}
+              <a style="display: block;" ng-href={{baseUrl}}>
+                <button type="button" class="btn btn-link">
+                  {{commit.commit_id}}
+                </button>
               </a>
             </td>
             <td>
-              {{commit.commit_id}}
+              <a style="display: block;" ng-href={{baseUrl}}>
+                <button type="button" class="btn btn-link">
+                  {{commit.commit_author}}
+                </button>
+              </a>
             </td>
             <td>
-              {{commit.commit_author}}
+              <a style="display: block;" ng-href={{baseUrl}}>
+                <button type="button" class="btn btn-link">
+                  {{commit.commit_date}}
+                </button>
+              </a>
             </td>
             <td>
-              {{commit.commit_date}}
-            </td>
-            <td>
-              {{commit.commit_comment}}
+              <a style="display: block;" ng-href={{baseUrl}}>
+                <button type="button" class="btn btn-link">
+                  <span class="white_text">
+                    {{commit.commit_comment}}
+                  </span>
+                </button>
+              </a>
             </td>
           </tr>
           </tbody>

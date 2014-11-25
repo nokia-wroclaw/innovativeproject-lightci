@@ -45,10 +45,13 @@ function getConfigFromId(project_id, project_config)
     else
     {
       var projectsConfig = JSON.parse(fs.readFileSync("server/config/projects.config.json"));
-      projectsConfig['projects'].foreach(function(element) {
-        if(element.project_name == projects[0].project_name)
-          project_config(element);
+      var callb;
+      projectsConfig['projects'].forEach(function(element) {
+        if(element.projectName === projects[0].project_name)
+          callb = element;
       });
+      if(callb) project_config(callb);
+      else project_config(null);
     }
   });
 }

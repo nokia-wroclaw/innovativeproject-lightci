@@ -13,7 +13,6 @@
         <table class="table table-striped table-bordered table-condensed" ng-controller="BuildTableCtrl">
           <thead>
           <tr>
-            <th data-field="id">Build ID</th>
             <th data-field="date">Build Date</th>
             <th data-field="date">Build Status</th>
             <th data-field="date">Build Result</th>
@@ -22,25 +21,34 @@
           <tbody ng-repeat="build in builds">
           <tr >
             <td>
-              <a href={{baseUrl+"/build/"+build.id}}>
-                {{build.id}}
+              <a style="display: block;" ng-href={{baseUrl+"/build/"+build.id}}>
+                <button type="button" class="btn btn-link">
+                  {{build.build_date}}
+                </button>
               </a>
             </td>
             <td>
-              {{build.build_date}}
+              <a style="display: block;" ng-href={{baseUrl+"/build/"+build.id}}>
+                <button type="button" class="btn btn-link">
+                  {{build.build_ispending == true ? "Pending" : "Finished"}}
+                </button>
+              </a>
             </td>
             <td>
-              {{build.build_ispending == true ? "Pending" : "Finished"}}
-            </td>
-            <td>
-              <span ng-class="{ red_text: build.build_issuccess == false && build.build_ispending == false, green_text: build.build_issuccess == true }">
-                {{build.build_ispending == false ? (build.build_issuccess == true ? "Successful": "Failed") : "Waiting ..."}}
-              </span>
+              <a style="display: block;" ng-href={{baseUrl+"/build/"+build.id}}>
+                <button type="button" class="btn btn-link">
+
+                  <span ng-class="{ red_text: build.build_issuccess == false && build.build_ispending == false, green_text: build.build_issuccess == true, white_text: build.build_ispending == true }">
+                    <i class="fa fa-thumbs-up"  ng-show="build.build_issuccess"></i>
+                    <i class="fa fa-thumbs-down"  ng-hide="build.build_issuccess || build.build_ispending"></i>
+                    <i class="fa fa-refresh"  ng-show="build.build_ispending"></i>
+                    {{build.build_ispending == false ? (build.build_issuccess == true ? "Successful": "Failed") : "Waiting ..."}}
+                  </span>
+                </button>
+              </a>
             </td>
           </tr>
           </tbody>
-
-
         </table>
       </div>
     </div>
