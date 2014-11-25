@@ -7,7 +7,6 @@ var run = require("../../run-script/run-script");
 function gitPull(db, project, projectDir) {
   core.pull(projectDir + "/" + project.projectName)
     .then(function (out) {
-      console.log('[GIT INFO]: pull\n' + out.stdout);
       if (out.stdout != 'Already up-to-date.\n') {
         db.findInstance('Project', {where: {project_name: project.projectName}})
           .then(function (proj) {
@@ -62,7 +61,6 @@ function gitClone(db, project, projectDir) {
 
         dbBuild.then(function (c_build) {
           run.runBuildScript(project.projectName,project.scripts,c_build,db);
-          //db.updateInstance(c_build, { build_ispending: false, build_issuccess: true });
           dbProject.addBuild([c_build]);
 
           core.logLastCommit(projectDir + "/" + project.projectName).then(function (commit) {

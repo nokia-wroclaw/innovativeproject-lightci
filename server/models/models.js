@@ -43,7 +43,8 @@ module.exports = {
     var c =
     {
       scriptName:Sequelize.STRING,
-      output: Sequelize.STRING
+      output: Sequelize.STRING,
+      isSuccess:Sequelize.BOOLEAN
     };
 
     return c;

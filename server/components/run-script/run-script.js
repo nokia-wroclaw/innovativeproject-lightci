@@ -14,17 +14,17 @@ function run(projectName, scripts, i, db, build) {
   if (i < scripts.length) {
     exec('cd repos/' + projectName + ' && sh ../../buildscripts/' + projectName + '/' + scripts[i].scriptName)
       .then(function (result) {
-        db.createInstance('BuildOutputs', {scriptName:scripts[i].scriptName,output: result.stdout}).then(function (out) {
+        db.createInstance('BuildOutputs', {scriptName:scripts[i].scriptName,output: result.stdout,isSuccess:true}).then(function (out) {
           build.addBuildOutput([out]);
-          parser(projectName,scripts[i],build,db);
+          parser(projectName,scripts[i],out,db);
         });
         run(projectName, scripts, i + 1, db, build);
       })
       .fail(function (err) {
         if (err.stdout) {
-          db.createInstance('BuildOutputs', {scriptName:scripts[i].scriptName,output: err.stdout}).then(function (out) {
+          db.createInstance('BuildOutputs', {scriptName:scripts[i].scriptName,output: err.stdout,isSuccess:false}).then(function (out) {
             build.addBuildOutput([out]);
-            parser(projectName,scripts[i],build,db);
+            parser(projectName,scripts[i],out,db);
           }).then(function(){
             db.updateInstance(build, { build_ispending: false, build_issuccess: false });
           });

@@ -61,7 +61,7 @@ function defineTables(sequelize) {
   Projects.hasMany(Builds, {as: 'Builds'});
   Builds.hasMany(Commits, {as: 'Commits'});
   Builds.hasMany(BuildOutputs,{as: 'BuildOutputs'});
-  Builds.hasMany(TestSuites,{as: 'TestSuites'});
+  BuildOutputs.hasMany(TestSuites,{as: 'TestSuites'});
   TestSuites.hasMany(Tests,{as: 'Tests'});
 
 }
@@ -104,7 +104,8 @@ function createInstance(wich, info) {
   else if (wich == cBuildOutputs) {
     return BuildOutputs.create({
       scriptName: info['scriptName'],
-      output: require('querystring').escape((info['output']))
+      output: require('querystring').escape((info['output'])),
+      isSuccess:info['isSuccess']
     })
   }
   else if (wich == cTestSuites) {
