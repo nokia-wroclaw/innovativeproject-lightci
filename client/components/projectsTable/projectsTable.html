@@ -14,7 +14,8 @@
         <table class="table table-striped table-bordered table-condensed" ng-controller="ProjTableCtrl">
           <thead>
           <tr>
-            <th data-field="id">Project ID</th>
+            <th data-field="id">Status</th>
+            <th data-field="id">Trend</th>
             <th data-field="name">Project Name</th>
             <th colspan="3" data-field="name">Actions</th>
           </tr>
@@ -24,11 +25,17 @@
             <td>
               <a style="display: block;" ng-href={{baseUrl+"/project/"+project.id+"/"+project.project_name}}>
                 <button type="button" class="btn btn-link">
-                {{project.id}}
+                <img src="../../assets/images/{{project.lastBuilds[0]?'ok':'fail'}}.png"/>
                 </button>
               </a>
             </td>
-
+            <td>
+              <a style="display: block;" ng-href={{baseUrl+"/project/"+project.id+"/"+project.project_name}}>
+                <button type="button" class="btn btn-link">
+                 <img src="../../assets/images/{{project.trend}}.png"/>
+                </button>
+              </a>
+            </td>
             <td>
               <a style="display: block;" ng-href={{baseUrl+"/project/"+project.id+"/"+project.project_name}}>
                 <button type="button" class="btn btn-link">
