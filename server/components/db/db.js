@@ -24,6 +24,7 @@ function establishConnection(dbDir, dbName) {
     dialect: "sqlite",
     port: 3306,
     storage: dbDir,
+    logging: false,
     dialectOptions: {
       charset: 'utf8'
     }
@@ -75,6 +76,9 @@ function syncTables(sequelize, callback) {
         callback();
       }
     });
+}
+function deleteInstance(instance, where) {
+  return instance.destroy(where);
 }
 function updateInstance(instance, attrs) {
   return instance.updateAttributes(attrs);
@@ -159,3 +163,4 @@ exports.createTables = createTables;
 exports.createInstance = createInstance;
 exports.findInstance = findInstance;
 exports.updateInstance = updateInstance;
+exports.deleteInstance = deleteInstance;

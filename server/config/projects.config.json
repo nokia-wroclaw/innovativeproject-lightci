@@ -6,9 +6,9 @@
       "repositoryType": "svn",
       "cronePattern": "* * * * *",
       "scripts": [{ "scriptName":"svn_test_9.sh",
-                    "parser":"default",
-                    "outputPath":""
-                  }]
+        "parser":"default",
+        "outputPath":""
+      }]
 
     },
 

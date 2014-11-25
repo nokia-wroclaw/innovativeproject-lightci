@@ -6,6 +6,7 @@ var run = require("../../components/run-script/run-script");
 
 // Execute build
 exports.create = function(req, res) {
+
   db.findInstance('Project', {where: {id: req.body.project_id}})
     .then(function (proj) {
 

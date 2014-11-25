@@ -13,7 +13,7 @@ angular.module('lightciApp')
 
     $scope.editProject = function() {
       var data = $scope.formData;
-      $http.post('/api/edit', data).success(function () {
+      $http.post('/api/editproject', data).success(function () {
       });
     }
   });

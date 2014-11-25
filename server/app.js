@@ -20,7 +20,10 @@ require('./routes')(app);
 var svn = require('./components/scm/svn/svn');
 var git = require('./components/scm/git/git');
 var db = require('./components/db/db');
-var crontab = require('node-crontab');
+var projHandler = require("./components/project-handling/project-handler.js")
+
+var fs = require("fs");
+
 var exec = require('child-process-promise').exec;
 // Start server
 server.listen(config.port, config.ip, function () {
@@ -38,77 +41,7 @@ var projectConfigs = require("./config/projects.config.json");
 var projectDir = globalConfigs['checkoutDir'];
 
 // A map with crontab jobId's for every running project
-var jobsMap = {};
-
-// Create new job and add jobId to the map
-function addCrontabJob(key, jobCallback) {
-  var jobId = jobCallback();
-  jobsMap[key] = jobId;
-  console.log("Current Crontab Jobs: ", jobsMap);
-}
-
-// Cancel job and remove it from the map
-function removeCrontabJob(key) {
-  crontab.cancelJob(jobsMap[key]);
-  jobsMap[key] = null;
-  console.log("Current Crontab Jobs: ", jobsMap);
-}
-
-function addProject(project)
-{
-  if (project.repositoryType === 'svn') {
-
-    svn.checkout(db, project, projectDir);
-
-    addCrontabJob(project.projectName, function () {
-      return crontab.scheduleJob(project.cronePattern, function (cron_db, cron_project, cron_projectDir) {
-        svn.update(cron_db, cron_project, cron_projectDir);
-      }, [db, project, projectDir]);
-    });
-
-  } else if (project.repositoryType === 'git') {
-
-     git.gitClone(db,project,projectDir);
-
-    addCrontabJob(project.projectName, function () {
-      return crontab.scheduleJob(project.cronePattern, function (cron_db, cron_project, cron_projectDir) {
-        git.gitPull(cron_db, cron_project, cron_projectDir);
-      }, [db, project, projectDir]);
-    });
-
-  }
-  else {
-    console.log("Unsupported repository: " + repoType);
-  }
-}
-
-function updateProject(project)
-{
-  if (project.repositoryType === 'svn') {
-
-    svn.update(db, project, projectDir);
-
-    addCrontabJob(project.projectName, function () {
-      return crontab.scheduleJob(project.cronePattern, function (cron_db, cron_project, cron_projectDir) {
-        svn.update(cron_db, cron_project, cron_projectDir);
-      }, [db, project, projectDir]);
-    });
-
-  } else if (project.repositoryType === 'git') {
-
-    git.gitPull(db, project, projectDir);
-
-    addCrontabJob(project.projectName, function () {
-      return crontab.scheduleJob(project.cronePattern, function (cron_db, cron_project, cron_projectDir) {
-        git.gitPull(cron_db, cron_project, cron_projectDir);
-      }, [db, project, projectDir]);
-    });
-
-  }
-  else {
-    console.log("Unsupported repository: " + repoType);
-  }
-}
+global.jobsMap = {};
 
 // Prepare database tables if not existing
 db.createTables(globalConfigs['databaseDir'], function () {
@@ -117,12 +50,15 @@ db.createTables(globalConfigs['databaseDir'], function () {
     var dbProject = db.findInstance('Project', {where: {project_name: project.projectName}});
     dbProject.then(function (projects) {
       if (projects.length == 0) {
-        addProject(project)
+        projHandler.addProject(project)
       } else
-        updateProject(project);
+        projHandler.updateProject(project);
     });
   });
 });
+
+
+
 
 // Expose app
 exports = module.exports = app;
