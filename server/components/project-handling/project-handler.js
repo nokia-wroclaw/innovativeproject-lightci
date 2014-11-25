@@ -19,6 +19,14 @@ function projectExists(project, exists)
   });
 }
 
+function addToConfig(project) {
+  var projectsConfig = JSON.parse(fs.readFileSync("server/config/projects.config.json"));
+  var copy = projectsConfig["projects"].slice(0);
+  copy.push(project);
+
+  fs.writeFileSync("server/config/projects.config.json", JSON.stringify({ projects: copy }, undefined, 2));
+}
+
 function updateConfig(project_name, project) {
   var projectsConfig = JSON.parse(fs.readFileSync("server/config/projects.config.json"));
   var copy = [];
@@ -29,7 +37,7 @@ function updateConfig(project_name, project) {
       copy.push(element);
   });
 
-  fs.writeFileSync("server/config/projects.config.json", JSON.stringify({ projects: copy }));
+  fs.writeFileSync("server/config/projects.config.json", JSON.stringify({ projects: copy }, undefined, 2));
 
   cronjobs.removeCrontabJob(project_name);
   cronjobs.addCrontabJob(project);
@@ -47,7 +55,7 @@ function getConfigFromId(project_id, project_config)
       var projectsConfig = JSON.parse(fs.readFileSync("server/config/projects.config.json"));
       var callb;
       projectsConfig['projects'].forEach(function(element) {
-        if(element.projectName === projects[0].project_name)
+        if (element.projectName === projects[0].project_name)
           callb = element;
       });
       if(callb) project_config(callb);
@@ -85,7 +93,7 @@ function removeProject(project) {
     if(element["projectName"] != project.project_name)
       copy.push(element);
   });
-  fs.writeFileSync("server/config/projects.config.json", JSON.stringify({ projects: copy }));
+  fs.writeFileSync("server/config/projects.config.json", JSON.stringify({ projects: copy }, undefined, 2));
 
   cronjobs.removeCrontabJob(project.project_name);
   db.deleteInstance(project, {ProjectId: project.project_id});
@@ -119,3 +127,4 @@ exports.projectExists = projectExists;
 exports.removeProject = removeProject;
 exports.getConfigFromId = getConfigFromId;
 exports.updateConfig = updateConfig;
+exports.addToConfig = addToConfig;

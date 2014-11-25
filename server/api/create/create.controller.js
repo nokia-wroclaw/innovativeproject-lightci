@@ -11,18 +11,25 @@ exports.create = function(req,res) {
     repositoryUrl: req.body.project_url,
     repositoryType: req.body.project_repo,
     cronePattern: req.body.project_pattern,
-    scripts: req.body.scripts
+    scripts: []
   };
+
+  if(!fs.existsSync("buildscripts/"+project.projectName))
+    fs.mkdirSync("buildscripts/"+project.projectName);
+
+  for(var i = 0; i< req.body.scripts.length; i++) {
+    fs.writeFileSync("buildscripts/"+project.projectName+"/"+ i.toString()+".sh", req.body.scripts[i].scriptContent);
+    project.scripts.push({ scriptName: i.toString()+".sh", parser: req.body.scripts[i].parser, outputPath: "" });
+  }
+
+
+
 
   projectHandler.projectExists(project, function(exists) {
     if(!exists) {
       projectHandler.addProject(project);
 
-      var projectsConfig = JSON.parse(fs.readFileSync("server/config/projects.config.json"));
-      var copy = projectsConfig["projects"].slice(0);
-      copy.push(project);
-
-      fs.writeFileSync("server/config/projects.config.json", JSON.stringify({ projects: copy }));
+      projectHandler.addToConfig(project);
 
       res.json({ info: "Success (I guess)!", error: null});
     } else {
