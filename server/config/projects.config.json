@@ -7,17 +7,7 @@
       "cronePattern": "* * * * *",
       "scripts": [
         {
-          "scriptName": "0.sh",
-          "parser": "default",
-          "outputPath": ""
-        },
-        {
-          "scriptName": "1.sh",
-          "parser": "default",
-          "outputPath": ""
-        },
-        {
-          "scriptName": "2.sh",
+          "scriptName": "svn_test_9.sh",
           "parser": "default",
           "outputPath": ""
         }
@@ -35,24 +25,7 @@
           "outputPath": "build/test-results/TEST-com.github.AppTest.xml"
         }
       ]
-    },
-    {
-      "projectName": "kurcze_blade",
-      "repositoryUrl": "https://subversion.assembla.com/svn/mp-svntest/",
-      "repositoryType": "svn",
-      "cronePattern": "* * * * *",
-      "scripts": [
-        {
-          "scriptName": "0.sh",
-          "parser": "default",
-          "outputPath": ""
-        },
-        {
-          "scriptName": "1.sh",
-          "parser": "default",
-          "outputPath": ""
-        }
-      ]
     }
+
   ]
 }
