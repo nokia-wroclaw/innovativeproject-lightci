@@ -25,14 +25,14 @@
             <td>
               <a style="display: block;" ng-href={{baseUrl+"/project/"+project.id+"/"+project.project_name}}>
                 <button type="button" class="btn btn-link">
-                <img src="../../assets/images/{{project.lastBuilds[0]?'ok':'fail'}}.png"/>
+                <img ng-src="../../assets/images/{{project.lastBuilds[0]?'ok':'fail'}}.png"/>
                 </button>
               </a>
             </td>
             <td>
               <a style="display: block;" ng-href={{baseUrl+"/project/"+project.id+"/"+project.project_name}}>
                 <button type="button" class="btn btn-link">
-                 <img src="../../assets/images/{{project.trend}}.png"/>
+                 <img ng-src="../../assets/images/{{project.trend}}.png"/>
                 </button>
               </a>
             </td>
