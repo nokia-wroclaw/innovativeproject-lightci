@@ -37,18 +37,13 @@
       ]
     },
     {
-      "projectName": "kurcze_blade",
+      "projectName": "test",
       "repositoryUrl": "https://subversion.assembla.com/svn/mp-svntest/",
       "repositoryType": "svn",
       "cronePattern": "* * * * *",
       "scripts": [
         {
           "scriptName": "0.sh",
-          "parser": "default",
-          "outputPath": ""
-        },
-        {
-          "scriptName": "1.sh",
           "parser": "default",
           "outputPath": ""
         }

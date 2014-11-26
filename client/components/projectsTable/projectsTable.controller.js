@@ -11,9 +11,10 @@ angular.module('lightciApp')
 
     $http.get('/api/projects').success(function (proj) {
       proj.forEach(function (project) {
-        var last = project.lastBuilds[0];
+        var last = ('lastBuilds' in project)?project.lastBuilds[0]:false;
         var quantityTrue = 0;
         var quantityFalse = 0;
+        if('lastBuilds' in project && project.lastBuilds.length>0)
         project.lastBuilds.forEach(function (lastBuild) {
           if (lastBuild) {
             quantityTrue++;
