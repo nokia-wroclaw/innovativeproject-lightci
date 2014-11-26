@@ -98,7 +98,8 @@ module.exports = function (grunt) {
       },
       express: {
         files: [
-          'server/**/*.{js,json}'
+          'server/**/*.{js,json}',
+          '!server/config/projects.config.json'
         ],
         tasks: ['express:dev', 'wait'],
         options: {
