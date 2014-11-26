@@ -1,8 +1,9 @@
 'use strict';
 
 angular.module('lightciApp', [
-
+  'highcharts-ng',
   'ngRoute'
+
 ])
   .config(function ($routeProvider) {
     $routeProvider
