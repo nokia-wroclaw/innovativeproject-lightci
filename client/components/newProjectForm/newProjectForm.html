@@ -56,7 +56,7 @@
 
           <div id="script-group" class="form-group">
 
-            <label>Post-Build Scripts</label>
+            <label>Build Scripts</label>
             <div ng-repeat="script in formData.scripts">
               <textarea class="form-control" ng-model="script.scriptContent" rows="3" style="width: 507px; height: 149px;" >
               </textarea>
@@ -73,8 +73,12 @@
                   JUnit Parser
                 </label>
               </div>
+
+              <label>Output Path</label>
+              <input type="text" class="form-control" placeholder="" ng-model="script.outputPath">
+              <span class="help-block"></span>
             </div>
-            <button type="button" ng-click="formData.scripts.push({ scriptContent: '', parser: 'default'})" class="btn btn-default">Add script ...</button>
+            <button type="button" ng-click="formData.scripts.push({ scriptContent: '', parser: 'default', outputPath: ''})" class="btn btn-default">Add script ...</button>
           </div>
 
           <!-- SUBMIT BUTTON -->

@@ -7,6 +7,11 @@
       "cronePattern": "* * * * *",
       "scripts": [
         {
+          "scriptName": "0.sh",
+          "parser": "default",
+          "outputPath": ""
+        },
+        {
           "scriptName": "1.sh",
           "parser": "default",
           "outputPath": ""
@@ -28,6 +33,24 @@
           "scriptName": "test.sh",
           "parser": "junit",
           "outputPath": "build/test-results/TEST-com.github.AppTest.xml"
+        }
+      ]
+    },
+    {
+      "projectName": "kurcze_blade",
+      "repositoryUrl": "https://subversion.assembla.com/svn/mp-svntest/",
+      "repositoryType": "svn",
+      "cronePattern": "* * * * *",
+      "scripts": [
+        {
+          "scriptName": "0.sh",
+          "parser": "default",
+          "outputPath": ""
+        },
+        {
+          "scriptName": "1.sh",
+          "parser": "default",
+          "outputPath": ""
         }
       ]
     }

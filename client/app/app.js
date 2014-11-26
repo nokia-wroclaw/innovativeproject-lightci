@@ -18,6 +18,10 @@ angular.module('lightciApp', [
         templateUrl: 'components/buildsInfoTable/buildsInfoTable.html',
         controller: 'BuildInfoTableCtrl'
       })
+      .when('/project/:project_id/:project_name/build/:build_id/script/:script_id', {
+        templateUrl: 'components/scriptInfoTable/scriptInfoTable.html',
+        controller: 'ScriptInfoTableCtrl'
+      })
       .when('/new', {
         templateUrl: 'components/newProjectForm/newProjectForm.html',
         controller: 'newProjFormCtrl'

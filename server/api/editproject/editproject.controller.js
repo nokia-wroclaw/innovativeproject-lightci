@@ -30,23 +30,23 @@ exports.show = function(req, res) {
 exports.update = function(req, res) {
   var project = {
 
-    projectName: req.query.project_name,
-    repositoryUrl: req.query.project_url,
-    repositoryType: req.query.project_repo,
-    cronePattern: req.query.project_pattern,
+    projectName: req.body.project_name,
+    repositoryUrl: req.body.project_url,
+    repositoryType: req.body.project_repo,
+    cronePattern: req.body.project_pattern,
     scripts: []
 
   };
-
+  //console.log(req);
   if(!fs.existsSync("buildscripts/"+project.projectName))
     fs.mkdirSync("buildscripts/"+project.projectName);
 
-  for(var i = 0; i< req.query.scripts.length; i++) {
-    fs.writeFileSync("buildscripts/"+project.projectName+"/"+ i.toString()+".sh", req.query.scripts[i].scriptContent);
-    project.scripts.push({ scriptName: i.toString()+".sh", parser: req.query.scripts[i].parser, outputPath: "" });
+  for(var i = 0; i< req.body.scripts.length; i++) {
+    fs.writeFileSync("buildscripts/"+project.projectName+"/"+ i.toString()+".sh", req.body.scripts[i].scriptContent);
+    project.scripts.push({ scriptName: i.toString()+".sh", parser: req.body.scripts[i].parser, outputPath: req.body.scripts[i].outputPath });
   }
 
-  projectHandler.updateConfig(req.query.project_name, project);
+  projectHandler.updateConfig(req.body.project_name, project);
 
   res.json({info: "Nice", error: null});
 };

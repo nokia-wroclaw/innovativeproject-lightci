@@ -9,7 +9,7 @@ angular.module('lightciApp')
     $scope.baseUrl = '#'+$location.path();
 
     $scope.formData = {};
-    $scope.formData.scripts = [ { scriptContent: "", parser: "default" } ];
+    $scope.formData.scripts = [ { scriptContent: "", parser: "default", outputPath: "" } ];
 
     $scope.createProject = function() {
       var data = $scope.formData;

@@ -1,0 +1,140 @@
+<div class="row" ng-controller="ScriptInfoTableCtrl">
+  <div class="col-lg-12">
+    <h1>{{scriptDetails.scriptOutputs.scriptName}} - {{script_id}}
+      <small>Script details</small>
+    </h1>
+  </div>
+  <div class="col-lg-12">
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-list-alt"></i> Test Suites</h3>
+      </div>
+      <div class="panel-body">
+        <table class="table table-striped table-bordered table-condensed" >
+          <thead>
+          <tr>
+            <th data-field="name">Suite Name</th>
+            <th data-field="time">Execution Time</th>
+            <th data-field="tests">Total Tests</th>
+            <th data-field="failed">Failed Tests</th>
+            <th data-field="skipped">Skipped Tests</th>
+            <th data-field="errors">Errors</th>
+            <th data-field="errors">Details</th>
+          </tr>
+          </thead>
+          <tbody ng-repeat="suite in scriptDetails.testSuites">
+          <tr >
+            <td>
+              <a style="display: block;" ng-href={{baseUrl}}>
+                <button type="button" class="btn btn-link">
+                  {{suite.name}}
+                </button>
+              </a>
+            </td>
+            <td>
+              <a style="display: block;" ng-href={{baseUrl}}>
+                <button type="button" class="btn btn-link">
+                  {{suite.time}}
+                </button>
+              </a>
+            </td>
+            <td>
+              <a style="display: block;" ng-href={{baseUrl}}>
+                <button type="button" class="btn btn-link">
+                  {{suite.tests}}
+                </button>
+              </a>
+            </td>
+            <td>
+              <a style="display: block;" ng-href={{baseUrl}}>
+                <button type="button" class="btn btn-link">
+                  {{suite.failures}}
+                </button>
+              </a>
+            </td>
+            <td>
+              <a style="display: block;" ng-href={{baseUrl}}>
+                <button type="button" class="btn btn-link">
+                  {{suite.skipped}}
+                </button>
+              </a>
+            </td>
+            <td>
+              <a style="display: block;" ng-href={{baseUrl}}>
+                <button type="button" class="btn btn-link">
+                  {{suite.errors}}
+                </button>
+              </a>
+            </td>
+            <td>
+              <a style="display: block;" ng-click="getTests(suite)">
+                <button type="button" class="btn btn-link">
+                  <i class="fa fa-search"></i>   Details
+                </button>
+              </a>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+
+        <table class="table table-striped table-bordered table-condensed" >
+          <thead>
+          <tr>
+            <th colspan="4" style="text-align:center" data-field="name">{{currentSuite.name}}</th>
+          </tr>
+          <tr>
+            <th data-field="name">Test Name</th>
+            <th data-field="time">Execution Time</th>
+            <th data-field="type">Error Type</th>
+            <th data-field="message">Error Message</th>
+          </tr>
+          </thead>
+          <tbody ng-repeat="test in suiteTests">
+          <tr >
+            <td>
+              <a style="display: block;" ng-href={{baseUrl}}>
+                <button type="button" class="btn btn-link">
+                  {{test.name}}
+                </button>
+              </a>
+            </td>
+            <td>
+              <a style="display: block;" ng-href={{baseUrl}}>
+                <button type="button" class="btn btn-link">
+                  {{test.time}}
+                </button>
+              </a>
+            </td>
+            <td>
+              <a style="display: block;" ng-href={{baseUrl}}>
+                <button type="button" class="btn btn-link">
+                  {{test.type == '' ? 'n/a' : test.type}}
+                </button>
+              </a>
+            </td>
+            <td>
+              <a style="display: block;" ng-href={{baseUrl}}>
+                <button type="button" class="btn btn-link">
+                  {{test.message == null ? 'n/a' : test.message}}
+                </button>
+              </a>
+            </td>
+          </tr>
+        </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-12">
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-signal"></i>  {{scriptDetails.scriptOutputs.scriptName}} Output</h3>
+      </div>
+      <div class="panel-body">
+        <textarea class="form-control" rows="10" style="=height: 300px;" >
+          {{scriptDetails.scriptOutputs.output}}
+        </textarea>
+      </div>
+    </div>
+  </div>
+</div>

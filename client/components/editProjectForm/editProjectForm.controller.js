@@ -8,7 +8,7 @@ angular.module('lightciApp')
 
     $scope.project_name = $routeParams.project_name;
     $scope.formData = { project_name: $scope.project_name };
-    $scope.formData.scripts = [ { scriptContent: "", parser: "default" } ];
+    $scope.formData.scripts = [ { scriptContent: "", parser: "default", outputPath: "" } ];
 
     $scope.baseUrl = '#'+$location.path();
 
@@ -17,12 +17,12 @@ angular.module('lightciApp')
         $scope.formData.project_url = config.repositoryUrl;
         $scope.formData.project_repo = config.repositoryType;
         $scope.formData.project_pattern = config.cronePattern;
-        //$scope.formData.scripts = config.scripts;
+        $scope.formData.scripts = config.scripts;
     });
 
     $scope.editProject = function() {
       var data = $scope.formData;
-      $http.post('/api/editproject', data).success(function (result) {
+      $http.post('/api/editproject', data ).success(function (result) {
 
         if (result.error) {
           $scope.hasError = true;

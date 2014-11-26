@@ -54,6 +54,34 @@
             <span class="help-block"></span>
           </div>
 
+          <div id="script-group" class="form-group">
+
+            <label>Build Scripts</label>
+            <div ng-repeat="script in formData.scripts">
+              <textarea class="form-control" ng-model="script.scriptContent" rows="3" style="width: 507px; height: 149px;" >
+              </textarea>
+
+              <div class="radio">
+                <label>
+                  <input type="radio" id="optionsParser1" ng-model="script.parser" value="default">
+                  Default Parser
+                </label>
+              </div>
+              <div class="radio">
+                <label>
+                  <input type="radio" id="optionsParser2" ng-model="script.parser" value="junit">
+                  JUnit Parser
+                </label>
+              </div>
+
+              <label>Output Path</label>
+              <input type="text" class="form-control" placeholder="" ng-model="script.outputPath">
+              <span class="help-block"></span>
+            </div>
+
+            <button type="button" ng-click="formData.scripts.push({ scriptContent: '', parser: 'default', outputPath: ''})" class="btn btn-default">Add script ...</button>
+          </div>
+
           <!-- SUBMIT BUTTON -->
           <button type="submit" class="btn btn-primary btn-lg btn-block">
             <span class="fa fa-save"></span> Save changes!
