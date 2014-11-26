@@ -90,7 +90,6 @@ module.exports = function (grunt) {
           '{.tmp,<%= yeoman.client %>}/{app,components}/**/*.js',
           '!{.tmp,<%= yeoman.client %>}{app,components}/**/*.spec.js',
           '!{.tmp,<%= yeoman.client %>}/{app,components}/**/*.mock.js',
-
           '<%= yeoman.client %>/assets/images/{,*//*}*.{png,jpg,jpeg,gif,webp,svg}'
         ],
         options: {
@@ -99,8 +98,7 @@ module.exports = function (grunt) {
       },
       express: {
         files: [
-          'server/**/*.{js,json}',
-          '!server/config/projects.config.json'
+          'server/**/*.{js,json}'
         ],
         tasks: ['express:dev', 'wait'],
         options: {
@@ -494,7 +492,7 @@ module.exports = function (grunt) {
           ]
         }
       }
-    }
+    },
   });
 
   // Used for delaying livereload until after server has restarted
