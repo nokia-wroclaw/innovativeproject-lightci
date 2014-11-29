@@ -1,10 +1,8 @@
 /**
  * Created by michal on 24.11.14.
  */
-var svn = require('../scm/svn/svn');
-var git = require('../scm/git/git');
+var scm = require('../scm/scmManager');
 var cronjobs = require("../cron-jobs/cron-jobs");
-var projectDir = require("../../config/global.config.json")['checkoutDir'];
 var db = require('../db/db');
 var fs = require("fs");
 
@@ -66,21 +64,10 @@ function getConfigFromId(project_id, project_config)
 
 function addProject(project)
 {
-
- if (project.repositoryType === 'svn') {
-
-    svn.checkout(db, project, projectDir);
-
+  try {
+    scm.clone(project);
     cronjobs.addCrontabJob(project);
-
-  } else if (project.repositoryType === 'git') {
-
-    git.gitClone(db,project,projectDir);
-
-   cronjobs.addCrontabJob(project);
-
-  }
-  else {
+  } catch(err){
     console.log("Unsupported repository: " + project.repositoryType);
   }
 }
@@ -100,24 +87,13 @@ function removeProject(project) {
   console.log("Removing project", project.project_name);
 }
 
-function updateProject(project)
-{
-
-  if (project.repositoryType === 'svn') {
-
-    svn.update(db, project, projectDir);
-
+function updateProject(project){
+  try {
+    scm.pull(project);
     cronjobs.addCrontabJob(project);
-
-  } else if (project.repositoryType === 'git') {
-
-    git.gitPull(db, project, projectDir);
-
-    cronjobs.addCrontabJob(project);
-
-  }
-  else {
-    console.log("Unsupported repository: " + project,repositoryType);
+  } catch(err){
+    console.log("Unsupported repository: " + project.repositoryType);
+    console.log(err);
   }
 }
 

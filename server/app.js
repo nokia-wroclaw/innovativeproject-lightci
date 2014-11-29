@@ -17,8 +17,6 @@ require('./config/express')(app);
 require('./routes')(app);
 
 // Our modules
-var svn = require('./components/scm/svn/svn');
-var git = require('./components/scm/git/git');
 var db = require('./components/db/db');
 var projHandler = require("./components/project-handling/project-handler.js")
 

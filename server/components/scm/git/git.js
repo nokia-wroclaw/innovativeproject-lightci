@@ -3,8 +3,10 @@
  */
 var core = require("./gitCore");
 var run = require("../../run-script/run-script");
+var projectDir = require('../../../config/global.config.json').checkoutDir;
+var db = require('../../db/db');
 
-function gitPull(db, project, projectDir) {
+function gitPull(project) {
   core.pull(projectDir + "/" + project.projectName)
     .then(function (out) {
       if (out.stdout != 'Already up-to-date.\n') {
@@ -48,7 +50,7 @@ function gitPull(db, project, projectDir) {
     });
 }
 
-function gitClone(db, project, projectDir) {
+function gitClone(project) {
   core.clone(project.repositoryUrl, projectDir + "/" + project.projectName).then(function () {
     db.createInstance('Project', {url: project.repositoryUrl, name: project.projectName})
       .then(function (dbProject) {
@@ -81,5 +83,5 @@ function gitClone(db, project, projectDir) {
   });
 }
 
-exports.gitPull = gitPull;
-exports.gitClone = gitClone;
+exports.pull = gitPull;
+exports.clone = gitClone;
