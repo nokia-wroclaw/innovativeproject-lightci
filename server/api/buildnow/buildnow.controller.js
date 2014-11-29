@@ -10,25 +10,25 @@ exports.create = function(req, res) {
   db.findInstance('Project', {where: {id: req.body.project_id}})
     .then(function (proj) {
 
-      var dbProject = proj[0];
-      var projectConfigs = require("../../config/projects.config.json");
+      var dbProject = _.first(proj).dataValues;
+      // add build with pending state
+      var dbBuild = db.createInstance('Build', {
+        issuccess: false,
+        ispending: true,
+        date: new Date()
+      });
+      var confProj = require('../../config/projects.config.json').projects;
+      var buildPromise = dbBuild.then(function (c_build) {
+        confProj = _.filter(confProj,function(proj){
+          return proj.projectName == dbProject.project_name;
+        });
+         return c_build;
+      });
 
-      projectConfigs['projects'].forEach( function(project) {
-        if (project['projectName'] === dbProject.project_name) {
-
-          // add build with pending state
-          var dbBuild = db.createInstance('Build', {
-            issuccess: false,
-            ispending: true,
-            date: new Date()
-          });
-
-          dbBuild.then(function (c_build) {
-            run.runBuildScript(project.projectName, project.scripts, c_build, db);
-            //db.updateInstance(c_build, { build_ispending: false, build_issuccess: true });
-            dbProject.addBuild([c_build]);
-          });
-        }
+      buildPromise.then(function(c_build){
+        var targetProject = _.first(confProj);
+        run.runBuildScript(targetProject.projectName, targetProject.scripts, c_build, db);
+        _.first(proj).addBuild([c_build]);
       });
   });
 };
