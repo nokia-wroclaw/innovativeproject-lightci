@@ -15,8 +15,7 @@ function svnSaveCommitsAndBuild( err, info, project) {
 
         // and save build with pending state
         var dbBuild = db.createInstance('Build', {
-          issuccess: false,
-          ispending: true,
+          status: 'pending',
           date: new Date()
         });
 

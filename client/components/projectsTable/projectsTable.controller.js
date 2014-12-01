@@ -16,9 +16,9 @@ angular.module('lightciApp')
         var quantityFalse = 0;
         if('lastBuilds' in project && project.lastBuilds.length>0)
         project.lastBuilds.forEach(function (lastBuild) {
-          if (lastBuild) {
+          if (lastBuild==='success') {
             quantityTrue++;
-          } else {
+          } else if (lastBuild==='faild'){
             quantityFalse++;
           }
         });
@@ -47,7 +47,12 @@ angular.module('lightciApp')
 
       });
     };
+    $scope.cancelBuilding = function (id) {
+      var data = {project_id: id};
+      $http.post('/api/cancelbuilds', data).success(function () {
 
+      });
+    };
     $scope.removeProject = function (id) {
       var data = {project_id: id};
       $http.post('/api/remove', data).success(function () {

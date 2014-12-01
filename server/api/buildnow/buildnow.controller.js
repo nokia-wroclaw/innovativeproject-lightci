@@ -13,8 +13,7 @@ exports.create = function(req, res) {
       var dbProject = _.first(proj).dataValues;
       // add build with pending state
       var dbBuild = db.createInstance('Build', {
-        issuccess: false,
-        ispending: true,
+        status: 'pending',
         date: new Date()
       });
       var confProj = require('../../config/projects.config.json').projects;

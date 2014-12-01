@@ -25,7 +25,7 @@
             <td>
               <a style="display: block;" ng-href={{baseUrl+"/project/"+project.id+"/"+project.project_name}}>
                 <button type="button" class="btn btn-link">
-                <img ng-src="../../assets/images/{{project.lastBuilds[0]?'ok':'fail'}}.png"/>
+                <img ng-src="../../assets/images/{{project.lastBuilds[0]}}.png"/>
                 </button>
               </a>
             </td>
@@ -44,9 +44,14 @@
               </a>
             </td>
             <td>
-              <a href={{baseUrl}} ng-click="buildProject(project.id)">
+              <a ng-show="{{project.lastBuilds[0]=='pending'}}?false:true" href={{baseUrl}} ng-click="buildProject(project.id)">
                 <button type="button" class="btn btn-link">
                   <i class="fa fa-cog"></i>   Build
+                </button>
+              </a>
+              <a ng-show="{{project.lastBuilds[0]=='pending'}}?true:false" href={{baseUrl}} ng-click="cancelBuilding(project.id)">
+                <button type="button" class="btn btn-link">
+                  <i class="fa fa-cog"></i>   Cancel building
                 </button>
               </a>
             </td>

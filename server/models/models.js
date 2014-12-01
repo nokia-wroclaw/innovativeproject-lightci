@@ -32,8 +32,7 @@ module.exports = {
     var c =
     {
       build_date: Sequelize.DATE,
-      build_ispending: Sequelize.BOOLEAN,
-      build_issuccess: Sequelize.BOOLEAN
+      build_status: Sequelize.STRING
     };
 
     return c;

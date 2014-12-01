@@ -20,8 +20,7 @@ function gitPull(project) {
 
                     // add build with pending state
                     var dbBuild = db.createInstance('Build', {
-                      issuccess: false,
-                      ispending: true,
+                      status: 'pending',
                       date: new Date()
                     });
 
@@ -56,8 +55,7 @@ function gitClone(project) {
       .then(function (dbProject) {
 
         var dbBuild = db.createInstance('Build', {
-          issuccess: false,
-          ispending: true,
+          status: 'pending',
           date: new Date()
         });
 

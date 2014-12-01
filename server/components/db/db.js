@@ -103,8 +103,7 @@ function createInstance(wich, info) {
   }
   else if (wich == cBuilds) {
     return Builds.create({
-      build_ispending: info['ispending'],
-      build_issuccess: info['issuccess'],
+      build_status: info['status'],
       build_date: info['date']
     })
   }

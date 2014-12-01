@@ -17,7 +17,7 @@ exports.index = function (req, res) {
   }).then(function (builds) {
     _.each(builds, function (build) {
       var buildHistory = _.map(build, function (dbBuild) {
-        return dbBuild.dataValues.build_issuccess;
+        return dbBuild.dataValues.build_status;
       });
       if (build.length > 0) {
         var pro = _.first(_.filter(projects, function (project) {
