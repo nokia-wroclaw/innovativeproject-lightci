@@ -18,7 +18,7 @@ angular.module('lightciApp')
         project.lastBuilds.forEach(function (lastBuild) {
           if (lastBuild==='success') {
             quantityTrue++;
-          } else if (lastBuild==='faild'){
+          } else if (lastBuild==='fail'){
             quantityFalse++;
           }
         });
