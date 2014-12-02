@@ -1,7 +1,7 @@
 {
   "projects": [
     {
-      "projectName": "test",
+      "projectName": "svn_test",
       "repositoryUrl": "https://subversion.assembla.com/svn/mp-svntest/",
       "repositoryType": "svn",
       "cronePattern": "* * * * *",
@@ -10,58 +10,11 @@
           "scriptName": "0.sh",
           "parser": "default",
           "outputPath": ""
-        }
-      ]
-    },
-    {
-      "projectName": "test2",
-      "repositoryUrl": "https://subversion.assembla.com/svn/mp-svntest/",
-      "repositoryType": "svn",
-      "cronePattern": "* * * * *",
-      "scripts": [
+        },
         {
-          "scriptName": "0.sh",
+          "scriptName": "1.sh",
           "parser": "default",
           "outputPath": ""
-        }
-      ]
-    },
-    {
-      "projectName": "gradle_test2",
-      "repositoryUrl": "https://github.com/test1git/gradletest",
-      "repositoryType": "git",
-      "cronePattern": "* * * * *",
-      "scripts": [
-        {
-          "scriptName": "0.sh",
-          "parser": "junit",
-          "outputPath": "build/test-results/TEST-com.github.AppTest.xml"
-        }
-      ]
-    },
-    {
-      "projectName": "test23",
-      "repositoryUrl": "https://github.com/test1git/gradletest",
-      "repositoryType": "git",
-      "cronePattern": "* * * * *",
-      "scripts": [
-        {
-          "scriptName": "0.sh",
-          "parser": "junit",
-          "outputPath": "build/test-results/TEST-com.github.AppTest.xml"
-        }
-      ]
-    },
-    {
-      "projectName": "example",
-      "repositoryUrl": "https://github.com/test1git/gradletest",
-      "repositoryType": "git",
-      "cronePattern": "* * * * *",
-      "scripts": [
-        {
-          "scriptName": "0.sh",
-          "parser": "junit",
-          "outputPath": "build/test-results/TEST-com.github.AppTest.xml"
         }
       ]
     }

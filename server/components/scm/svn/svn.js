@@ -5,39 +5,15 @@ var core = require("./svnCore");
 var run = require("../../run-script/run-script");
 var projectDir = require('../../../config/global.config.json').checkoutDir;
 var db = require('../../db/db');
+var builder = require('../../builder/builder');
+
 // callback after SVN module checkout/update
 function svnSaveCommitsAndBuild( err, info, project) {
   if (!err) {
-    var dbProject = db.findInstance('Project', {where: {project_name: project.projectName}});
-    dbProject.then(function (proj) {
       // project has some new commits - save commits to database
       if (info.length > 0) {
-
-        // and save build with pending state
-        var dbBuild = db.createInstance('Build', {
-          status: 'pending',
-          date: new Date()
-        });
-
-        // run build script
-
-        dbBuild.then(function (build) {
-          run.runBuildScript(project.projectName,project.scripts,build,db);
-
-          //db.updateInstance(build, { build_ispending: false, build_issuccess: true });
-          proj[0].addBuild([build]);
-
-          for (var c = 0; c < info.length; c++) {
-            var dbCommit = db.createInstance('Commit', info[c]);
-
-            dbCommit.then(function (commit) {
-              proj[0].addCommit([commit]);
-              build.addCommit([commit]);
-            });
-          }
-        });
+        builder.build(project, info);
       }
-    });
   }
 }
 
