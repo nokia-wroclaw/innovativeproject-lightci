@@ -19,7 +19,7 @@ angular.module('lightciApp')
       scriptsNo += 1;
       currentScriptId += 1;
       $scope.formData.scripts.splice(i+1, 0, { scriptId: currentScriptId, scriptContent: '', parser: 'default', outputPath: ''});
-      scriptsVis[scriptsNo].splice(i+1, 0, true);
+      scriptsVis.splice(i+1, 0, true);
     }
 
     $scope.toggleScript = function(i) {

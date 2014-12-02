@@ -10,6 +10,11 @@
           "scriptName": "0.sh",
           "parser": "default",
           "outputPath": ""
+        },
+        {
+          "scriptName": "1.sh",
+          "parser": "default",
+          "outputPath": ""
         }
       ]
     }
