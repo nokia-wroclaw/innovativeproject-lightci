@@ -29,7 +29,7 @@ function run(projectName, scripts, i, db, build) {
         run(projectName, scripts, i + 1, db, build);
       })
       .fail(function (err) {
-        if (err.stdout &&  project.project_name) {
+        if (err.stdout && lastBuildMap[projectName]) {
 
             db.createInstance('BuildOutputs', {
               scriptName: scripts[i].scriptName,
@@ -52,8 +52,10 @@ function run(projectName, scripts, i, db, build) {
 
 function cancel(project) {
   runMap[project.project_name].kill('SIGHUP');
-  db.deleteInstance(lastBuildMap[project.project_name]);
-  project.project_name == null;
+  db.deleteInstance(lastBuildMap[project.project_name]).then(function(){
+    lastBuildMap[project.project_name]=null;
+
+  });
 }
 
 exports.runBuildScript = runBuildScript;

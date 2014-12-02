@@ -5,6 +5,7 @@ var scm = require('../scm/scmManager');
 var cronjobs = require("../cron-jobs/cron-jobs");
 var db = require('../db/db');
 var fs = require("fs");
+var _ = require('lodash');
 
 function projectExists(project, exists)
 {
@@ -51,13 +52,14 @@ function getConfigFromId(project_id, project_config)
     else
     {
       var projectsConfig = JSON.parse(fs.readFileSync("server/config/projects.config.json"));
-      var callb;
-      projectsConfig['projects'].forEach(function(element) {
-        if (element.projectName === projects[0].project_name)
-          callb = element;
+      var callb = _.filter(projectsConfig['projects'],function(element){
+        return element.projectName == _.first(projects).project_name;
       });
-      if(callb) project_config(callb);
-      else project_config(null);
+
+      if(callb.length>0)
+        project_config(_.first(callb));
+      else
+        project_config(null);
     }
   });
 }

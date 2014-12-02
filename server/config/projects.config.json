@@ -17,6 +17,19 @@
           "outputPath": ""
         }
       ]
+    },
+    {
+      "projectName": "test2",
+      "repositoryUrl": "https://subversion.assembla.com/svn/mp-svntest/",
+      "repositoryType": "svn",
+      "cronePattern": "* * * * *",
+      "scripts": [
+        {
+          "scriptName": "1.sh",
+          "parser": "default",
+          "outputPath": ""
+        }
+      ]
     }
   ]
 }
