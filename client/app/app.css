@@ -17,6 +17,11 @@ body {
   color: green;
 }
 
+.scripts-buttons-wrapper {
+  float: right;
+  margin-top: -5px;
+}
+
 article,
 aside,
 details,

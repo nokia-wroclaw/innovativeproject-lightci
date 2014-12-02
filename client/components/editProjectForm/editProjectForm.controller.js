@@ -6,19 +6,68 @@
 angular.module('lightciApp')
   .controller('editProjFormCtrl', function ($scope, $http, $routeParams, $location) {
 
+    $scope.baseUrl = '#'+$location.path();
+
+    var scriptsNo = 0;
+    var scriptsVis = [];
+    var currentScriptId = 0;
+
     $scope.project_name = $routeParams.project_name;
     $scope.formData = { project_name: $scope.project_name };
-    $scope.formData.scripts = [ { scriptContent: "", parser: "default", outputPath: "" } ];
-
-    $scope.baseUrl = '#'+$location.path();
+    $scope.formData.scripts = [];
 
     $http.get('/api/editproject', { params: { project_id: $routeParams.project_id } }).success(function (config) {
         $scope.formData.project_name = config.projectName;
         $scope.formData.project_url = config.repositoryUrl;
         $scope.formData.project_repo = config.repositoryType;
         $scope.formData.project_pattern = config.cronePattern;
-        $scope.formData.scripts = config.scripts;
+
+        for (var i=0; i<config.scripts.length; i++) {
+          currentScriptId += 1;
+          scriptsNo += 1;
+          $scope.formData.scripts[i] = {
+            scriptId: currentScriptId,
+            scriptContent: config.scripts[i].scriptContent,
+            parser: config.scripts[i].parser,
+            outputPath: config.scripts[i].outputPath
+          }
+        }
     });
+
+    $scope.addScript = function(i) {
+      scriptsNo += 1;
+      currentScriptId += 1;
+      $scope.formData.scripts.splice(i+1, 0, { scriptId: currentScriptId, scriptContent: '', parser: 'default', outputPath: ''});
+      scriptsVis[scriptsNo].splice(i+1, 0, true);
+    }
+
+    $scope.toggleScript = function(i) {
+      scriptsVis[i] = !scriptsVis[i];
+    }
+
+    $scope.showScript = function(i) {
+      return scriptsVis[i];
+    }
+
+    $scope.removeScript = function(i) {
+      scriptsNo -= 1;
+      $scope.formData.scripts.splice(i, 1);
+      scriptsVis.splice(i, 1);
+    }
+
+    $scope.moveUpScript = function(i) {
+      if (i > 0) {
+        $scope.formData.scripts.swap(i, i - 1);
+        scriptsVis.swap(i, i-1);
+      }
+    }
+
+    $scope.moveDownScript = function(i) {
+      if (i < scriptsNo) {
+        $scope.formData.scripts.swap(i, i + 1);
+        scriptsVis.swap(i, i+1);
+      }
+    }
 
     $scope.editProject = function() {
       var data = $scope.formData;
@@ -38,5 +87,12 @@ angular.module('lightciApp')
           $location.path("#");
         }
       });
+    }
+
+    Array.prototype.swap = function (x,y) {
+      var b = this[x];
+      this[x] = this[y];
+      this[y] = b;
+      return this;
     }
   });

@@ -62,7 +62,7 @@ function buildNow(project) {
                   dbProject.addBuild([c_build]);
 
                   for (var i = 0; i < commits.length; i++) {
-                    c_build.addCommit([commits[i]]);
+                    commits[i].addBuild([c_build]);
                   }
                 });
 
@@ -79,7 +79,7 @@ function buildNow(project) {
                   dbProject.addBuild([c_build]);
 
                   for (var i = 0; i < commits.length; i++) {
-                    c_build.addCommit([commits[i]]);
+                    commits[i].addBuild([c_build]);
                   }
                 });
 

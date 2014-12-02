@@ -24,7 +24,7 @@ function establishConnection(dbDir, dbName) {
     dialect: "sqlite",
     port: 3306,
     storage: dbDir,
-    logging: false,
+    //logging: false,
     dialectOptions: {
       charset: 'utf8'
     }
@@ -60,7 +60,8 @@ function defineTables(sequelize) {
   });
   Projects.hasMany(Commits, {as: 'Commits'});
   Projects.hasMany(Builds, {as: 'Builds'});
-  Builds.hasMany(Commits, {as: 'Commits'});
+  Commits.hasMany(Builds, {as: 'Builds', through: 'BuildsCommits'});
+  Builds.hasMany(Commits, {as: 'Commits', through: 'BuildsCommits'});
   Builds.hasMany(BuildOutputs,{as: 'BuildOutputs'});
   BuildOutputs.hasMany(TestSuites,{as: 'TestSuites'});
   TestSuites.hasMany(Tests,{as: 'Tests'});
@@ -86,8 +87,8 @@ function updateInstance(instance, attrs) {
 function deleteInstance(instance) {
   return instance.destroy();
 }
-function createInstance(wich, info) {
-  if (wich === cCommits) {
+function createInstance(which, info) {
+  if (which === cCommits) {
     return Commits.create({
       commit_id: info['revision'],
       commit_author: info['author'],
@@ -95,26 +96,26 @@ function createInstance(wich, info) {
       commit_comment: info['message']
     })
   }
-  else if (wich == cProjects) {
+  else if (which == cProjects) {
     return Projects.create({
       project_url: info['url'],
       project_name: info['name']
     })
   }
-  else if (wich == cBuilds) {
+  else if (which == cBuilds) {
     return Builds.create({
       build_status: info['status'],
       build_date: info['date']
     })
   }
-  else if (wich == cBuildOutputs) {
+  else if (which == cBuildOutputs) {
     return BuildOutputs.create({
       scriptName: info['scriptName'],
       output: require('querystring').escape((info['output'])),
       isSuccess:info['isSuccess']
     })
   }
-  else if (wich == cTestSuites) {
+  else if (which == cTestSuites) {
     return TestSuites.create({
       name: info['name'],
       time: info['time'],
@@ -125,7 +126,7 @@ function createInstance(wich, info) {
 
     })
   }
-  else if (wich == cTests) {
+  else if (which == cTests) {
       return Tests.create({
         name: info['name'],
         time: info['time'],
@@ -136,23 +137,23 @@ function createInstance(wich, info) {
   }
 }
 
-function findInstance(wich, where) {
-  if (wich === cCommits) {
+function findInstance(which, where) {
+  if (which === cCommits) {
     return Commits.findAll(where);
   }
-  else if (wich === cProjects) {
+  else if (which === cProjects) {
     return Projects.findAll(where);
   }
-  else if (wich === cBuilds) {
+  else if (which === cBuilds) {
     return Builds.findAll(where);
   }
-  else if(wich === cBuildOutputs){
+  else if(which === cBuildOutputs){
     return BuildOutputs.findAll(where);
   }
-  else if(wich === cTestSuites){
+  else if(which === cTestSuites){
     return TestSuites.findAll(where);
   }
-  else if(wich === cTests){
+  else if(which === cTests){
     return Tests.findAll(where);
   }
 }
