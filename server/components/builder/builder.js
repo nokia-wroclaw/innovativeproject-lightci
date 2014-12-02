@@ -51,6 +51,7 @@ function buildNow(project) {
       })
         .then(function (lastSuccessfulBuild) {
           if (lastSuccessfulBuild.length > 0) {
+            console.log(lastSuccessfulBuild);
             db.findInstance('Commit', {where: ["ProjectId=? and commit_date >?", dbProject.dataValues.id, lastSuccessfulBuild[0].dataValues.build_date]})
               .then(function (commits) {
                 var dbBuild = db.createInstance('Build', {

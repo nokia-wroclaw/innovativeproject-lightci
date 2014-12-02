@@ -4,6 +4,7 @@
 var exec = require('child-process-promise').exec;
 var parser = require('../parsers/junitparser').junitParser;
 var db = require('../db/db');
+var websocket = require("../websocket/websocket");
 var runMap = {};
 var lastBuildMap = {};
 
@@ -14,7 +15,10 @@ function runBuildScript(projectName, scripts, build, db) {
 function run(projectName, scripts, i, db, build) {
   if (i == scripts.length) {
     db.updateInstance(build, {build_status: 'success'});
+    websocket.sendProjectStatus('success', 1, projectName );
   } else if (i < scripts.length) {
+    console.log("Running script",i);
+    websocket.sendProjectStatus('pending', (i+1)/scripts.length, projectName );
     lastBuildMap[projectName] = build;
     exec('cd repos/' + projectName + ' && sh ../../buildscripts/' + projectName + '/' + scripts[i].scriptName)
       .then(function (result) {
@@ -30,6 +34,8 @@ function run(projectName, scripts, i, db, build) {
       })
       .fail(function (err) {
         if (err.stdout && lastBuildMap[projectName]) {
+
+            websocket.sendProjectStatus('fail', (i+1)/scripts.length, projectName );
 
             db.createInstance('BuildOutputs', {
               scriptName: scripts[i].scriptName,

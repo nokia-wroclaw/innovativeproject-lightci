@@ -41,6 +41,15 @@ var projectDir = globalConfigs['checkoutDir'];
 // A map with crontab jobId's for every running project
 global.jobsMap = {};
 
+var http = require("http");
+var server = http.createServer(app);
+var io = require("socket.io").listen(server);
+server.listen(2000);
+io.sockets.on('connection', function(socket) {
+  global.webSocket = socket;
+});
+
+
 // Prepare database tables if not existing
 db.createTables(globalConfigs['databaseDir'], function () {
   // Check the repo

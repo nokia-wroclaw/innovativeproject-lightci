@@ -2,7 +2,7 @@
   "projects": [
     {
       "projectName": "svn_test",
-      "repositoryUrl": "https://subversion.assembla.com/svn/mp-svntest/",
+      "repositoryUrl": "http://subversion.assembla.com/svn/mp-svntest/",
       "repositoryType": "svn",
       "cronePattern": "* * * * *",
       "scripts": [
@@ -17,19 +17,7 @@
           "outputPath": ""
         }
       ]
-    },
-    {
-      "projectName": "test2",
-      "repositoryUrl": "https://subversion.assembla.com/svn/mp-svntest/",
-      "repositoryType": "svn",
-      "cronePattern": "* * * * *",
-      "scripts": [
-        {
-          "scriptName": "1.sh",
-          "parser": "default",
-          "outputPath": ""
-        }
-      ]
     }
+
   ]
 }
