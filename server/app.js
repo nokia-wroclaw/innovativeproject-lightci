@@ -41,12 +41,16 @@ var projectDir = globalConfigs['checkoutDir'];
 // A map with crontab jobId's for every running project
 global.jobsMap = {};
 
-var http = require("http");
-var server = http.createServer(app);
-var io = require("socket.io").listen(server);
-server.listen(2000);
-io.sockets.on('connection', function(socket) {
-  global.webSocket = socket;
+var socketServer = require("http").createServer(app);
+var io = require("socket.io")(socketServer);
+socketServer.listen(3000);
+console.log(io);
+
+global.webSockets = io.sockets;
+io.on('connection', function(socket) {
+  console.log("Someone?");
+  global.webSockets = io.sockets;
+
 });
 
 

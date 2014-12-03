@@ -5,7 +5,8 @@
 function sendProjectStatus(status, progress, projectName)
 {
   var data = { 'projectName': projectName, 'status': status, 'progress': progress};
-  global.webSocket.broadcast.emit('project_status')
+
+  global.webSockets.emit('project_status', data);
 }
 
 exports.sendProjectStatus = sendProjectStatus;
