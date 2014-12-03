@@ -12,8 +12,8 @@ exports.show = function(req, res) {
       config.scripts = [];
 
       scripts.forEach(function(element) {
-        if(fs.existsSync("buildscripts/"+config.projectName+"/"+element.scriptName)) {
-          var content = fs.readFileSync("buildscripts/"+config.projectName+"/"+element.scriptName, "utf8");
+        if(fs.existsSync(__dirname+"/../../../buildscripts/"+config.projectName+"/"+element.scriptName)) {
+          var content = fs.readFileSync(__dirname+"/../../../buildscripts/"+config.projectName+"/"+element.scriptName, "utf8");
           config.scripts.push({scriptContent: content, parser: element.parser, outputPath: element.outputPath});
         }
       });
@@ -38,11 +38,11 @@ exports.update = function(req, res) {
 
   };
   //console.log(req);
-  if(!fs.existsSync("buildscripts/"+project.projectName))
-    fs.mkdirSync("buildscripts/"+project.projectName);
+  if(!fs.existsSync(__dirname+"/../../../buildscripts/"+project.projectName))
+    fs.mkdirSync(__dirname+"/../../../buildscripts/"+project.projectName);
 
   for(var i = 0; i< req.body.scripts.length; i++) {
-    fs.writeFileSync("buildscripts/"+project.projectName+"/"+ i.toString()+".sh", req.body.scripts[i].scriptContent);
+    fs.writeFileSync(__dirname+"/../../../buildscripts/"+project.projectName+"/"+ i.toString()+".sh", req.body.scripts[i].scriptContent);
     project.scripts.push({ scriptName: i.toString()+".sh", parser: req.body.scripts[i].parser, outputPath: req.body.scripts[i].outputPath });
   }
 

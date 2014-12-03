@@ -7,7 +7,7 @@ var projectHandler = require("../../components/project-handling/project-handler"
 exports.create = function(req, res) {
 
   projectHandler.getConfigFromId(req.body.project_id, function(config) {
-    builder.buildNow(config);
+    builder.build(config);
   });
 
 };

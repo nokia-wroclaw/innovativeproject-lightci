@@ -17,11 +17,12 @@ function getCommits(svn, revision, callback)	{
 			// construct array of commits
 			var arr = [];
 			for(i in info) {
-				arr.push([info[i]['revision'],
-					info[i]['author'],
-          '',
-					info[i]['date'],
-					info[i]['message']]);
+				arr.push({
+          revision: info[i]['revision'],
+					author:   info[i]['author'],
+          date:     info[i]['date'],
+					message:  info[i]['message']
+        });
 			}
 			callback(null, arr);
 		}

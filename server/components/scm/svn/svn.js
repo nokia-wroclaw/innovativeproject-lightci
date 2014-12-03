@@ -12,7 +12,7 @@ function svnSaveCommitsAndBuild( err, info, project) {
   if (!err) {
       // project has some new commits - save commits to database
       if (info.length > 0) {
-        builder.build(project, info);
+        builder.buildWithCommits(project, info);
       }
   }
 }

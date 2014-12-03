@@ -5,40 +5,33 @@
 var db = require("../db/db");
 var run = require("../run-script/run-script");
 
-function build(project, commits) {
-
+function addCommits(project, commits) {
   db.findInstance('Project', {where: {project_name: project.projectName}})
     .then(function (proj) {
-    var dbProject = proj[0];
-
-
-    var dbBuild = db.createInstance('Build', {
-      status: 'pending',
-      date: new Date()
-    });
-
-    dbBuild.then(function (c_build) {
-      run.runBuildScript(project.projectName, project.scripts, c_build, db);
-      dbProject.addBuild([c_build]);
-
+      var dbProject = proj[0];
       for (var i = 0; i < commits.length; i++) {
         var dbCommit = db.createInstance('Commit', {
-          revision: commits[i][0],
-          author: commits[i][1],
-          date: commits[i][3],
-          message: commits[i][4]
+          revision:   commits[i]['revision'],
+          author:     commits[i]['author'],
+          date:       commits[i]['date'],
+          message:    commits[i]['message']
         });
 
         dbCommit.then(function (c_commit) {
           dbProject.addCommit([c_commit]);
-          c_build.addCommit([c_commit]);
         });
       }
     });
-  });
 }
 
-function buildNow(project) {
+
+function buildWithCommits(project, commits) {
+  addCommits(project,commits);
+  build(project);
+
+}
+
+function build(project) {
 
   db.findInstance('Project', {where: {project_name: project.projectName}})
     .then(function (proj) {
@@ -51,7 +44,6 @@ function buildNow(project) {
       })
         .then(function (lastSuccessfulBuild) {
           if (lastSuccessfulBuild.length > 0) {
-            console.log(lastSuccessfulBuild);
             db.findInstance('Commit', {where: ["ProjectId=? and commit_date >?", dbProject.dataValues.id, lastSuccessfulBuild[0].dataValues.build_date]})
               .then(function (commits) {
                 var dbBuild = db.createInstance('Build', {
@@ -92,5 +84,18 @@ function buildNow(project) {
 
 }
 
+function cleanPendingBuilds() {
+  db.findInstance("Build", {where: {build_status: 'pending'}})
+    .then(function(builds) {
+      if(builds.length > 0) {
+        builds.forEach(function(build) {
+          db.deleteInstance(build);
+        });
+      }
+    });
+}
+
 exports.build = build;
-exports.buildNow = buildNow;
+exports.buildWithCommits = buildWithCommits;
+exports.addCommits = addCommits;
+exports.cleanPendingBuilds = cleanPendingBuilds;

@@ -3,6 +3,7 @@
  */
 var scm = require('../scm/scmManager');
 var cronjobs = require("../cron-jobs/cron-jobs");
+var exec = require('child-process-promise').exec;
 var db = require('../db/db');
 var fs = require("fs");
 var _ = require('lodash');
@@ -19,15 +20,15 @@ function projectExists(project, exists)
 }
 
 function addToConfig(project) {
-  var projectsConfig = JSON.parse(fs.readFileSync("server/config/projects.config.json"));
+  var projectsConfig = JSON.parse(fs.readFileSync(__dirname+"/../../config/projects.config.json"));
   var copy = projectsConfig["projects"].slice(0);
   copy.push(project);
 
-  fs.writeFileSync("server/config/projects.config.json", JSON.stringify({ projects: copy }, undefined, 2));
+  fs.writeFileSync(__dirname+"/../../config/projects.config.json", JSON.stringify({ projects: copy }, undefined, 2));
 }
 
 function updateConfig(project_name, project) {
-  var projectsConfig = JSON.parse(fs.readFileSync("server/config/projects.config.json"));
+  var projectsConfig = JSON.parse(fs.readFileSync(__dirname+"/../../config/projects.config.json"));
   var copy = [];
   projectsConfig["projects"].forEach(function(element) {
     if(element.projectName == project_name)
@@ -36,7 +37,7 @@ function updateConfig(project_name, project) {
       copy.push(element);
   });
 
-  fs.writeFileSync("server/config/projects.config.json", JSON.stringify({ projects: copy }, undefined, 2));
+  fs.writeFileSync(__dirname+"/../../config/projects.config.json", JSON.stringify({ projects: copy }, undefined, 2));
 
   cronjobs.removeCrontabJob(project_name);
   cronjobs.addCrontabJob(project);
@@ -51,7 +52,7 @@ function getConfigFromId(project_id, project_config)
       project_config(null);
     else
     {
-      var projectsConfig = JSON.parse(fs.readFileSync("server/config/projects.config.json"));
+      var projectsConfig = JSON.parse(fs.readFileSync(__dirname+"/../../config/projects.config.json"));
       var callb = _.filter(projectsConfig['projects'],function(element){
         return element.projectName == _.first(projects).project_name;
       });
@@ -75,16 +76,24 @@ function addProject(project)
 }
 
 function removeProject(project) {
-  var projectsConfig = JSON.parse(fs.readFileSync("server/config/projects.config.json"));
+  var projectsConfig = JSON.parse(fs.readFileSync(__dirname+"/../../config/projects.config.json"));
 
   var copy = [];
   projectsConfig["projects"].forEach(function(element) {
     if(element["projectName"] != project.project_name)
       copy.push(element);
   });
-  fs.writeFileSync("server/config/projects.config.json", JSON.stringify({ projects: copy }, undefined, 2));
+  fs.writeFileSync(__dirname+"/../../config/projects.config.json", JSON.stringify({ projects: copy }, undefined, 2));
 
   cronjobs.removeCrontabJob(project.project_name);
+
+  if(fs.existsSync(__dirname+"/../../../buildscripts/"+project.project_name))
+    exec("rm -r '" + __dirname + "/../../../buildscripts/" + project.project_name + "'", function () {
+    });
+
+  if(fs.existsSync(__dirname+"/../../../repos/"+project.project_name))
+    exec("rm -r '"+__dirname+"/../../../repos/"+project.project_name+"'", function() {});
+
   db.deleteInstance(project, {ProjectId: project.project_id});
   console.log("Removing project", project.project_name);
 }

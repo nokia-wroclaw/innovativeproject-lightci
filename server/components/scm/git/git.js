@@ -18,7 +18,7 @@ function gitPull(project) {
               .then(function (build) {
                 core.logFull(projectDir + "/" + project.projectName, build[0].build_date)
                   .then(function (commits) {
-                    builder.build(project, commits);
+                    builder.buildWithCommits(project, commitArrayToJSON(commits));
                   });
               });
           });
@@ -31,11 +31,26 @@ function gitClone(project) {
     db.createInstance('Project', {url: project.repositoryUrl, name: project.projectName})
       .then(function () {
         core.logLastCommit(projectDir + "/" + project.projectName).then(function (commit) {
-          builder.build(project, [commit]);
+          builder.buildWithCommits(project, commitArrayToJSON([commit]));
         });
 
       });
   });
+}
+
+function commitArrayToJSON(commits) {
+  var res = [];
+  commits.forEach(function(commit) {
+    res.push(
+      {
+        revision: commit[0],
+        author:   commit[1],
+        date:     commit[3],
+        message:  commit[4]
+      }
+    )
+  });
+  return res;
 }
 
 exports.pull = gitPull;

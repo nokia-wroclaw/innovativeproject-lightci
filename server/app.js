@@ -21,6 +21,7 @@ var db = require('./components/db/db');
 var projHandler = require("./components/project-handling/project-handler.js")
 
 var fs = require("fs");
+var builder = require("./components/builder/builder.js");
 
 var exec = require('child-process-promise').exec;
 // Start server
@@ -44,15 +45,11 @@ global.jobsMap = {};
 var socketServer = require("http").createServer(app);
 var io = require("socket.io")(socketServer);
 socketServer.listen(3000);
-console.log(io);
 
 global.webSockets = io.sockets;
 io.on('connection', function(socket) {
-  console.log("Someone?");
   global.webSockets = io.sockets;
-
 });
-
 
 // Prepare database tables if not existing
 db.createTables(globalConfigs['databaseDir'], function () {
@@ -66,6 +63,9 @@ db.createTables(globalConfigs['databaseDir'], function () {
         projHandler.updateProject(project);
     });
   });
+
+  //clean builds with pending status
+  builder.cleanPendingBuilds();
 });
 
 

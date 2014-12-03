@@ -9,6 +9,6 @@ exports.index = function(req, res) {
     .then(function(tests){
 
       res.json(tests);
-      console.log(tests);
+
     });
 };

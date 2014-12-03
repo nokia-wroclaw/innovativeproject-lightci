@@ -14,11 +14,11 @@ exports.create = function(req,res) {
     scripts: []
   };
 
-  if(!fs.existsSync("buildscripts/"+project.projectName))
-    fs.mkdirSync("buildscripts/"+project.projectName);
+  if(!fs.existsSync(__dirname+"/../../../../../buildscripts/"+project.projectName))
+    fs.mkdirSync(__dirname+"/../../../buildscripts/"+project.projectName);
 
   for(var i = 0; i< req.body.scripts.length; i++) {
-    fs.writeFileSync("buildscripts/"+project.projectName+"/"+ i.toString()+".sh", req.body.scripts[i].scriptContent);
+    fs.writeFileSync(__dirname+"/../../../buildscripts/"+project.projectName+"/"+ i.toString()+".sh", req.body.scripts[i].scriptContent);
     project.scripts.push({ scriptName: i.toString()+".sh", parser: req.body.scripts[i].parser, outputPath: req.body.scripts[i].outputPath });
   }
 

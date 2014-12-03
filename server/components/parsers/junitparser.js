@@ -7,7 +7,7 @@ var fs = require('fs-promise');
 
 function parse(projectName,script, buildOutput,db ) {
   if (script.parser == 'junit') {
-    fs.readFile("repos/" + projectName + "/" + script.outputPath)
+    fs.readFile(__dirname+"/../../../repos/" + projectName + "/" + script.outputPath)
       .then(function (data) {
         parser.parse(data)
           .then(function (result) {
