@@ -2,7 +2,8 @@
 
 angular.module('lightciApp', [
   'highcharts-ng',
-  'ngRoute'
+  'ngRoute',
+  'angular-lodash'
 
 ])
   .config(function ($routeProvider) {

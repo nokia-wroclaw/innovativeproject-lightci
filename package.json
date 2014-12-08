@@ -21,10 +21,11 @@
     "morgan": "~1.0.0",
     "node-crontab": "0.0.8",
     "node.svn": "~0.1.8",
-    "nodegit": "^0.1.4",
+    "nodegit": "^0.2.0",
     "q": "^1.1.2",
     "sequelize": "^2.0.0-rc2",
     "serve-favicon": "~2.0.1",
+    "socket.io": "^1.2.1",
     "sqlite3": "^3.0.2"
   },
   "devDependencies": {
@@ -55,7 +56,7 @@
     "grunt-protractor-runner": "^1.1.0",
     "grunt-asset-injector": "^0.1.0",
     "grunt-karma": "~0.8.2",
-    "grunt-build-control": "DaftMonk/grunt-build-control",
+    "grunt-build-control": "0.2.0",
     "grunt-mocha-test": "~0.10.2",
     "jit-grunt": "^0.5.0",
     "time-grunt": "~0.3.1",

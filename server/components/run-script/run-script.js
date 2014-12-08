@@ -18,7 +18,9 @@ function run(projectName, scripts, i, db, build) {
     websocket.sendProjectStatus('success', 1, projectName );
   } else if (i < scripts.length) {
     console.log("Running script",i);
+
     websocket.sendProjectStatus('pending', (i)/scripts.length, projectName );
+
     lastBuildMap[projectName] = build;
     exec('cd repos/' + projectName + ' && sh ../../buildscripts/' + projectName + '/' + scripts[i].scriptName)
       .then(function (result) {
