@@ -8,6 +8,11 @@
     <div class="panel panel-primary">
       <div class="panel-heading">
         <h3 class="panel-title"><i class="fa fa-edit"></i> {{project_name}} </h3>
+        <div class="up-buttons-wrapper">
+          <button id="buttonBack" type="button" ng-click="goBack()" class="btn btn-default btn-sm">
+            <i class="fa fa-arrow-up"></i>
+          </button>
+        </div>
       </div>
       <div class="alert alert-dismissable alert-danger" ng-show="hasError">
         <button type="button" class="close" data-dismiss="alert">&times;</button>
@@ -32,6 +37,18 @@
             <span class="help-block"></span>
           </div>
 
+          <div id="username-group" class="form-group">
+            <label>Username</label>
+            <input type="text" name="username" class="form-control" placeholder="e.g. johnny-bravo" ng-model="formData.project_username">
+            <span class="help-block"></span>
+          </div>
+
+          <div id="password-group" class="form-group">
+            <label>Password</label>
+            <input type="password" name="password" class="form-control" placeholder="" ng-model="formData.project_password">
+            <span class="help-block"></span>
+          </div>
+
           <div id="type-group" class="form-group">
             <label>Repository type</label>
             <div class="radio">
@@ -50,7 +67,19 @@
 
           <div id="pattern-group" class="form-group">
             <label>Crone Pattern</label>
-            <input type="text" name="pattern" class="form-control" placeholder="* * * * *" ng-model="formData.project_pattern" ng-init="formData.project_pattern='* * * * *'">
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" name="optionsCheckbox" id="optionsCheckboxCrone" ng-model="formData.project_usecrone" ng-init="formData.project_usecrone=true">
+                Update periodically
+              </label>
+            </div>
+            <input type="text" name="pattern" class="form-control" ng-disabled="formData.project_usecrone==false" placeholder="* * * * *" ng-model="formData.project_pattern" ng-init="formData.project_pattern='* * * * *'">
+            <span class="help-block"></span>
+          </div>
+
+          <div id="dependencies-group" class="form-group">
+            <label>Project Dependency</label>
+            <input type="text" name="url" class="form-control" placeholder="e.g. project_1, project_2, project_3" ng-model="formData.project_dependencies">
             <span class="help-block"></span>
           </div>
 

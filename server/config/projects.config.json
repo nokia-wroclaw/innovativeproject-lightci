@@ -5,19 +5,67 @@
       "repositoryUrl": "http://subversion.assembla.com/svn/mp-svntest/",
       "repositoryType": "svn",
       "cronePattern": "* * * * *",
+      "repositoryUsername": "",
+      "repositoryPassword": "",
+      "useCrone": true,
+      "dependencies": [
+        "sdasda",
+        "gghghghghg",
+        "jj",
+        "dfwer234239"
+      ],
       "scripts": [
         {
           "scriptName": "0.sh",
           "parser": "default",
           "outputPath": ""
-        },
+        }
+      ]
+    },
+    {
+      "projectName": "gradle_test",
+      "repositoryUrl": "https://github.com/test1git/gradletest",
+      "repositoryType": "git",
+      "cronePattern": "* * * * *",
+      "repositoryUsername": "",
+      "repositoryPassword": "",
+      "useCrone": true,
+      "dependencies": [],
+      "scripts": [
         {
-          "scriptName": "1.sh",
-          "parser": "default",
+          "scriptName": "0.sh",
+          "parser": "junit",
+          "outputPath": "build/test-results/TEST-com.github.AppTest.xml"
+        }
+      ]
+    },
+    {
+      "projectName": "asd",
+      "repositoryUrl": "asdasdasd",
+      "repositoryType": "svn",
+      "cronePattern": "* * * *",
+      "repositoryUsername": "rfrfrf",
+      "repositoryPassword": "sdwedwedwe",
+      "useCrone": true,
+      "dependencies": [],
+      "scripts": []
+    },
+    {
+      "projectName": "f34r23432r",
+      "repositoryUrl": "dfdfd",
+      "repositoryType": "svn",
+      "cronePattern": "* * * * *",
+      "repositoryUsername": "fddfgdf",
+      "repositoryPassword": "fgdgdfg",
+      "useCrone": false,
+      "dependencies": [],
+      "scripts": [
+        {
+          "scriptName": "0.sh",
+          "parser": "junit",
           "outputPath": ""
         }
       ]
     }
-
   ]
 }

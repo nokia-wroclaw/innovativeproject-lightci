@@ -18,4 +18,8 @@ angular.module('lightciApp')
     $http.get('/api/outputs', { params: { build_id: $routeParams.build_id } }).success(function(outputs) {
       $scope.outputs = outputs;
     });
+
+    $scope.goBack = function() {
+      window.history.back();
+    }
   });

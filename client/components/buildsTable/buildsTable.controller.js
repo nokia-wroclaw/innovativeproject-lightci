@@ -15,4 +15,8 @@ angular.module('lightciApp')
       $scope.builds = build;
     });
 
+    $scope.goBack = function() {
+      window.history.back();
+    }
+
   });
