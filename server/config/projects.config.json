@@ -17,6 +17,19 @@
           "outputPath": ""
         }
       ]
+    },
+    {
+      "projectName": "example",
+      "repositoryUrl": "https://github.com/test1git/gradletest",
+      "repositoryType": "git",
+      "cronePattern": "* * * * *",
+      "scripts": [
+        {
+          "scriptName": "0.sh",
+          "parser": "junit",
+          "outputPath": "build/test-results/TEST-com.github.AppTest.xml"
+        }
+      ]
     }
 
   ]

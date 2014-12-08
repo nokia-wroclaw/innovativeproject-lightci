@@ -8,3 +8,4 @@ dist
 repos
 buildscripts
 database.sqlite
+/server/config/projects.config.json

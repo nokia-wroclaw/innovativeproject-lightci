@@ -9,5 +9,5 @@ exports.create = function(req, res) {
   projectHandler.getConfigFromId(req.body.project_id, function(config) {
     builder.build(config);
   });
-
+  res.json({"status":"ok"});
 };

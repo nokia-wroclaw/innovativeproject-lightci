@@ -30,10 +30,10 @@ angular.module('lightciApp')
           project.trend = 'verryhappy';
         else if (quantityTrue > quantityFalse && quantityFalse > 0)
           project.trend = 'happy';
-        else if (quantityTrue < quantityFalse && quantityFalse > 0)
-          project.trend = 'sad';
         else if (quantityTrue == 0 && quantityFalse > 0)
           project.trend = 'verrysad';
+        else if (quantityTrue < quantityFalse && quantityFalse > 0)
+          project.trend = 'sad';
         else
           project.trend = 'else';
 
