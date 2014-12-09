@@ -9,18 +9,19 @@ exports.index = function(req, res) {
 
   db.findInstance('BuildOutputs', {where: { id: req.query.script_id }})
     .then(function(outputs){
-      outputs[0].output= require('querystring').unescape(outputs[0].output);
-      scriptDetails.scriptOutputs = outputs[0].dataValues;
+      if(outputs.length>0) {
+        outputs[0].output = require('querystring').unescape(outputs[0].output);
+        scriptDetails.scriptOutputs = outputs[0].dataValues;
 
-      db.findInstance('TestSuites', {where: { BuildOutputId: req.query.script_id }})
-        .then(function(suites){
+        db.findInstance('TestSuites', {where: {BuildOutputId: req.query.script_id}})
+          .then(function (suites) {
 
-          for(var i=0;i<suites.length;i++){
-            scriptDetails.testSuites.push(suites[i].dataValues);
-          }
+            for (var i = 0; i < suites.length; i++) {
+              scriptDetails.testSuites.push(suites[i].dataValues);
+            }
 
-          res.json(scriptDetails);
-        });
+            res.json(scriptDetails);
+          });
+      }
     });
-
 };

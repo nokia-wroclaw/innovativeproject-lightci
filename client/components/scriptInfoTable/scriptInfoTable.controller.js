@@ -5,44 +5,19 @@
 'use strict';
 
 angular.module('lightciApp')
-  .controller('ScriptInfoTableCtrl', function ($scope, $http, $routeParams, $location) {
+  .controller('ScriptInfoTableCtrl', function ($scope, $http, $routeParams, $location,socket) {
     $scope.script_id = $routeParams.script_id;
     $scope.build_id = $routeParams.build_id;
     $scope.currentSuite = null;
     $scope.showTests = false;
 
     $scope.baseUrl = '#'+$location.path();
-    var allTests = 0,
-        allErrors= 0,
-        allFailure = 0,
-        allSkipped= 0,
-        allPassed=0;
 
-    $http.get('/api/scriptdetails', { params: { script_id: $routeParams.script_id } }).success(function(script) {
-      $scope.scriptDetails = script;
-      script.testSuites.forEach(function(suite){
-        allTests+=suite.tests;
-        allErrors+=suite.errors;
-        allFailure+=suite.failures;
-        allSkipped+=suite.skipped;
-      });
-        allPassed=allTests-allErrors-allFailure-allSkipped;
-        $scope.chartConfig.series[0].data.push(allPassed);
-        $scope.chartConfig.series[2].data.push(allErrors);
-        $scope.chartConfig.series[1].data.push(allFailure);
-        $scope.chartConfig.series[3].data.push(allSkipped);
-        if(script.testSuites.length>0){
-          $scope.show = true;
-        } else {
-          $scope.show = false;
-
-        }
-
-    });
+    getScriptDetails($scope,$http);
 
     $scope.goBack = function() {
       window.history.back();
-    }
+    };
 
     $scope.getTests = function(suite) {
       if ($scope.showTests == false) {
@@ -57,6 +32,11 @@ angular.module('lightciApp')
         $scope.showTests = false;
       }
     };
+
+    socket.on('console_update',function(data){
+      getScriptDetails($scope,$http);
+    });
+
     $scope.chartConfig = {
       "options": {
         "chart": {
@@ -116,5 +96,37 @@ angular.module('lightciApp')
         step:1
       }
 
+    };
+    function getScriptDetails($scope,$http){
+      var allTests = 0,
+        allErrors= 0,
+        allFailure = 0,
+        allSkipped= 0,
+        allPassed=0;
+
+      $http.get('/api/scriptdetails', { params: { script_id: $routeParams.script_id } }).success(function(script) {
+        $scope.scriptDetails = script;
+        script.testSuites.forEach(function(suite){
+          allTests+=suite.tests;
+          allErrors+=suite.errors;
+          allFailure+=suite.failures;
+          allSkipped+=suite.skipped;
+        });
+        allPassed=allTests-allErrors-allFailure-allSkipped;
+        $scope.chartConfig.series[0].data.push(allPassed);
+        $scope.chartConfig.series[2].data.push(allErrors);
+        $scope.chartConfig.series[1].data.push(allFailure);
+        $scope.chartConfig.series[3].data.push(allSkipped);
+        if(script.testSuites.length>0){
+          $scope.show = true;
+        } else {
+          $scope.show = false;
+
+        }
+
+      });
+
     }
   });
+
+

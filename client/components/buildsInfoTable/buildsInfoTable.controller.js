@@ -5,21 +5,24 @@
 'use strict';
 
 angular.module('lightciApp')
-  .controller('BuildInfoTableCtrl', function ($scope, $http, $routeParams, $location) {
+  .controller('BuildInfoTableCtrl', function ($scope, $http, $routeParams, $location,socket) {
     $scope.build_id = $routeParams.build_id;
     $scope.project_name = $routeParams.project_name;
-
     $scope.baseUrl = '#'+$location.path();
-
-    $http.get('/api/commits', { params: { build_id: $routeParams.build_id } }).success(function(commit) {
-      $scope.commits = commit;
-    });
-
-    $http.get('/api/outputs', { params: { build_id: $routeParams.build_id } }).success(function(outputs) {
-      $scope.outputs = outputs;
-    });
-
+    getInfo();
     $scope.goBack = function() {
       window.history.back();
+    };
+    socket.on('project_status',function(data){
+      getInfo();
+    });
+    function getInfo() {
+      $http.get('/api/commits', {params: {build_id: $routeParams.build_id}}).success(function (commit) {
+        $scope.commits = commit;
+      });
+
+      $http.get('/api/outputs', {params: {build_id: $routeParams.build_id}}).success(function (outputs) {
+        $scope.outputs = outputs;
+      });
     }
   });

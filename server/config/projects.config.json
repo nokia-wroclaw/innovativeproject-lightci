@@ -40,6 +40,26 @@
           "outputPath": "build/test-results/TEST-com.github.AppTest.xml"
         }
       ]
+    },
+    {
+      "projectName": "lc5",
+      "repositoryUrl": "https://github.com/nokia-wroclaw/innovativeproject-lightci/",
+      "repositoryType": "git",
+      "cronePattern": "* * * * *",
+      "useCrone": true,
+      "dependencies": [],
+      "scripts": [
+        {
+          "scriptName": "0.sh",
+          "parser": "default",
+          "outputPath": ""
+        },
+        {
+          "scriptName": "1.sh",
+          "parser": "default",
+          "outputPath": ""
+        }
+      ]
     }
   ]
 }

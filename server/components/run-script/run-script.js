@@ -73,6 +73,7 @@ function run(projectName, scripts, i, db, build) {
           childProcess.stdout.on('data', function (chunk) {
             buff += chunk;
             db.updateInstance(out, {output: buff});
+            global.webSockets.emit('console_update', {});
           })
         });
     });
