@@ -40,34 +40,6 @@
       ]
     },
     {
-      "projectName": "asd",
-      "repositoryUrl": "asdasdasd",
-      "repositoryType": "svn",
-      "cronePattern": "* * * *",
-      "repositoryUsername": "rfrfrf",
-      "repositoryPassword": "sdwedwedwe",
-      "useCrone": true,
-      "dependencies": [],
-      "scripts": []
-    },
-    {
-      "projectName": "f34r23432r",
-      "repositoryUrl": "dfdfd",
-      "repositoryType": "svn",
-      "cronePattern": "* * * * *",
-      "repositoryUsername": "fddfgdf",
-      "repositoryPassword": "fgdgdfg",
-      "useCrone": false,
-      "dependencies": [],
-      "scripts": [
-        {
-          "scriptName": "0.sh",
-          "parser": "junit",
-          "outputPath": ""
-        }
-      ]
-    },
-    {
       "projectName": "example",
       "repositoryUrl": "https://github.com/test1git/gradletest",
       "repositoryType": "git",

@@ -4,42 +4,12 @@
 'use strict';
 
 angular.module('lightciApp')
-  .controller('ProjTableCtrl', function ($scope, $http, $location) {
+  .controller('ProjTableCtrl', function ($scope, $http, $location,socket) {
     $scope.projects = [];
 
     $scope.baseUrl = '#';
 
-    $http.get('/api/projects').success(function (proj) {
-      proj.forEach(function (project) {
-        var last = ('lastBuilds' in project)?project.lastBuilds[0]:false;
-        var quantityTrue = 0;
-        var quantityFalse = 0;
-        if('lastBuilds' in project && project.lastBuilds.length>0)
-        project.lastBuilds.forEach(function (lastBuild) {
-          if (lastBuild==='success') {
-            quantityTrue++;
-          } else if (lastBuild==='fail'){
-            quantityFalse++;
-          }
-        });
-        if (quantityTrue == 1 && quantityFalse > 0 && last == true)
-          project.trend = 'love';
-        else if (quantityFalse == 1 && quantityTrue > 0 && last == false)
-          project.trend = 'suprise';
-        else if (quantityTrue > 0 && quantityFalse == 0)
-          project.trend = 'verryhappy';
-        else if (quantityTrue > quantityFalse && quantityFalse > 0)
-          project.trend = 'happy';
-        else if (quantityTrue == 0 && quantityFalse > 0)
-          project.trend = 'verrysad';
-        else if (quantityTrue < quantityFalse && quantityFalse > 0)
-          project.trend = 'sad';
-        else
-          project.trend = 'else';
-
-      });
-      $scope.projects = proj;
-    });
+    getProjects($scope,$http);
 
     $scope.buildProject = function (id) {
       var data = {project_id: id};
@@ -58,6 +28,42 @@ angular.module('lightciApp')
       $http.post('/api/remove', data).success(function () {
 
       });
-    }
-
+    };
+    socket.on('project_status',function(data){
+      getProjects($scope,$http);
+    });
   });
+
+function getProjects($scope,$http){
+  $http.get('/api/projects').success(function (proj) {
+    proj.forEach(function (project) {
+      var last = ('lastBuilds' in project)?project.lastBuilds[0]:false;
+      var quantityTrue = 0;
+      var quantityFalse = 0;
+      if('lastBuilds' in project && project.lastBuilds.length>0)
+        project.lastBuilds.forEach(function (lastBuild) {
+          if (lastBuild==='success') {
+            quantityTrue++;
+          } else if (lastBuild==='fail'){
+            quantityFalse++;
+          }
+        });
+      if (quantityTrue == 1 && quantityFalse > 0 && last == true)
+        project.trend = 'love';
+      else if (quantityFalse == 1 && quantityTrue > 0 && last == false)
+        project.trend = 'suprise';
+      else if (quantityTrue > 0 && quantityFalse == 0)
+        project.trend = 'verryhappy';
+      else if (quantityTrue > quantityFalse && quantityFalse > 0)
+        project.trend = 'happy';
+      else if (quantityTrue == 0 && quantityFalse > 0)
+        project.trend = 'verrysad';
+      else if (quantityTrue < quantityFalse && quantityFalse > 0)
+        project.trend = 'sad';
+      else
+        project.trend = 'else';
+
+    });
+    $scope.projects =  proj;
+  });
+}

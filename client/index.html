@@ -78,12 +78,16 @@
       <script src="bower_components/highstock/js/highstock.src.js"></script>
       <script src="bower_components/highstock/js/highcharts-more.src.js"></script>
       <script src="bower_components/angular-lodash/angular-lodash.js"></script>
+      <script src="bower_components/angular-socket-io/socket.js"></script>
       <!-- endbower -->
     <!-- endbuild -->
+
+    <script src="bower_components/socket.io-client/socket.io.js"></script>
 
         <!-- build:js({.tmp,client}) app/app.js -->
         <script src="app/app.js"></script>
           <!-- injector:js -->
+          <script src="app/socket/socket.service.js"></script>
           <script src="components/buildsInfoTable/buildsInfoTable.controller.js"></script>
           <script src="components/buildsTable/buildsTable.controller.js"></script>
           <script src="components/editProjectForm/editProjectForm.controller.js"></script>

@@ -24,7 +24,7 @@ function establishConnection(dbDir, dbName) {
     dialect: "sqlite",
     port: 3306,
     storage: dbDir,
-    //logging: false,
+    logging: false,
     dialectOptions: {
       charset: 'utf8'
     }
