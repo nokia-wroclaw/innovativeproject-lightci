@@ -5,7 +5,10 @@ var exec = require('child-process-promise').exec;
 var parser = require('../parsers/junitparser').junitParser;
 var db = require('../db/db');
 var websocket = require("../websocket/websocket");
+var fs = require("fs");
+var builder = require("../builder/builder");
 var runMap = {};
+var _ = require("lodash");
 var lastBuildMap = {};
 
 function runBuildScript(projectName, scripts, build, db) {
@@ -14,8 +17,25 @@ function runBuildScript(projectName, scripts, build, db) {
 
 function run(projectName, scripts, i, db, build) {
   if (i == scripts.length) {
-    db.updateInstance(build, {build_status: 'success'});
-    websocket.sendProjectStatus('success', 1, projectName);
+
+    db.updateInstance(build, {build_status: 'success'}).then(function() {
+      websocket.sendProjectStatus('success', 1, projectName );
+      var projectsConfig = JSON.parse(fs.readFileSync(__dirname+"/../../config/projects.config.json"));
+      projectsConfig["projects"].forEach(function(proj) {
+        if(_.contains(proj.dependencies, projectName))
+        {
+          db.getSequelize().query("SELECT `b`.`id`, `p`.`project_name`, `b`.`build_date`, `b`.`build_status` FROM `Builds` AS `b` JOIN `Projects` AS `p` ON `b`.`ProjectId` = `p`.`id` WHERE `p`.`project_name` IN ('"+proj.dependencies.join("','")+"') GROUP BY `p`.`id` ORDER BY `b`.`build_date` DESC", null, { logging: console.log, raw: true})
+            .success(function(rows) {
+              if(_.every(rows, { build_status: 'success'}))
+              {
+                builder.build(proj);
+              }
+            });
+        }
+
+      });
+    });
+
   } else if (i < scripts.length) {
     console.log("Running script", i);
 

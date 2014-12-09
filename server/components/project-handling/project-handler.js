@@ -8,14 +8,14 @@ var db = require('../db/db');
 var fs = require("fs");
 var _ = require('lodash');
 
-function projectExists(project, exists)
+function projectExists(project)
 {
   var dbProject = db.findInstance('Project', {where: {project_name: project.projectName}});
   dbProject.then(function (projects) {
     if(projects.length == 0)
-      exists(false);
+      return false;
     else
-      exists(true);
+      return true;
   });
 }
 
@@ -40,7 +40,8 @@ function updateConfig(project_name, project) {
   fs.writeFileSync(__dirname+"/../../config/projects.config.json", JSON.stringify({ projects: copy }, undefined, 2));
 
   cronjobs.removeCrontabJob(project_name);
-  cronjobs.addCrontabJob(project);
+  if(project.useCrone)
+    cronjobs.addCrontabJob(project);
 
 }
 
@@ -69,7 +70,8 @@ function addProject(project)
 {
   try {
     scm.clone(project);
-    cronjobs.addCrontabJob(project);
+    if(project.useCrone)
+      cronjobs.addCrontabJob(project);
   } catch(err){
     console.log("Unsupported repository: " + project.repositoryType);
   }
@@ -101,7 +103,8 @@ function removeProject(project) {
 function updateProject(project){
   try {
     scm.pull(project);
-    cronjobs.addCrontabJob(project);
+    if(project.useCrone)
+      cronjobs.addCrontabJob(project);
   } catch(err){
     console.log("Unsupported repository: " + project.repositoryType);
     console.log(err);

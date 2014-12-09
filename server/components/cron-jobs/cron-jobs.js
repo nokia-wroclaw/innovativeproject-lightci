@@ -27,9 +27,11 @@ function addCrontabJob(project) {
 
 // Cancel job and remove it from the map
 function removeCrontabJob(key) {
-  crontab.cancelJob(global.jobsMap[key]);
-  global.jobsMap[key] = null;
-  console.log("Current Crontab Jobs: ", global.jobsMap);
+  if (global.jobsMap[key]) {
+    crontab.cancelJob(global.jobsMap[key]);
+    global.jobsMap[key] = null;
+    console.log("Current Crontab Jobs: ", global.jobsMap);
+  }
 }
 
 exports.addCrontabJob = addCrontabJob;

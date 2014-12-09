@@ -17,10 +17,11 @@ const cCommits = 'Commit',
   cBuildOutputs = 'BuildOutputs',
   cTestSuites = 'TestSuites',
   cTests = 'Tests';
-
+var sequelize;
 var _ = require('lodash');
+
 function establishConnection(dbDir, dbName) {
-  var sequelize = new Sequelize(dbName, 'root', 'root', {
+  var seq = new Sequelize(dbName, 'root', 'root', {
     dialect: "sqlite",
     port: 3306,
     storage: dbDir,
@@ -29,7 +30,7 @@ function establishConnection(dbDir, dbName) {
       charset: 'utf8'
     }
   });
-  sequelize
+  seq
     .authenticate()
     .complete(function (err) {
       if (!!err) {
@@ -37,7 +38,7 @@ function establishConnection(dbDir, dbName) {
       } else {
       }
     });
-  return sequelize;
+  return seq;
 }
 function defineTables(sequelize) {
   Commits = sequelize.define(cCommits, models.fDBModCommits(), {
@@ -158,12 +159,18 @@ function findInstance(which, where) {
   }
 }
 function createTables(dbDir, callback) {
-  var sequelize = establishConnection(dbDir, 'lightci_db');
+  sequelize = establishConnection(dbDir, 'lightci_db');
   defineTables(sequelize);
   syncTables(sequelize, callback);
 }
+
+function getSequelize() {
+  return sequelize;
+}
+
 exports.createTables = createTables;
 exports.createInstance = createInstance;
 exports.findInstance = findInstance;
 exports.updateInstance = updateInstance;
 exports.deleteInstance = deleteInstance;
+exports.getSequelize = getSequelize;

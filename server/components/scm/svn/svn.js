@@ -19,7 +19,7 @@ function svnSaveCommitsAndBuild( err, info, project) {
 
 function update(project)
 {
-  core.update(project.repositoryUrl, projectDir + "/" + project.projectName, '', '', function (err, info) {
+  core.update(project.repositoryUrl, projectDir + "/" + project.projectName, project.repositoryUsername, project.repositoryPassword, function (err, info) {
     svnSaveCommitsAndBuild(err, info, project);
   });
 }
@@ -29,7 +29,7 @@ function checkout(project)
 {
   var dbCreatedProject = db.createInstance('Project', {url: project.repositoryUrl, name: project.projectName});
   dbCreatedProject.then(function () {
-    core.checkout(project.repositoryUrl, projectDir + "/" + project.projectName, '', '', function (err, info) {
+    core.checkout(project.repositoryUrl, projectDir + "/" + project.projectName, project.repositoryUsername, project.repositoryPassword, function (err, info) {
       svnSaveCommitsAndBuild(err, info, project);
     });
   });

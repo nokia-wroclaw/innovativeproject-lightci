@@ -7,12 +7,9 @@
       "cronePattern": "* * * * *",
       "repositoryUsername": "",
       "repositoryPassword": "",
-      "useCrone": true,
+      "useCrone": false,
       "dependencies": [
-        "sdasda",
-        "gghghghghg",
-        "jj",
-        "dfwer234239"
+        ""
       ],
       "scripts": [
         {
@@ -30,24 +27,13 @@
       "repositoryUsername": "",
       "repositoryPassword": "",
       "useCrone": true,
-      "dependencies": [],
+      "dependencies": [
+        "svn_test",
+      ],
       "scripts": [
         {
           "scriptName": "0.sh",
-          "parser": "junit",
-          "outputPath": "build/test-results/TEST-com.github.AppTest.xml"
-        }
-      ]
-    },
-    {
-      "projectName": "example",
-      "repositoryUrl": "https://github.com/test1git/gradletest",
-      "repositoryType": "git",
-      "cronePattern": "* * * * *",
-      "scripts": [
-        {
-          "scriptName": "0.sh",
-          "parser": "junit",
+          "parser": "default",
           "outputPath": "build/test-results/TEST-com.github.AppTest.xml"
         }
       ]

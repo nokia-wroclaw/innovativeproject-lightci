@@ -53,7 +53,6 @@ exports.update = function(req, res) {
   }
 
   project.dependencies = (req.body.project_dependencies.replace( /\s/g, "").split(","));
-  console.log(project.dependencies)
 
   projectHandler.updateConfig(req.body.project_name, project);
 

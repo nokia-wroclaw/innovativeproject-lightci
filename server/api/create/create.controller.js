@@ -19,28 +19,37 @@ exports.create = function(req,res) {
   };
 
   //console.log(project);
+  if(req.body.project_dependencies)
+    project.dependencies = (req.body.project_dependencies.replace(/\s/g, "").split(","));
+  else
+    project.dependencies = [];
 
-  if(!fs.existsSync(__dirname+"/../../../../../buildscripts/"+project.projectName))
-    fs.mkdirSync(__dirname+"/../../../buildscripts/"+project.projectName);
+  var err = "";
 
-  for(var i = 0; i< req.body.scripts.length; i++) {
-    fs.writeFileSync(__dirname+"/../../../buildscripts/"+project.projectName+"/"+ i.toString()+".sh", req.body.scripts[i].scriptContent);
-    project.scripts.push({ scriptName: i.toString()+".sh", parser: req.body.scripts[i].parser, outputPath: req.body.scripts[i].outputPath });
+  if (!project.projectName) {
+    err = "Project name is empty";
+  } else if(!project.repositoryUrl) {
+    err = "Repository URL is empty";
+  } else if (projectHandler.projectExists(project)) {
+    err = "Project already exists";
   }
 
-  project.dependencies = (req.body.project_dependencies.replace( /\s/g, "").split(","));
+  if(err) {
+    res.json({info: null, error: err});
+  } else {
+        projectHandler.addProject(project);
+        projectHandler.addToConfig(project);
 
-  projectHandler.projectExists(project, function(exists) {
-    if(!exists) {
-      projectHandler.addProject(project);
+        if(!fs.existsSync(__dirname+"/../../../../../buildscripts/"+project.projectName))
+          fs.mkdirSync(__dirname+"/../../../buildscripts/"+project.projectName);
 
-      projectHandler.addToConfig(project);
+        for(var i = 0; i< req.body.scripts.length; i++) {
+          fs.writeFileSync(__dirname+"/../../../buildscripts/"+project.projectName+"/"+ i.toString()+".sh", req.body.scripts[i].scriptContent);
+          project.scripts.push({ scriptName: i.toString()+".sh", parser: req.body.scripts[i].parser, outputPath: req.body.scripts[i].outputPath });
+        }
 
-      res.json({ info: "Success (I guess)!", error: null});
-    } else {
-      res.json({ info: null, error: "Project already exists"});
-    }
-  });
+        res.json({info: "Success (I guess)!", error: null});
 
+  }
 
 };
