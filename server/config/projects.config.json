@@ -8,12 +8,15 @@
       "repositoryUsername": "",
       "repositoryPassword": "",
       "useCrone": false,
-      "dependencies": [
-        ""
-      ],
+      "dependencies": [],
       "scripts": [
         {
           "scriptName": "0.sh",
+          "parser": "default",
+          "outputPath": ""
+        },
+        {
+          "scriptName": "1.sh",
           "parser": "default",
           "outputPath": ""
         }
@@ -28,7 +31,7 @@
       "repositoryPassword": "",
       "useCrone": true,
       "dependencies": [
-        "svn_test",
+        "svn_test"
       ],
       "scripts": [
         {
