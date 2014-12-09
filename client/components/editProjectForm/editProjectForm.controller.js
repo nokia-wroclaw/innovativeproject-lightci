@@ -21,6 +21,10 @@ angular.module('lightciApp')
         $scope.formData.project_url = config.repositoryUrl;
         $scope.formData.project_repo = config.repositoryType;
         $scope.formData.project_pattern = config.cronePattern;
+        $scope.formData.project_usecrone = config.useCrone;
+        $scope.formData.project_username = config.repositoryUsername;
+        $scope.formData.project_password = config.repositoryPassword;
+        $scope.formData.project_dependencies = config.dependencies;
 
         for (var i=0; i<config.scripts.length; i++) {
           currentScriptId += 1;
@@ -64,7 +68,7 @@ angular.module('lightciApp')
     }
 
     $scope.moveDownScript = function(i) {
-      if (i < scriptsNo) {
+      if (i < scriptsNo-1) {
         $scope.formData.scripts.swap(i, i + 1);
         scriptsVis.swap(i, i+1);
       }
@@ -88,6 +92,10 @@ angular.module('lightciApp')
           $location.path("#");
         }
       });
+    }
+
+    $scope.goBack = function() {
+      window.history.back();
     }
 
     Array.prototype.swap = function (x,y) {

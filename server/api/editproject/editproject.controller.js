@@ -18,6 +18,8 @@ exports.show = function(req, res) {
         }
       });
 
+      config.dependencies = config.dependencies.join(", ");
+
       res.json(config);
     }
     else {
@@ -34,6 +36,10 @@ exports.update = function(req, res) {
     repositoryUrl: req.body.project_url,
     repositoryType: req.body.project_repo,
     cronePattern: req.body.project_pattern,
+    repositoryUsername: req.body.project_username,
+    repositoryPassword: req.body.project_password,
+    useCrone: req.body.project_usecrone,
+    dependencies: [],
     scripts: []
 
   };
@@ -45,6 +51,9 @@ exports.update = function(req, res) {
     fs.writeFileSync(__dirname+"/../../../buildscripts/"+project.projectName+"/"+ i.toString()+".sh", req.body.scripts[i].scriptContent);
     project.scripts.push({ scriptName: i.toString()+".sh", parser: req.body.scripts[i].parser, outputPath: req.body.scripts[i].outputPath });
   }
+
+  project.dependencies = (req.body.project_dependencies.replace( /\s/g, "").split(","));
+  console.log(project.dependencies)
 
   projectHandler.updateConfig(req.body.project_name, project);
 

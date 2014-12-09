@@ -22,6 +22,11 @@ body {
   margin-top: -5px;
 }
 
+.up-buttons-wrapper {
+  float: right;
+  margin-top: -23px;
+}
+
 article,
 aside,
 details,

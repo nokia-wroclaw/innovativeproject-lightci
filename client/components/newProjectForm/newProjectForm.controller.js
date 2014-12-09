@@ -44,7 +44,7 @@ angular.module('lightciApp')
     }
 
     $scope.moveDownScript = function(i) {
-      if (i < scriptsNo) {
+      if (i < scriptsNo-1) {
         $scope.formData.scripts.swap(i, i + 1);
         scriptsVis.swap(i, i+1);
       }
@@ -68,6 +68,10 @@ angular.module('lightciApp')
           $location.path("#");
         }
       });
+    }
+
+    $scope.goBack = function() {
+      window.history.back();
     }
 
     Array.prototype.swap = function (x,y) {

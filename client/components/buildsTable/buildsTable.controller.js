@@ -49,6 +49,10 @@ angular.module('lightciApp')
         data: failedTab
       });
 
+    $scope.goBack = function() {
+      window.history.back();
+    }
+
   });
 
 $scope.chartConfig = {
