@@ -4,8 +4,8 @@
 var exec = require('child-process-promise').exec;
 
 module.exports = {
-  clone: function (repo_url, repo_cwd) {
-    return gitClone(repo_url, repo_cwd);
+  clone: function (repo_url, repo_cwd,user,pass) {
+    return gitClone(repo_url, repo_cwd,user,pass);
   },
   pull: function (repo_cwd) {
    return gitPull(repo_cwd);
@@ -18,7 +18,8 @@ module.exports = {
   }
 };
 function gitPull(repo_cwd) {
-  return exec('cd ' + repo_cwd + ' && git pull origin master')
+  var command ='cd ' + repo_cwd + ' && git pull origin master';
+  return exec(command)
     .then(function (result) {
       return result;
   })
@@ -26,8 +27,15 @@ function gitPull(repo_cwd) {
       console.error("ERROR: ", err);
     });
 }
-function gitClone(repo_url, repo_cwd) {
-  return exec('git clone ' + repo_url +' '+repo_cwd)
+function gitClone(repo_url, repo_cwd,user,pass) {
+  var command ="";
+  if(user.length>0 && pass.length>0) {
+    var tmpUrl = repo_url.substring(0,repo_url.indexOf("//")+2)+user + ':' + pass + '@' +repo_url.substring(repo_url.indexOf("//")+2,repo_url.length);
+    console.log(tmpUrl);
+    repo_url=tmpUrl;
+  }
+  command ='git clone ' + repo_url +' '+repo_cwd;
+  return exec(command)
     .then(function (result) {
       return result;
     })

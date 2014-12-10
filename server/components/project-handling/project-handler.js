@@ -74,6 +74,7 @@ function addProject(project)
       cronjobs.addCrontabJob(project);
   } catch(err){
     console.log("Unsupported repository: " + project.repositoryType);
+    console.log(err);
   }
 }
 

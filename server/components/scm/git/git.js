@@ -27,7 +27,7 @@ function gitPull(project) {
 }
 
 function gitClone(project) {
-  core.clone(project.repositoryUrl, projectDir + "/" + project.projectName).then(function () {
+  core.clone(project.repositoryUrl, projectDir + "/" + project.projectName,project.repositoryUsername,project.repositoryPassword).then(function () {
     db.createInstance('Project', {url: project.repositoryUrl, name: project.projectName})
       .then(function () {
         core.logLastCommit(projectDir + "/" + project.projectName).then(function (commit) {
