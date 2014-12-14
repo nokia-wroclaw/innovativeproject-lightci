@@ -8,9 +8,9 @@ exports.show = function (req, res) {
   db.findInstance('Build', {where: {id: req.query.build_id}})
     .then(function (build) {
       if (build.length > 0) {
-        build[0].getCommits().success(function (commits) {
+        _.first(build).getCommits().success(function (commits) {
           res.json(commits);
         });
-      }
+      } else res.json([]);
     });
 };

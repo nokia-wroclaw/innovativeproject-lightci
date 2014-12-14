@@ -19,6 +19,7 @@ angular.module('lightciApp')
     };
     $scope.cancelBuilding = function (id) {
       var data = {project_id: id};
+
       $http.post('/api/cancelbuilds', data).success(function () {
 
       });
@@ -26,7 +27,9 @@ angular.module('lightciApp')
     $scope.removeProject = function (id) {
       var data = {project_id: id};
       $http.post('/api/remove', data).success(function () {
-
+        $scope.projects = _.filter($scope.projects,function(project){
+          return project.id!=id;
+        });
       });
     };
     socket.on('project_status',function(data){

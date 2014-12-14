@@ -44,16 +44,16 @@
               </a>
             </td>
             <td>
-              <a ng-show="{{project.lastBuilds[0]=='pending'}}?false:true" href={{baseUrl}} ng-click="buildProject(project.id)">
-                <button type="button" class="btn btn-link">
+
+                <button ng-show="{{project.lastBuilds[0]=='pending'}}?false:true" type="button" class="btn btn-link" ng-click="buildProject(project.id)">
                   <i class="fa fa-cog"></i>   Build
                 </button>
-              </a>
-              <a ng-show="{{project.lastBuilds[0]=='pending'}}?true:false" href={{baseUrl}} ng-click="cancelBuilding(project.id)">
-                <button type="button" class="btn btn-link">
+
+
+                <button ng-show="{{project.lastBuilds[0]=='pending'}}?true:false" type="button" class="btn btn-link" ng-click="cancelBuilding(project.id)">
                   <i class="fa fa-cog"></i>   Cancel building
                 </button>
-              </a>
+
             </td>
             <td>
 
@@ -64,12 +64,9 @@
               </a>
             </td>
             <td>
-
-              <a href={{baseUrl}} ng-click="removeProject(project.id)">
-                <button type="button" class="btn btn-link">
+                <button type="button" class="btn btn-link" ng-click="removeProject(project.id)" >
                   <i class="fa fa-remove"></i>   Remove
                 </button>
-              </a>
             </td>
           </tr>
           </tbody>

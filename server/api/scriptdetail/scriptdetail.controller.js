@@ -10,8 +10,8 @@ exports.index = function(req, res) {
   db.findInstance('BuildOutputs', {where: { id: req.query.script_id }})
     .then(function(outputs){
       if(outputs.length>0) {
-        outputs[0].output = require('querystring').unescape(outputs[0].output);
-        scriptDetails.scriptOutputs = outputs[0].dataValues;
+        _.first(outputs).output = _.unescape(_.first(outputs).output);
+        scriptDetails.scriptOutputs = _.first(outputs).dataValues;
 
         db.findInstance('TestSuites', {where: {BuildOutputId: req.query.script_id}})
           .then(function (suites) {
@@ -22,6 +22,8 @@ exports.index = function(req, res) {
 
             res.json(scriptDetails);
           });
+      } else {
+        res.json(scriptDetails);
       }
     });
 };

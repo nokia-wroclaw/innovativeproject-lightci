@@ -11,8 +11,8 @@ exports.create = function (req, res) {
     repositoryUrl: req.body.project_url,
     repositoryType: req.body.project_repo,
     cronePattern: req.body.project_pattern,
-    repositoryUsername: req.body.project_username,
-    repositoryPassword: req.body.project_password,
+    repositoryUsername: req.body.project_username || "",
+    repositoryPassword: req.body.project_password || "",
     useCrone: req.body.project_usecrone,
     dependencies: [],
     scripts: []
