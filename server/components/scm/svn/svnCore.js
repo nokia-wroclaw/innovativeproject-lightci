@@ -51,6 +51,26 @@ function getCommitsFromUpdate(svn, callback) {
 	});
 }
 
+function getNewCommits(repo_cwd, repo_user, repo_pass, callback) {
+  // SVN object
+  var SVN = require('node.svn');
+  var svn = new SVN({
+    cwd:		repo_cwd,
+    username:	repo_user,
+    password:	repo_pass });
+
+  getCommits(svn, 'BASE', function(err, info) {
+    if(err) callback(err, null);
+    else
+    if(info.length > 1)
+    {
+      info.shift();
+      callback(null, info);
+    } else
+    callback(null, [])
+  })
+}
+
 /*	checkout or update repo
 		params:
 			repo_url 	- url of svn repository
@@ -101,3 +121,4 @@ function update(repo_url, repo_cwd, repo_user, repo_pass, callback) {
 
 exports.checkout = checkout;
 exports.update = update;
+exports.getNewCommits = getNewCommits;

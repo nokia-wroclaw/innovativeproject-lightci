@@ -4,6 +4,7 @@
 var core = require("./gitCore");
 var run = require("../../run-script/run-script");
 var projectDir = require('../../../config/global.config.json').checkoutDir;
+var exec = require('child-process-promise').exec;
 var db = require('../../db/db');
 var builder = require('../../builder/builder');
 
@@ -24,6 +25,31 @@ function gitPull(project) {
           });
       }
     });
+}
+
+//
+function gitCloneAgain(project) {
+  isUpToDate(project).then(function(result) {
+    if(result == false) {
+      exec("rm -r '" + __dirname + "/../../../../repos/" + project.projectName + "'").then(function () {
+        core.clone(project.repositoryUrl, projectDir + "/" + project.projectName, project.repositoryUsername, project.repositoryPassword).then(function () {
+          db.findInstance('Project', {where: {project_name: project.projectName}})
+            .then(function (proj) {
+              var dbProject = proj[0];
+              db.findInstance('Build', {where: {ProjectId: dbProject.id}, limit: 1, order: 'build_date DESC'})
+                .then(function (build) {
+                  core.logFull(projectDir + "/" + project.projectName, build[0].build_date)
+                    .then(function (commits) {
+                      builder.buildWithCommits(project, commitArrayToJSON(commits));
+                    });
+                });
+            });
+        });
+      }).fail(function (err) {
+        console.log("Couldn't remove previous working copy of " + project.projectName);
+      });
+    }
+  });
 }
 
 function gitClone(project) {
@@ -58,4 +84,5 @@ function isUpToDate(project){
 }
 exports.pull = gitPull;
 exports.clone = gitClone;
+exports.cloneAgain = gitCloneAgain;
 exports.isUpToDate = isUpToDate;

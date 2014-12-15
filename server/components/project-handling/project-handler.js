@@ -73,7 +73,6 @@ function addProject(project)
     if(project.useCrone)
       cronjobs.addCrontabJob(project);
   } catch(err){
-    console.log("Unsupported repository: " + project.repositoryType);
     console.log(err);
   }
 }
@@ -107,7 +106,6 @@ function updateProject(project){
     if(project.useCrone)
       cronjobs.addCrontabJob(project);
   } catch(err){
-    console.log("Unsupported repository: " + project.repositoryType);
     console.log(err);
   }
 }

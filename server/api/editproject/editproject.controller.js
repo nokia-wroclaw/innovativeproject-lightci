@@ -38,11 +38,13 @@ exports.update = function(req, res) {
     cronePattern: req.body.project_pattern,
     repositoryUsername: req.body.project_username,
     repositoryPassword: req.body.project_password,
+    strategy: req.body.strategy,
     useCrone: req.body.project_usecrone,
     dependencies: [],
     scripts: []
 
   };
+
   //console.log(req);
   if(!fs.existsSync(__dirname+"/../../../buildscripts/"+project.projectName))
     fs.mkdirSync(__dirname+"/../../../buildscripts/"+project.projectName);
@@ -54,7 +56,12 @@ exports.update = function(req, res) {
 
   project.dependencies = (req.body.project_dependencies.replace( /\s/g, "").split(","));
 
-  projectHandler.updateConfig(req.body.project_name, project);
+  if(req.body.project_dependencies)
+    project.dependencies = (req.body.project_dependencies.replace(/\s/g, "").split(","));
+  else
+    project.dependencies = [];
+
+  projectHandler.updateConfig(project.projectName, project);
 
   res.json({info: "Nice", error: null});
 };

@@ -4,6 +4,7 @@
 var core = require("./svnCore");
 var run = require("../../run-script/run-script");
 var projectDir = require('../../../config/global.config.json').checkoutDir;
+var exec = require('child-process-promise').exec;
 var db = require('../../db/db');
 var builder = require('../../builder/builder');
 
@@ -24,6 +25,23 @@ function update(project)
   });
 }
 
+function checkoutAgain(project)
+{
+  core.getNewCommits(projectDir + "/" + project.projectName, project.repositoryUsername, project.repositoryPassword, function(err, commits) {
+    if(!err) {
+      if (commits[0]) {
+         exec("rm -r '"+__dirname+"/../../../../repos/"+project.projectName+"'").then( function(result) {
+           core.checkout(project.repositoryUrl, projectDir + "/" + project.projectName, project.repositoryUsername, project.repositoryPassword, function (err, info) {
+             svnSaveCommitsAndBuild(err, commits, project);
+           });
+          }).fail(function(err) {
+           console.log("Couldn't remove previous working copy of "+project.projectName);
+         });
+      }
+    }
+  });
+}
+
 
 function checkout(project)
 {
@@ -37,3 +55,4 @@ function checkout(project)
 
 exports.clone = checkout;
 exports.pull = update;
+exports.cloneAgain = checkoutAgain;
