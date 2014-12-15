@@ -33,12 +33,16 @@ angular.module('lightciApp')
       });
     };
     socket.on('project_status',function(data){
-      getProjects($scope,$http);
+      getProjects($scope,$http).then(function(){
+      _.find($scope.projects,function(proj){
+        return proj.project_name === data.projectName;
+      }).progress=data.progress*100;
+    });
     });
   });
 
 function getProjects($scope,$http){
-  $http.get('/api/projects').success(function (proj) {
+  return $http.get('/api/projects').success(function (proj) {
     proj.forEach(function (project) {
       var last = ('lastBuilds' in project)?project.lastBuilds[0]:false;
       var quantityTrue = 0;

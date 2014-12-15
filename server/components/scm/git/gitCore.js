@@ -15,6 +15,9 @@ module.exports = {
   },
   logFull: function(repo_cwd,since){
     return gitLogFull(repo_cwd,since);
+  },
+  isUpToDate: function(repo_cwd){
+    return isUpToDate(repo_cwd);
   }
 };
 function gitPull(repo_cwd) {
@@ -69,5 +72,15 @@ function gitLogFull(repo_cwd,since) {
     })
     .fail(function(err) {
       console.error("ERROR: ", err);
+    });
+}
+
+function isUpToDate(repo_cwd){
+  return exec('cd ' + repo_cwd + ' && git pull --dry-run')
+    .then(function (result) {
+      if(result.stderr.length>0)
+        return false;
+      else
+        return true;
     });
 }

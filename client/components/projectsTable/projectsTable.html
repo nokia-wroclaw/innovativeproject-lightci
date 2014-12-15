@@ -53,7 +53,10 @@
                 <button ng-show="{{project.lastBuilds[0]=='pending'}}?true:false" type="button" class="btn btn-link" ng-click="cancelBuilding(project.id)">
                   <i class="fa fa-cog"></i>   Cancel building
                 </button>
-
+              <div ng-show="{{project.lastBuilds[0]=='pending'}}?true:false" class="progress">
+                <div class="progress-bar progress-bar-info progress-bar-striped" role="progressbar" aria-valuenow="{{project.progress}}" aria-valuemin="0" aria-valuemax="100" style="width: {{project.progress}}%">
+                </div>
+              </div>
             </td>
             <td>
 

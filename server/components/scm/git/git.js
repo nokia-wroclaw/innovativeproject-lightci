@@ -53,5 +53,9 @@ function commitArrayToJSON(commits) {
   return res;
 }
 
+function isUpToDate(project){
+  return core.isUpToDate(projectDir + "/" + project.projectName);
+}
 exports.pull = gitPull;
 exports.clone = gitClone;
+exports.isUpToDate = isUpToDate;
