@@ -54,6 +54,23 @@
       "useCrone": true,
       "dependencies": [],
       "scripts": []
+    },
+    {
+      "projectName": "TEEEST",
+      "repositoryUrl": "axdsxasdx",
+      "repositoryType": "git",
+      "cronePattern": "* * * * *",
+      "repositoryUsername": "",
+      "repositoryPassword": "",
+      "strategy": "pull",
+      "useCrone": false,
+      "useDeployServer": true,
+      "serverUsername": "serverusr",
+      "serverPassword": "passworddd",
+      "serverAddress": "JEEEDAIEJDAIEDJAIED",
+      "deployFilePath": "chuj/asd/pl.sh",
+      "dependencies": [],
+      "scripts": []
     }
   ]
 }

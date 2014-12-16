@@ -11,6 +11,9 @@ exports.show = function(req, res) {
       var scripts = config.scripts.slice(0);
       config.scripts = [];
 
+      if(fs.existsSync(__dirname+"/../../../buildscripts/"+config.projectName+"/deploy.sh"))
+        config.serverScript = fs.readFileSync(__dirname+"/../../../buildscripts/"+config.projectName+"/deploy.sh", "utf8");
+
       scripts.forEach(function(element) {
         if(fs.existsSync(__dirname+"/../../../buildscripts/"+config.projectName+"/"+element.scriptName)) {
           var content = fs.readFileSync(__dirname+"/../../../buildscripts/"+config.projectName+"/"+element.scriptName, "utf8");
@@ -40,6 +43,11 @@ exports.update = function(req, res) {
     repositoryPassword: req.body.project_password,
     strategy: req.body.project_strategy,
     useCrone: req.body.project_usecrone,
+    useDeployServer: req.body.project_usedeploy,
+    serverUsername: req.body.project_serverusername,
+    serverPassword: req.body.project_serverpassword,
+    serverAddress: req.body.project_serveraddress,
+    deployFilePath: req.body.project_filepath,
     dependencies: [],
     scripts: []
 
@@ -48,6 +56,8 @@ exports.update = function(req, res) {
   //console.log(req);
   if(!fs.existsSync(__dirname+"/../../../buildscripts/"+project.projectName))
     fs.mkdirSync(__dirname+"/../../../buildscripts/"+project.projectName);
+
+  fs.writeFileSync(__dirname + "/../../../buildscripts/" + project.projectName + "/deploy.sh", req.body.project_serverscript);
 
   for(var i = 0; i< req.body.scripts.length; i++) {
     fs.writeFileSync(__dirname+"/../../../buildscripts/"+project.projectName+"/"+ i.toString()+".sh", req.body.scripts[i].scriptContent);

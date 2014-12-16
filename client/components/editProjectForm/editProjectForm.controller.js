@@ -23,6 +23,12 @@ angular.module('lightciApp')
         $scope.formData.project_pattern = config.cronePattern;
         $scope.formData.project_usecrone = config.useCrone;
         $scope.formData.project_strategy = config.strategy;
+        $scope.formData.project_usedeploy = config.useDeployServer;
+        $scope.formData.project_serverusername = config.serverUsername;
+        $scope.formData.project_serverpassword = config.serverPassword;
+        $scope.formData.project_serveraddress = config.serverAddress;
+        $scope.formData.project_filepath = config.deployFilePath;
+        $scope.formData.project_serverscript = config.serverScript;
         $scope.formData.project_username = config.repositoryUsername;
         $scope.formData.project_password = config.repositoryPassword;
         $scope.formData.project_dependencies = config.dependencies;

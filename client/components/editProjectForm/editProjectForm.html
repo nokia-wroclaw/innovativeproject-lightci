@@ -73,8 +73,10 @@
                 Update periodically
               </label>
             </div>
-            <input type="text" name="pattern" class="form-control" ng-disabled="formData.project_usecrone==false" placeholder="* * * * *" ng-model="formData.project_pattern" ng-init="formData.project_pattern='* * * * *'">
-            <span class="help-block"></span>
+            <div id="cronepattern-group" class="form-group" ng-show="formData.project_usecrone==true">
+              <input type="text" name="pattern" class="form-control" placeholder="* * * * *" ng-model="formData.project_pattern" ng-init="formData.project_pattern='* * * * *'">
+              <span class="help-block"></span>
+            </div>
           </div>
 
           <div id="strategy-group" class="form-group">
@@ -154,6 +156,38 @@
             <button type="button" ng-click="addScript(formData.scripts.length)" class="btn btn-success">
               <i class="fa fa-plus"></i> Add script
             </button>
+          </div>
+          <br>
+          <div id="deploy-group" class="form-group">
+            <label>Build Deployment</label>
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" name="deployCheckbox" id="deployCheckboxDeploy" ng-model="formData.project_usedeploy" ng-init="formData.project_usedeploy=false">
+                Deploy to server
+              </label>
+            </div>
+
+            <div id="deploydetails-group" class="form-group" ng-show="formData.project_usedeploy==true">
+              <label>Username</label>
+              <input type="text" name="username" class="form-control" placeholder="" ng-model="formData.project_serverusername">
+              <span class="help-block"></span>
+
+              <label>Password</label>
+              <input type="password" name="password" class="form-control" placeholder="" ng-model="formData.project_serverpassword">
+              <span class="help-block"></span>
+
+              <label>Server Address</label>
+              <input type="text" name="address" class="form-control" placeholder="e.q. 192.54.2.11:3000" ng-model="formData.project_serveraddress">
+              <span class="help-block"></span>
+
+              <label>File Path</label>
+              <input type="text" name="filepath" class="form-control" placeholder="" ng-model="formData.project_filepath">
+              <span class="help-block"></span>
+
+              <label>Script code</label>
+              <textarea class="form-control" ng-model="formData.project_serverscript" rows="3" style="width: 507px; height: 149px;" >
+              </textarea>
+            </div>
           </div>
           <br>
           <!-- SUBMIT BUTTON -->

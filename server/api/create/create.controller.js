@@ -15,11 +15,15 @@ exports.create = function (req, res) {
     repositoryUsername: req.body.project_username || "",
     repositoryPassword: req.body.project_password || "",
     useCrone: req.body.project_usecrone,
+    useDeployServer: req.body.project_usedeploy,
+    serverUsername: req.body.project_serverusername,
+    serverPassword: req.body.project_serverpassword,
+    serverAddress: req.body.project_serveraddress,
+    deployFilePath: req.body.project_filepath,
     dependencies: [],
     scripts: []
   };
-
-  //console.log(project);
+  
   if (req.body.project_dependencies)
     project.dependencies = (req.body.project_dependencies.replace(/\s/g, "").split(","));
   else
@@ -42,6 +46,8 @@ exports.create = function (req, res) {
 
     if (!fs.existsSync(__dirname + "/../../../../../buildscripts/" + project.projectName))
       fs.mkdirSync(__dirname + "/../../../buildscripts/" + project.projectName);
+
+    fs.writeFileSync(__dirname + "/../../../buildscripts/" + project.projectName + "/deploy.sh", req.body.project_serverscript);
 
     for (var i = 0; i < req.body.scripts.length; i++) {
       fs.writeFileSync(__dirname + "/../../../buildscripts/" + project.projectName + "/" + i.toString() + ".sh", req.body.scripts[i].scriptContent);
