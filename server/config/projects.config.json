@@ -7,7 +7,7 @@
       "cronePattern": "* * * * *",
       "repositoryUsername": "",
       "repositoryPassword": "",
-      "useCrone": false,
+      "useCrone": true,
       "dependencies": [],
       "scripts": [
         {

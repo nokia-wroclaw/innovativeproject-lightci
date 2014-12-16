@@ -24,6 +24,7 @@ exports.index = function (req, res) {
           return project.id === _.first(build).dataValues["ProjectId"];
         }));
         pro.lastBuilds = buildHistory;
+        pro.lastBuildTime = new Date(_.first(build).dataValues['build_date']);
       }
     });
     res.json(projects);

@@ -17,7 +17,23 @@ function runBuildScript(projectName, scripts, build, db) {
 
 function run(projectName, scripts, i, db, build) {
   if (i == scripts.length) {
+    var project = db.findInstance('Project', {where: {project_name: projectName}});
 
+
+    project.then(function(resultProjects){
+      var builds = db.findInstance('Build', {where: {ProjectId: _.first(resultProjects).id}});
+
+      builds.then(function(resultBuilds){
+        var oldAverageTime = _.first(resultProjects).project_average_build_time;
+        if(_.isNull(oldAverageTime) || _.isNaN(oldAverageTime)){
+          oldAverageTime = new Date(0);
+        }
+        var currentBuildTime = new Date().getTime()-build.build_date.getTime();
+        var averageTime = (currentBuildTime+(resultBuilds.length-1)*oldAverageTime.getTime())/resultBuilds.length;
+        db.updateInstance(_.first(resultProjects),{project_average_build_time:new Date(averageTime)});
+
+      });
+    });
     db.updateInstance(build, {build_status: 'success'}).then(function() {
       websocket.sendProjectStatus('success', 1, projectName );
       var projectsConfig = JSON.parse(fs.readFileSync(__dirname+"/../../config/projects.config.json"));

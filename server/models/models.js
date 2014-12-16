@@ -22,7 +22,8 @@ module.exports = {
     var c =
     {
       project_url: Sequelize.STRING,
-      project_name: Sequelize.STRING
+      project_name: Sequelize.STRING,
+      project_average_build_time: Sequelize.DATE
     };
 
     return c;

@@ -4,12 +4,16 @@
 'use strict';
 
 angular.module('lightciApp')
-  .controller('ProjTableCtrl', function ($scope, $http, $location,socket) {
+  .controller('ProjTableCtrl', function ($scope, $http, $location, socket, $interval) {
+    var intervals = [];
     $scope.projects = [];
 
     $scope.baseUrl = '#';
 
-    getProjects($scope,$http);
+    getProjects($scope, $http, $interval).then(function () {
+
+
+    });
 
     $scope.buildProject = function (id) {
       var data = {project_id: id};
@@ -27,31 +31,80 @@ angular.module('lightciApp')
     $scope.removeProject = function (id) {
       var data = {project_id: id};
       $http.post('/api/remove', data).success(function () {
-        $scope.projects = _.filter($scope.projects,function(project){
-          return project.id!=id;
+        $scope.projects = _.filter($scope.projects, function (project) {
+          return project.id != id;
         });
       });
     };
-    socket.on('project_status',function(data){
-      getProjects($scope,$http).then(function(){
-      _.find($scope.projects,function(proj){
-        return proj.project_name === data.projectName;
-      }).progress=data.progress*100;
-    });
-    });
-  });
+    socket.on('project_status', function (data) {
 
-function getProjects($scope,$http){
-  return $http.get('/api/projects').success(function (proj) {
-    proj.forEach(function (project) {
-      var last = ('lastBuilds' in project)?project.lastBuilds[0]:false;
+      var project = _.find($scope.projects, function (proj) {
+        return proj.project_name === data.projectName;
+      });
+      if (_.first(project.lastBuilds) == 'pending' && data.status == 'pending') {
+        if (!("lastBuildTime" in project))
+          project.progress = data.progress * 100;
+      } else {
+        project.lastBuilds.unshift(data.status);
+        if (project.lastBuilds.length > 5)
+          project.lastBuilds.pop();
+        project.isPending = _.first(project.lastBuilds) == 'pending';
+        project.lastBuildTime = new Date();
+        project.progress = 0;
+        updateProgress(project);
+
+        calculateTrend(project);
+      }
+
+    });
+
+
+    function getProjects($scope, $http, $interval) {
+      return $http.get('/api/projects').success(function (proj) {
+        proj.forEach(function (project) {
+          calculateTrend(project);
+        });
+        $scope.projects = proj;
+        _.each($scope.projects, function (proj) {
+          if (proj.lastBuilds.length > 0)
+            proj.isPending = _.first(proj.lastBuilds) == 'pending';
+          else
+            proj.isPending = false;
+        });
+
+        _.each($scope.projects, updateProgress, [proj]);
+      });
+
+    }
+
+    function updateProgress(proj) {
+      if ("lastBuildTime" in proj && proj.isPending) {
+        intervals[proj.project_name] = [];
+        intervals[proj.project_name].push($interval(function (project) {
+          var currentDate = new Date().getTime();
+          var avgDate = new Date(project.project_average_build_time).getTime();
+          var buildTime = new Date(project.lastBuildTime).getTime();
+          var progress = (currentDate - buildTime) / avgDate * 100;
+          project.progress = progress;
+          if (project.progress > 99) {
+            project.progress = 99;
+            _.each(intervals[project.project_name], function (interval) {
+              $interval.cancel(interval);
+            });
+          }
+        }.bind(null, proj), 1000));
+      }
+    }
+
+    function calculateTrend(project) {
+      var last = ('lastBuilds' in project) ? project.lastBuilds[0] : false;
       var quantityTrue = 0;
       var quantityFalse = 0;
-      if('lastBuilds' in project && project.lastBuilds.length>0)
+      if ('lastBuilds' in project && project.lastBuilds.length > 0)
         project.lastBuilds.forEach(function (lastBuild) {
-          if (lastBuild==='success') {
+          if (lastBuild === 'success') {
             quantityTrue++;
-          } else if (lastBuild==='fail'){
+          } else if (lastBuild === 'fail') {
             quantityFalse++;
           }
         });
@@ -69,8 +122,5 @@ function getProjects($scope,$http){
         project.trend = 'sad';
       else
         project.trend = 'else';
-
-    });
-    $scope.projects =  proj;
+    }
   });
-}

@@ -100,7 +100,8 @@ function createInstance(which, info) {
   else if (which == cProjects) {
     return Projects.create({
       project_url: info['url'],
-      project_name: info['name']
+      project_name: info['name'],
+      project_average_build_time: null
     })
   }
   else if (which == cBuilds) {
