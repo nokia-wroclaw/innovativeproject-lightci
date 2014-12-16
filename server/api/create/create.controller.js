@@ -10,7 +10,7 @@ exports.create = function (req, res) {
     projectName: req.body.project_name,
     repositoryUrl: req.body.project_url,
     repositoryType: req.body.project_repo,
-    strategy: req.body.strategy,
+    strategy: req.body.project_strategy,
     cronePattern: req.body.project_pattern,
     repositoryUsername: req.body.project_username || "",
     repositoryPassword: req.body.project_password || "",

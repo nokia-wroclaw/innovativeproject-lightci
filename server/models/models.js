@@ -72,5 +72,17 @@ module.exports = {
     };
 
     return c;
+  },
+
+  fDBModUsers: function () {
+    var c =
+    {
+      user_name: Sequelize.STRING,
+      user_pass: Sequelize.STRING,
+      user_level: Sequelize.INTEGER,
+      user_email: Sequelize.STRING
+    };
+
+    return c;
   }
 };

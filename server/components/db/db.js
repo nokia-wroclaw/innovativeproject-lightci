@@ -10,13 +10,15 @@ var Commits = null,
   Builds = null,
   BuildOutputs=null,
   TestSuites=null,
-  Tests=null;
+  Tests=null,
+  Users=null;
 const cCommits = 'Commit',
   cProjects = 'Project',
   cBuilds = 'Build',
   cBuildOutputs = 'BuildOutputs',
   cTestSuites = 'TestSuites',
-  cTests = 'Tests';
+  cTests = 'Tests',
+  cUsers = 'Users';
 var sequelize;
 var _ = require('lodash');
 
@@ -57,6 +59,9 @@ function defineTables(sequelize) {
     timestamps: false
   });
   Tests = sequelize.define(cTests, models.fDBModTests(), {
+    timestamps: false
+  });
+  Users = sequelize.define(cUsers, models.fDBModUsers(), {
     timestamps: false
   });
   Projects.hasMany(Commits, {as: 'Commits'});
@@ -137,6 +142,15 @@ function createInstance(which, info) {
       })
 
   }
+  else if (which == cUsers) {
+    return Users.create({
+      user_name: info['name'],
+      user_pass: info['pass'],
+      user_level: info['level'],
+      user_email: info['email']
+    })
+
+  }
 }
 
 function findInstance(which, where) {
@@ -157,6 +171,9 @@ function findInstance(which, where) {
   }
   else if(which === cTests){
     return Tests.findAll(where);
+  }
+  else if(which === cUsers){
+    return Users.findAll(where);
   }
 }
 function createTables(dbDir, callback) {

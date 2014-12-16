@@ -1,0 +1,47 @@
+<div class="row" ng-controller="logInFormCtrl">
+  <div class="col-lg-12">
+    <h1>Log in
+    </h1>
+  </div>
+  <div class="col-lg-12">
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-edit"></i> Login details </h3>
+        <div class="up-buttons-wrapper">
+          <button id="buttonBack" type="button" ng-click="goBack()" class="btn btn-default btn-sm">
+            <i class="fa fa-arrow-up"></i>
+          </button>
+        </div>
+      </div>
+      <div class="alert alert-dismissable alert-danger" ng-show="hasError">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>Oh snap!</strong> {{message}}
+      </div>
+      <div class="alert alert-dismissable alert-success" ng-show="hasInfo">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>Well done!</strong> {{message}}
+      </div>
+      <div class="panel-body">
+        <form ng-submit="logIn()">
+
+          <div id="username-group" class="form-group">
+            <label>Username</label>
+            <input type="text" name="email" class="form-control" placeholder="e.g. johnny-bravo@example.com" ng-model="formData.email">
+            <span class="help-block"></span>
+          </div>
+
+          <div id="password-group" class="form-group">
+            <label>Password</label>
+            <input type="password" name="password" class="form-control" placeholder="********" ng-model="formData.password">
+            <span class="help-block"></span>
+          </div>
+
+          <!-- SUBMIT BUTTON -->
+          <button type="submit" class="btn btn-primary btn-lg btn-block">
+            <i class="fa fa-upload"></i> Sign in!
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

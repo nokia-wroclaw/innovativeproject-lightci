@@ -22,6 +22,7 @@ angular.module('lightciApp')
         $scope.formData.project_repo = config.repositoryType;
         $scope.formData.project_pattern = config.cronePattern;
         $scope.formData.project_usecrone = config.useCrone;
+        $scope.formData.project_strategy = config.strategy;
         $scope.formData.project_username = config.repositoryUsername;
         $scope.formData.project_password = config.repositoryPassword;
         $scope.formData.project_dependencies = config.dependencies;

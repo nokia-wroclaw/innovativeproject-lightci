@@ -7,7 +7,8 @@
       "cronePattern": "* * * * *",
       "repositoryUsername": "",
       "repositoryPassword": "",
-      "useCrone": true,
+      "strategy": "pull",
+      "useCrone": false,
       "dependencies": [],
       "scripts": [
         {
@@ -29,6 +30,7 @@
       "cronePattern": "* * * * *",
       "repositoryUsername": "",
       "repositoryPassword": "",
+      "strategy": "pull",
       "useCrone": true,
       "dependencies": [
         "svn_test"
@@ -40,6 +42,18 @@
           "outputPath": "build/test-results/TEST-com.github.AppTest.xml"
         }
       ]
+    },
+    {
+      "projectName": "test",
+      "repositoryUrl": "asd",
+      "repositoryType": "svn",
+      "cronePattern": "* * * * *",
+      "repositoryUsername": "",
+      "repositoryPassword": "",
+      "strategy": "clone",
+      "useCrone": true,
+      "dependencies": [],
+      "scripts": []
     }
   ]
 }

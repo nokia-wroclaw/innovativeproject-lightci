@@ -77,6 +77,22 @@
             <span class="help-block"></span>
           </div>
 
+          <div id="strategy-group" class="form-group">
+            <label>Checkout strategy</label>
+            <div class="radio">
+              <label>
+                <input type="radio" name="strategyRadios" id="strategyRadiosClone" ng-model="formData.project_strategy" value="clone" ng-init="formData.project_strategy='clone'">
+                Clone
+              </label>
+            </div>
+            <div class="radio">
+              <label>
+                <input type="radio" name="strategyRadios" id="strategyRadiosUpdate" ng-model="formData.project_strategy" value="pull">
+                Update
+              </label>
+            </div>
+          </div>
+
           <div id="dependencies-group" class="form-group">
             <label>Project Dependency</label>
             <input type="text" name="url" class="form-control" placeholder="e.g. project_1, project_2, project_3" ng-model="formData.project_dependencies">

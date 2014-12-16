@@ -38,7 +38,7 @@ exports.update = function(req, res) {
     cronePattern: req.body.project_pattern,
     repositoryUsername: req.body.project_username,
     repositoryPassword: req.body.project_password,
-    strategy: req.body.strategy,
+    strategy: req.body.project_strategy,
     useCrone: req.body.project_usecrone,
     dependencies: [],
     scripts: []
