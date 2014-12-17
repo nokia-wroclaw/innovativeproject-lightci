@@ -12,6 +12,7 @@ var Commits = null,
   TestSuites=null,
   Tests=null,
   Users=null;
+  Deploys=null;
 const cCommits = 'Commit',
   cProjects = 'Project',
   cBuilds = 'Build',
@@ -19,6 +20,7 @@ const cCommits = 'Commit',
   cTestSuites = 'TestSuites',
   cTests = 'Tests',
   cUsers = 'Users';
+  cDeploys = "Deploys";
 var sequelize;
 var _ = require('lodash');
 
@@ -64,11 +66,15 @@ function defineTables(sequelize) {
   Users = sequelize.define(cUsers, models.fDBModUsers(), {
     timestamps: false
   });
+  Deploys = sequelize.define(cDeploys, models.fDBModDeploys(), {
+    timestamps: false
+  });
   Projects.hasMany(Commits, {as: 'Commits'});
   Projects.hasMany(Builds, {as: 'Builds'});
   Commits.hasMany(Builds, {as: 'Builds', through: 'BuildsCommits'});
   Builds.hasMany(Commits, {as: 'Commits', through: 'BuildsCommits'});
   Builds.hasMany(BuildOutputs,{as: 'BuildOutputs'});
+  Builds.hasMany(Deploys,{as: 'Deploys'});
   BuildOutputs.hasMany(TestSuites,{as: 'TestSuites'});
   TestSuites.hasMany(Tests,{as: 'Tests'});
 
@@ -118,7 +124,7 @@ function createInstance(which, info) {
   else if (which == cBuildOutputs) {
     return BuildOutputs.create({
       scriptName: info['scriptName'],
-      output: require('querystring').escape((info['output'])),
+      output: _.escape(info['output']),
       isSuccess:info['isSuccess']
     })
   }
@@ -150,6 +156,13 @@ function createInstance(which, info) {
       user_email: info['email']
     })
 
+  } else if (which == cDeploys) {
+    return Deploys.create({
+      deploy_server: info['deploy_server'],
+      deploy_status: info['deploy_status'],
+      deploy_message: _.escape(info['deploy_message'])
+    })
+
   }
 }
 
@@ -174,6 +187,8 @@ function findInstance(which, where) {
   }
   else if(which === cUsers){
     return Users.findAll(where);
+  } else if(which === cDeploys){
+    return Deploys.findAll(where);
   }
 }
 function createTables(dbDir, callback) {

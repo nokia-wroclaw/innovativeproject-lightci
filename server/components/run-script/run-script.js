@@ -5,6 +5,7 @@ var exec = require('child-process-promise').exec;
 var parser = require('../parsers/junitparser').junitParser;
 var db = require('../db/db');
 var websocket = require("../websocket/websocket");
+var deploy = require("../deploy/deploy");
 var fs = require("fs");
 var builder = require("../builder/builder");
 var runMap = {};
@@ -33,6 +34,7 @@ function run(projectName, scripts, i, db, build) {
         db.updateInstance(_.first(resultProjects),{project_average_build_time:new Date(averageTime)});
 
       });
+
     });
     db.updateInstance(build, {build_status: 'success'}).then(function() {
       websocket.sendProjectStatus('success', 1, projectName );
@@ -50,6 +52,11 @@ function run(projectName, scripts, i, db, build) {
         }
 
       });
+      var project = _.find(projectsConfig.projects,function(proj){
+        return projectName==proj.projectName;
+      });
+      if(project.useDeployServer)
+        deploy.deploy(project,build);
     });
 
   } else if (i < scripts.length) {

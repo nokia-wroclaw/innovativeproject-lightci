@@ -84,5 +84,15 @@ module.exports = {
     };
 
     return c;
+  },
+  fDBModDeploys: function () {
+    var c =
+    {
+      deploy_server: Sequelize.STRING,
+      deploy_status: Sequelize.STRING,
+      deploy_message: Sequelize.STRING
+    };
+
+    return c;
   }
 };

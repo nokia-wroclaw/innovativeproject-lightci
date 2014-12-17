@@ -24,5 +24,9 @@ angular.module('lightciApp')
       $http.get('/api/outputs', {params: {build_id: $routeParams.build_id}}).success(function (outputs) {
         $scope.outputs = outputs;
       });
+
+      $http.get('/api/deploys',{params: {build_id: $routeParams.build_id}}).success(function (deploys) {
+        $scope.deploys = deploys;
+      });
     }
   });
