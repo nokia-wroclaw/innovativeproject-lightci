@@ -2,19 +2,43 @@
  * Created by michal on 01.12.14.
  */
 
-var db = require("../db/db");
-var run = require("../run-script/run-script");
+var db;
+var run;
+
+module.exports = function (models, runScript) {
+  db = models;
+  run = runScript;
+  return {
+    cleanPendingBuilds: cleanPendingBuilds,
+    build : build,
+    buildWithCommits : buildWithCommits,
+    addCommits : addCommits
+  };
+};
+
+
+function cleanPendingBuilds() {
+  var Build = db.Build;
+  Build.findAll({where: {build_status: 'pending'}})
+    .then(function (builds) {
+      if (builds.length > 0) {
+        builds.forEach(function (build) {
+          build.destroy();
+        });
+      }
+    });
+};
 
 function addCommits(project, commits) {
-  db.findInstance('Project', {where: {project_name: project.projectName}})
+  db.Project.findAll({where: {project_name: project.projectName}})
     .then(function (proj) {
       var dbProject = proj[0];
       for (var i = 0; i < commits.length; i++) {
-        var dbCommit = db.createInstance('Commit', {
-          revision:   commits[i]['revision'],
-          author:     commits[i]['author'],
-          date:       commits[i]['date'],
-          message:    commits[i]['message']
+        var dbCommit = db.Commit.create({
+          commit_id: commits[i]['revision'],
+          commit_author: commits[i]['author'],
+          commit_date: commits[i]['date'],
+          commit_comment: commits[i]['message']
         });
 
         dbCommit.then(function (c_commit) {
@@ -26,29 +50,29 @@ function addCommits(project, commits) {
 
 
 function buildWithCommits(project, commits) {
-  addCommits(project,commits);
+  addCommits(project, commits);
   build(project);
 
 }
 
 function build(project) {
 
-  db.findInstance('Project', {where: {project_name: project.projectName}})
+  db.Project.findAll({where: {project_name: project.projectName}})
     .then(function (proj) {
       var dbProject = proj[0];
 
-      db.findInstance('Build', {
+      db.Build.findAll({
         where: {ProjectId: dbProject.dataValues.id, build_status: 'success'},
         limit: 1,
         order: "build_date DESC"
       })
         .then(function (lastSuccessfulBuild) {
           if (lastSuccessfulBuild.length > 0) {
-            db.findInstance('Commit', {where: ["ProjectId=? and commit_date >?", dbProject.dataValues.id, lastSuccessfulBuild[0].dataValues.build_date]})
+            db.Commit.findAll({where: ["ProjectId=? and commit_date >?", dbProject.dataValues.id, lastSuccessfulBuild[0].dataValues.build_date]})
               .then(function (commits) {
-                var dbBuild = db.createInstance('Build', {
-                  status: 'pending',
-                  date: new Date()
+                var dbBuild = db.Build.create({
+                  build_status: 'pending',
+                  build_date: new Date()
                 });
                 dbBuild.then(function (c_build) {
                   run.runBuildScript(project.projectName, project.scripts, c_build, db);
@@ -61,14 +85,14 @@ function build(project) {
 
               });
           } else {
-            db.findInstance('Commit', {where: {ProjectId: dbProject.dataValues.id}, order: "commit_date DESC"})
+            db.Commit.findAll({where: {ProjectId: dbProject.dataValues.id}, order: "commit_date DESC"})
               .then(function (commits) {
-                var dbBuild = db.createInstance('Build', {
-                  status: 'pending',
-                  date: new Date()
+                var dbBuild = db.Build.create({
+                  build_status: 'pending',
+                  build_date: new Date()
                 });
                 dbBuild.then(function (c_build) {
-                  run.runBuildScript(project.projectName, project.scripts, c_build, db);
+                  run.runBuildScript(project.projectName, project.scripts, c_build);
                   dbProject.addBuild([c_build]);
 
                   for (var i = 0; i < commits.length; i++) {
@@ -84,18 +108,5 @@ function build(project) {
 
 }
 
-function cleanPendingBuilds() {
-  db.findInstance("Build", {where: {build_status: 'pending'}})
-    .then(function(builds) {
-      if(builds.length > 0) {
-        builds.forEach(function(build) {
-          db.deleteInstance(build);
-        });
-      }
-    });
-}
 
-exports.build = build;
-exports.buildWithCommits = buildWithCommits;
-exports.addCommits = addCommits;
-exports.cleanPendingBuilds = cleanPendingBuilds;
+

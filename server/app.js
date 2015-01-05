@@ -18,22 +18,29 @@ var app = express();
 var server = require('http').createServer(app);
 
 global.passport = require('passport');
-
+app.set('models', require('./models'));
+app.use(function(req,res,next){
+  req.db = app.get('models');
+  next();
+});
 app.use(cookieParser());
 app.use(session({ secret: 'sessionsecret' })); // session secret
 app.use((global.passport).initialize());
 app.use((global.passport).session()); // persistent login sessions
 app.use(flash()); // use connect-flash for flash messages stored in session
 
+
+
+
 require('./config/express')(app);
 require('./routes')(app);
 
 // Our modules
-var db = require('./components/db/db');
-var projHandler = require("./components/project-handling/project-handler.js")
+var projHandler = require("./components/project-handling/project-handler.js")(app.get('models'));
 
 var fs = require("fs");
-var builder = require("./components/builder/builder.js");
+var run = require("./components/run-script/run-script.js")(app.get('models'));
+var builder = require("./components/builder/builder.js")(app.get('models'), run);
 
 var exec = require('child-process-promise').exec;
 
@@ -65,7 +72,7 @@ io.on('connection', function(socket) {
 });
 
 // Prepare database tables if not existing
-db.createTables(globalConfigs['databaseDir'], function () {
+/*db.createTables(globalConfigs['databaseDir'], function () {
   // Check the repo
   projectConfigs['projects'].forEach(function (project) {
     var dbProject = db.findInstance('Project', {where: {project_name: project.projectName}});
@@ -79,10 +86,24 @@ db.createTables(globalConfigs['databaseDir'], function () {
 
   //clean builds with pending status
   builder.cleanPendingBuilds();
+});*/
+app.get('models').sequelize.sync().then(function(){
+  var Project = app.get('models').Project;
+
+  projectConfigs['projects'].forEach(function (project) {
+    var dbProject = Project.findAll({where: {project_name: project.projectName}});
+    dbProject.then(function (projects) {
+      if (projects.length == 0) {
+        projHandler.addProject(project);
+      } else
+        projHandler.updateProject(project);
+    });
+  });
+
+//clean builds with pending status
+  builder.cleanPendingBuilds();
 });
 
 
-
-
 // Expose app
-exports = module.exports = app;
+module.exports = app;

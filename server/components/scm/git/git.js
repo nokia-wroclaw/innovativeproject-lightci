@@ -2,20 +2,20 @@
  * Created by michal on 17.11.14.
  */
 var core = require("./gitCore");
-var run = require("../../run-script/run-script");
+var run;
 var projectDir = require('../../../config/global.config.json').checkoutDir;
 var exec = require('child-process-promise').exec;
-var db = require('../../db/db');
-var builder = require('../../builder/builder');
+var db;
+var builder;
 
 function gitPull(project) {
   core.pull(projectDir + "/" + project.projectName)
     .then(function (out) {
       if (out.stdout != 'Already up-to-date.\n') {
-        db.findInstance('Project', {where: {project_name: project.projectName}})
+        db.Project.findAll({where: {project_name: project.projectName}})
           .then(function (proj) {
             var dbProject = proj[0];
-            db.findInstance('Build', {where: {ProjectId: dbProject.id}, limit: 1, order: 'build_date DESC'})
+            db.Build.findAll({where: {ProjectId: dbProject.id}, limit: 1, order: 'build_date DESC'})
               .then(function (build) {
                 core.logFull(projectDir + "/" + project.projectName, build[0].build_date)
                   .then(function (commits) {
@@ -27,16 +27,15 @@ function gitPull(project) {
     });
 }
 
-//
 function gitCloneAgain(project) {
   isUpToDate(project).then(function(result) {
     if(result == false) {
       exec("rm -r '" + __dirname + "/../../../../repos/" + project.projectName + "'").then(function () {
         core.clone(project.repositoryUrl, projectDir + "/" + project.projectName, project.repositoryUsername, project.repositoryPassword).then(function () {
-          db.findInstance('Project', {where: {project_name: project.projectName}})
+          db.Project.findAll({where: {project_name: project.projectName}})
             .then(function (proj) {
               var dbProject = proj[0];
-              db.findInstance('Build', {where: {ProjectId: dbProject.id}, limit: 1, order: 'build_date DESC'})
+              db.Build.findAll({where: {ProjectId: dbProject.id}, limit: 1, order: 'build_date DESC'})
                 .then(function (build) {
                   core.logFull(projectDir + "/" + project.projectName, build[0].build_date)
                     .then(function (commits) {
@@ -54,7 +53,7 @@ function gitCloneAgain(project) {
 
 function gitClone(project) {
   core.clone(project.repositoryUrl, projectDir + "/" + project.projectName,project.repositoryUsername,project.repositoryPassword).then(function () {
-    db.createInstance('Project', {url: project.repositoryUrl, name: project.projectName})
+    db.Project.create({project_url: project.repositoryUrl, project_name: project.projectName,project_average_build_time: null})
       .then(function () {
         core.logLastCommit(projectDir + "/" + project.projectName).then(function (commit) {
           builder.buildWithCommits(project, commitArrayToJSON([commit]));
@@ -82,7 +81,16 @@ function commitArrayToJSON(commits) {
 function isUpToDate(project){
   return core.isUpToDate(projectDir + "/" + project.projectName);
 }
-exports.pull = gitPull;
-exports.clone = gitClone;
-exports.cloneAgain = gitCloneAgain;
-exports.isUpToDate = isUpToDate;
+module.exports = function(models){
+  db = models;
+  run = require("../../run-script/run-script")(db);
+  builder = require('../../builder/builder')(db,run);
+
+  return {
+    pull : gitPull,
+    clone : gitClone,
+    cloneAgain : gitCloneAgain,
+    isUpToDate : isUpToDate
+  };
+};
+

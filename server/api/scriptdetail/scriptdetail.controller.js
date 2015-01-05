@@ -1,19 +1,20 @@
 'use strict';
 
 var _ = require('lodash');
-var db = require('../../components/db/db');
+
 
 // Get list of scriptdetails
 exports.index = function(req, res) {
+  var db = req.db;
   var scriptDetails = { testSuites: [] };
 
-  db.findInstance('BuildOutputs', {where: { id: req.query.script_id }})
+  db.ScriptOutput.findAll({where: { id: req.query.script_id }})
     .then(function(outputs){
       if(outputs.length>0) {
         _.first(outputs).output = _.unescape(_.first(outputs).output);
         scriptDetails.scriptOutputs = _.first(outputs).dataValues;
 
-        db.findInstance('TestSuites', {where: {BuildOutputId: req.query.script_id}})
+        db.TestSuite.findAll({where: {ScriptOutputId: req.query.script_id}})
           .then(function (suites) {
 
             for (var i = 0; i < suites.length; i++) {

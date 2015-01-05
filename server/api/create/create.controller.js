@@ -1,11 +1,14 @@
 'use strict';
 
 var _ = require('lodash');
-var projectHandler = require("../../components/project-handling/project-handler");
+
 var fs = require("fs");
 
 // Get list of creates
 exports.create = function (req, res) {
+  var db =req.db;
+  var projectHandler = require("../../components/project-handling/project-handler")(db);
+
   var project = {
     projectName: req.body.project_name,
     repositoryUrl: req.body.project_url,
@@ -23,7 +26,7 @@ exports.create = function (req, res) {
     dependencies: [],
     scripts: []
   };
-  
+
   if (req.body.project_dependencies)
     project.dependencies = (req.body.project_dependencies.replace(/\s/g, "").split(","));
   else

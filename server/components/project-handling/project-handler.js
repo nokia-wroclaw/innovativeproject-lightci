@@ -1,16 +1,16 @@
 /**
  * Created by michal on 24.11.14.
  */
-var scm = require('../scm/scmManager');
-var cronjobs = require("../cron-jobs/cron-jobs");
+var scm;
+var cronjobs;
 var exec = require('child-process-promise').exec;
-var db = require('../db/db');
+var db;
 var fs = require("fs");
 var _ = require('lodash');
 
 function projectExists(project)
 {
-  var dbProject = db.findInstance('Project', {where: {project_name: project.projectName}});
+  var dbProject = db.Project.findAll({where: {project_name: project.projectName}});
   dbProject.then(function (projects) {
     if(projects.length == 0)
       return false;
@@ -47,7 +47,7 @@ function updateConfig(project_name, project) {
 
 function getConfigFromId(project_id, project_config)
 {
-  var dbProject = db.findInstance('Project', {where: {id: project_id}});
+  var dbProject = db.Project.findAll({where: {id: project_id}});
   dbProject.then(function (projects) {
     if(projects.length == 0)
       project_config(null);
@@ -96,7 +96,7 @@ function removeProject(project) {
   if(fs.existsSync(__dirname+"/../../../repos/"+project.project_name))
     exec("rm -r '"+__dirname+"/../../../repos/"+project.project_name+"'", function() {});
 
-  db.deleteInstance(project, {ProjectId: project.project_id});
+  project.destroy({ProjectId: project.project_id});
   console.log("Removing project", project.project_name);
 }
 
@@ -109,11 +109,19 @@ function updateProject(project){
     console.log(err);
   }
 }
+module.exports = function(models){
+  db = models;
+  scm  = require('../scm/scmManager')(db);
+  cronjobs = require("../cron-jobs/cron-jobs")(db);
+  return {
+    addProject : addProject,
+    updateProject : updateProject,
+    projectExists : projectExists,
+    removeProject : removeProject,
+    getConfigFromId : getConfigFromId,
+    updateConfig : updateConfig,
+    addToConfig : addToConfig
+  };
+};
 
-exports.addProject = addProject;
-exports.updateProject = updateProject;
-exports.projectExists = projectExists;
-exports.removeProject = removeProject;
-exports.getConfigFromId = getConfigFromId;
-exports.updateConfig = updateConfig;
-exports.addToConfig = addToConfig;
+

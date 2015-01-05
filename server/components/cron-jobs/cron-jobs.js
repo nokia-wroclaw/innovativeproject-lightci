@@ -2,8 +2,8 @@
  * Created by michal on 24.11.14.
  */
 var crontab = require('node-crontab');
-var db = require('../db/db');
-var scm = require('../scm/scmManager');
+var db;
+var scm;
 
 // Create new job and add jobId to the map
 function addCrontabJob(project) {
@@ -23,7 +23,7 @@ function addCrontabJob(project) {
     console.log("Error: add crontab job");
   }
   console.log("Current Crontab Jobs: ", global.jobsMap);
-}
+};
 
 // Cancel job and remove it from the map
 function removeCrontabJob(key) {
@@ -32,7 +32,14 @@ function removeCrontabJob(key) {
     global.jobsMap[key] = null;
     console.log("Current Crontab Jobs: ", global.jobsMap);
   }
-}
+};
 
-exports.addCrontabJob = addCrontabJob;
-exports.removeCrontabJob = removeCrontabJob;
+module.exports = function(models){
+  db = models;
+  scm = require('../scm/scmManager')(db);
+  return {
+    addCrontabJob : addCrontabJob,
+    removeCrontabJob : removeCrontabJob
+
+  };
+};

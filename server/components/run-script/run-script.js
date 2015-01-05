@@ -1,28 +1,41 @@
 /**
  * Created by michal on 17.11.14.
  */
+
+'use strict';
+
 var exec = require('child-process-promise').exec;
 var parser = require('../parsers/junitparser').junitParser;
-var db = require('../db/db');
+var db;
 var websocket = require("../websocket/websocket");
-var deploy = require("../deploy/deploy");
+var deploy;
 var fs = require("fs");
-var builder = require("../builder/builder");
+var builder;
 var runMap = {};
 var _ = require("lodash");
 var lastBuildMap = {};
 
-function runBuildScript(projectName, scripts, build, db) {
-  run(projectName, scripts, 0, db, build);
+module.exports = function(models){
+  db = models;
+  builder = require("../builder/builder")(db,this);
+  deploy = require("../deploy/deploy")(db);
+  return {
+    runBuildScript : runBuildScript,
+    cancel : cancel
+  };
+};
+
+function runBuildScript(projectName, scripts, build) {
+  run(projectName, scripts, 0, build);
 }
 
-function run(projectName, scripts, i, db, build) {
+function run(projectName, scripts, i, build) {
   if (i == scripts.length) {
-    var project = db.findInstance('Project', {where: {project_name: projectName}});
+    var project = db.Project.findAll({where: {project_name: projectName}});
 
 
     project.then(function(resultProjects){
-      var builds = db.findInstance('Build', {where: {ProjectId: _.first(resultProjects).id}});
+      var builds = db.Build.findAll({where: {ProjectId: _.first(resultProjects).id}});
 
       builds.then(function(resultBuilds){
         var oldAverageTime = _.first(resultProjects).project_average_build_time;
@@ -31,12 +44,11 @@ function run(projectName, scripts, i, db, build) {
         }
         var currentBuildTime = new Date().getTime()-build.build_date.getTime();
         var averageTime = (currentBuildTime+(resultBuilds.length-1)*oldAverageTime.getTime())/resultBuilds.length;
-        db.updateInstance(_.first(resultProjects),{project_average_build_time:new Date(averageTime)});
-
+        _.first(resultProjects).updateAttributes({project_average_build_time:new Date(averageTime)});
       });
 
     });
-    db.updateInstance(build, {build_status: 'success'}).then(function() {
+    build.updateAttributes({build_status: 'success'}).then(function() {
       websocket.sendProjectStatus('success', 1, projectName );
       var projectsConfig = JSON.parse(fs.readFileSync(__dirname+"/../../config/projects.config.json"));
       projectsConfig["projects"].forEach(function(proj) {
@@ -53,7 +65,7 @@ function run(projectName, scripts, i, db, build) {
 
       });
       var project = _.find(projectsConfig.projects,function(proj){
-        return projectName==proj.projectName;
+        return projectName === proj.projectName;
       });
       if(project.useDeployServer)
         deploy.deploy(project,build);
@@ -66,28 +78,28 @@ function run(projectName, scripts, i, db, build) {
 
     lastBuildMap[projectName] = build;
 
-    var newBuildOutput = db.createInstance('BuildOutputs', {
+    var newBuildOutput = db.ScriptOutput.create({
       scriptName: scripts[i].scriptName,
       output: "",
       isSuccess: false
     });
 
     var buildOut = newBuildOutput.then(function (out) {
-      build.addBuildOutput([out]);
+      build.addScriptOutput([out]);
       return out;
     });
     buildOut.then(function(out) {
       exec('cd repos/' + projectName + ' && sh ../../buildscripts/' + projectName + '/' + scripts[i].scriptName)
         .then(function (result) {
-          db.updateInstance(out, {isSuccess: true});
+          out.updateAttributes({isSuccess: true});
           parser(projectName, scripts[i], out, db);
-          run(projectName, scripts, i + 1, db, build);
+          run(projectName, scripts, i + 1, build);
         })
         .fail(function (err) {
           if (err.stdout && lastBuildMap[projectName]) {
             websocket.sendProjectStatus('fail', (i + 1) / scripts.length, projectName);
             parser(projectName, scripts[i], out, db);
-            db.updateInstance(build, {build_status: 'fail'});
+            build.updateAttributes({build_status: 'fail'});
           }
         })
         .progress(function (childProcess) {
@@ -95,7 +107,7 @@ function run(projectName, scripts, i, db, build) {
           var buff = "";
           childProcess.stdout.on('data', function (chunk) {
             buff += chunk;
-            db.updateInstance(out, {output: buff});
+            out.updateAttributes({output: _.escape(buff)});
             global.webSockets.emit('console_update', {});
           })
         });
@@ -104,12 +116,8 @@ function run(projectName, scripts, i, db, build) {
 }
 
 function cancel(project) {
-  runMap[project.project_name].kill('SIGHUP');
-  db.deleteInstance(lastBuildMap[project.project_name]).then(function () {
+    runMap[project.project_name].kill('SIGHUP');
+    db.Build.distroy(lastBuildMap[project.project_name]).then(function () {
     lastBuildMap[project.project_name] = null;
-
   });
-}
-
-exports.runBuildScript = runBuildScript;
-exports.cancel = cancel;
+};

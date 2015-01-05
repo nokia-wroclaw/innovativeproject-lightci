@@ -4,7 +4,6 @@
 
 
 var LocalStrategy   = require('passport-local').Strategy;
-var db = require('../db/db');
 
 module.exports = function(passport) {
 

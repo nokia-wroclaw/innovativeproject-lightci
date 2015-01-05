@@ -4,14 +4,14 @@
 
 var exec = require('child-process-promise').exec;
 var fs = require("fs");
-
+var db;
 function clone(project){
-  var scm = require('./'+project.repositoryType+'/'+project.repositoryType);
+  var scm = require('./'+project.repositoryType+'/'+project.repositoryType)(db);
   scm.clone(project);
 }
 
 function pull (project){
-  var scm = require('./'+project.repositoryType+'/'+project.repositoryType);
+  var scm = require('./'+project.repositoryType+'/'+project.repositoryType)(db);
 
   if(project.strategy == "pull")
     scm.pull(project);
@@ -23,5 +23,11 @@ function pull (project){
   }
 }
 
-exports.pull = pull;
-exports.clone = clone;
+module.exports = function(models){
+  db = models;
+  return {
+    pull : pull,
+    clone : clone
+  };
+};
+
