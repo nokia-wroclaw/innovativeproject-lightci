@@ -14,6 +14,7 @@ var builder;
 var runMap = {};
 var _ = require("lodash");
 var lastBuildMap = {};
+var Q = require("q");
 
 module.exports = function(models){
   db = models;
@@ -51,19 +52,27 @@ function run(projectName, scripts, i, build) {
     build.updateAttributes({build_status: 'success'}).then(function() {
       websocket.sendProjectStatus('success', 1, projectName );
       var projectsConfig = JSON.parse(fs.readFileSync(__dirname+"/../../config/projects.config.json"));
-      projectsConfig["projects"].forEach(function(proj) {
-        if(_.contains(proj.dependencies, projectName))
-        {
-          db.getSequelize().query("SELECT `b`.`id`, `p`.`project_name`, `b`.`build_date`, `b`.`build_status` FROM `Builds` AS `b` JOIN `Projects` AS `p` ON `b`.`ProjectId` = `p`.`id` WHERE `p`.`project_name` IN ('"+proj.dependencies.join("','")+"') GROUP BY `p`.`id` ORDER BY `b`.`build_date` DESC", null, { logging: console.log, raw: true})
-            .success(function(rows) {
-              if(_.every(rows, { build_status: 'success'}))
-              {
-                builder.build(proj);
-              }
-            });
-        }
 
+      _.each(projectsConfig["projects"], function(proj) {
+        if(_.contains(proj.dependencies, projectName)) {
+          var projectPromises = db.Project.findAll({where:{project_name: {in: proj.dependencies} }});
+          var buildPromises =[];
+
+          Q.all(projectPromises).then(function(results){
+            buildPromises = _.map(results,function (foundProject){
+              return foundProject.getBuilds({order: 'build_date DESC', limit: 1});
+            });
+          });
+
+          Q.all(buildPromises).then(function (rows) {
+            rows = _.reduce(rows);
+            if (_.every(rows, {dataValues:{build_status: 'success'}})) {
+              builder.build(proj);
+            }
+          });
+        }
       });
+
       var project = _.find(projectsConfig.projects,function(proj){
         return projectName === proj.projectName;
       });

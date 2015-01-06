@@ -71,22 +71,6 @@ io.on('connection', function(socket) {
   global.webSockets = io.sockets;
 });
 
-// Prepare database tables if not existing
-/*db.createTables(globalConfigs['databaseDir'], function () {
-  // Check the repo
-  projectConfigs['projects'].forEach(function (project) {
-    var dbProject = db.findInstance('Project', {where: {project_name: project.projectName}});
-    dbProject.then(function (projects) {
-      if (projects.length == 0) {
-        projHandler.addProject(project)
-      } else
-        projHandler.updateProject(project);
-    });
-  });
-
-  //clean builds with pending status
-  builder.cleanPendingBuilds();
-});*/
 app.get('models').sequelize.sync().then(function(){
   var Project = app.get('models').Project;
 
