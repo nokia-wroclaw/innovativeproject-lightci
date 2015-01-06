@@ -1,0 +1,53 @@
+<div class="row" ng-controller="settingsFormCtrl">
+  <div class="col-lg-12">
+    <h1>Settings
+    </h1>
+  </div>
+  <div class="col-lg-12">
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-edit"></i> Login details </h3>
+        <div class="up-buttons-wrapper">
+          <button id="buttonBack" type="button" ng-click="goBack()" class="btn btn-default btn-sm">
+            <i class="fa fa-arrow-up"></i>
+          </button>
+        </div>
+      </div>
+      <div class="alert alert-dismissable alert-danger" ng-show="hasError">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>Oh snap!</strong> {{message}}
+      </div>
+      <div class="alert alert-dismissable alert-success" ng-show="hasInfo">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>Well done!</strong> {{message}}
+      </div>
+      <div class="panel-body">
+        <form ng-submit="saveSettings()">
+
+          <div id="repospath-group" class="form-group">
+            <label>Repositories directory</label>
+            <input type="text" name="repospath" class="form-control" placeholder="" ng-model="formData.repos_path">
+            <span class="help-block"></span>
+          </div>
+
+          <div id="deploy-group" class="form-group">
+            <label>Plugins</label>
+            <br>
+            <span ng-repeat="plugin in plugins">
+              <label>
+                <input type="checkbox" name="pluginCheckbox" id="pluginCheckboxPlugin" ng-model="plugin.active">
+                {{plugin.name}}
+              </label>
+              <br>
+            </span>
+          </div>
+
+          <!-- SUBMIT BUTTON -->
+          <button type="submit" class="btn btn-primary btn-lg btn-block">
+            <i class="fa fa-upload"></i> Save
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

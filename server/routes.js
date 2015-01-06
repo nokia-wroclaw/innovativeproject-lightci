@@ -21,6 +21,9 @@ module.exports = function(app) {
     res.redirect('/login');
   });
 
+  // Insert routes below
+  app.use('/api/profile', require('./api/profile'));
+  app.use('/api/deploys', require('./api/deploy'));
   app.use('/api/login', require('./api/login'));
   app.use('/api/users', require('./api/user'));
   app.use(function isLoggedIn(req, res, next) {

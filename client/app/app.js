@@ -28,9 +28,13 @@ angular.module('lightciApp', [
         templateUrl: 'components/newProjectForm/newProjectForm.html',
         controller: 'newProjFormCtrl'
       })
-      .when('/login', {
-        templateUrl: 'components/logInForm/logInForm.html',
-        controller: 'logInFormCtrl'
+      .when('/profile', {
+        templateUrl: 'components/profileForm/profileForm.html',
+        controller: 'profileFormCtrl'
+      })
+      .when('/settings', {
+        templateUrl: 'components/settingsForm/settingsForm.html',
+        controller: 'settingsFormCtrl'
       })
       .when('/project/:project_id/:project_name/edit', {
         templateUrl: 'components/editProjectForm/editProjectForm.html',
