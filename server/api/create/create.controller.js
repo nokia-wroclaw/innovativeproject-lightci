@@ -40,6 +40,8 @@ exports.create = function (req, res) {
     err = "Repository URL is empty";
   } else if (projectHandler.projectExists(project)) {
     err = "Project already exists";
+  } else if(/[^a-zA-Z0-9_]/.test(project.projectName)) {
+    err = "Project name can only contain letters, digits and underscore";
   }
 
   if (err) {
