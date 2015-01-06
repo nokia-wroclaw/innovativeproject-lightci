@@ -4,7 +4,7 @@
 
 
 var LocalStrategy   = require('passport-local').Strategy;
-
+var _ = require('lodash');
 module.exports = function(passport) {
 
   // =========================================================================
@@ -16,7 +16,7 @@ module.exports = function(passport) {
   });
 
   passport.deserializeUser(function (id, done) {
-    var dbUser = db.findInstance('Users', {where: {id: id}});
+    var dbUser = passport.db.User.findAll({where: {id: id}});
     dbUser.then(function (user) {
       done(null, user[0]);
     });
@@ -33,8 +33,7 @@ module.exports = function(passport) {
     },
 
     function(req, email, password, done) {
-
-      var dbUser = db.findInstance('Users', {where: {user_email: email}});
+      var dbUser = req.db.User.findAll({where: {user_email: email}});
       dbUser.then(function (user) {
         if (user.length==0) {
           req.session.error = 'Incorrect email.';
@@ -52,6 +51,33 @@ module.exports = function(passport) {
 
         console.log("Auth OK - " + user[0].user_email);
         return done(null, user[0]);
+      });
+
+    }));
+
+  passport.use('local-signup', new LocalStrategy({
+      usernameField : 'email',
+      passwordField : 'password',
+      passReqToCallback : true
+    },
+    function(req, email, password, done) {
+      process.nextTick(function() {
+        req.db.User.findAll({where : { 'user_email' :  email }}).then(function(users) {
+          if (users.length>0) {
+            return done(null, false, req.flash('signupMessage', 'That email is already taken.'));
+          } else {
+            var newUser = req.db.User.create({
+              user_name: "",
+              user_pass: password,
+              user_email: email
+            });
+
+            newUser.then(function(result){
+              return done(null, result);
+            });
+          }
+        });
+
       });
 
     }));

@@ -5,10 +5,17 @@ module.exports = function(sequelize, DataTypes) {
   var User = sequelize.define('User', {
     user_name: DataTypes.STRING,
     user_pass: DataTypes.STRING,
-    user_level: DataTypes.INTEGER,
     user_email: DataTypes.STRING
   },{
-    timestamps: false
+    timestamps: false,
+    classMethods : {
+      generateHash : function(password) {
+        return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
+      },
+      validPassword : function(password) {
+        return bcrypt.compareSync(password, this.user_pass);
+      }
+    }
   });
   return User;
 };

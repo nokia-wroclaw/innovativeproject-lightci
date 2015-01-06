@@ -23,6 +23,8 @@ app.use(function(req,res,next){
   req.db = app.get('models');
   next();
 });
+
+global.passport.db = app.get('models');
 app.use(cookieParser());
 app.use(session({ secret: 'sessionsecret' })); // session secret
 app.use((global.passport).initialize());

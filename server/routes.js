@@ -8,9 +8,32 @@ var errors = require('./components/errors');
 
 module.exports = function(app) {
 
-  // Insert routes below
-  app.use('/api/deploys', require('./api/deploy'));
+  app.get('/login', function(req, res) {
+    res.render('login.ejs', { message: req.flash('loginMessage') });
+  });
+
+  app.get('/signup', function(req, res) {
+    res.render('signup.ejs', { message: req.flash('signupMessage') });
+  });
+
+  app.get('/logout', function(req, res) {
+    req.logout();
+    res.redirect('/login');
+  });
+
   app.use('/api/login', require('./api/login'));
+  app.use('/api/users', require('./api/user'));
+  app.use(function isLoggedIn(req, res, next) {
+    if (req.isAuthenticated())
+      return next();
+
+    res.redirect('/login');
+  });
+
+// Insert routes below
+
+  app.use('/api/deploys', require('./api/deploy'));
+
   app.use('/api/cancelbuilds', require('./api/cancelbuild'));
   app.use('/api/tests', require('./api/test'));
   app.use('/api/scriptdetails', require('./api/scriptdetail'));
@@ -28,9 +51,4 @@ module.exports = function(app) {
   app.route('/:url(api|auth|components|app|bower_components|assets)/*')
    .get(errors[404]);
 
-  // All other routes should redirect to the index.html
-  app.route('/*')
-    .get(function(req, res) {
-      res.sendfile(app.get('appPath') + '/index.html');
-    });
 };
