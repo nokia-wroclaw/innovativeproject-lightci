@@ -23,16 +23,12 @@ app.use(function(req,res,next){
   req.db = app.get('models');
   next();
 });
-
-global.passport.db = app.get('models');
 app.use(cookieParser());
 app.use(session({ secret: 'sessionsecret' })); // session secret
 app.use((global.passport).initialize());
 app.use((global.passport).session()); // persistent login sessions
 app.use(flash()); // use connect-flash for flash messages stored in session
-
-
-
+global.passport.db =app.get('models');
 
 require('./config/express')(app);
 require('./routes')(app);
