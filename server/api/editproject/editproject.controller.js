@@ -54,25 +54,40 @@ exports.update = function(req, res) {
 
   };
 
-  //console.log(req);
-  if(!fs.existsSync(__dirname+"/../../../buildscripts/"+project.projectName))
-    fs.mkdirSync(__dirname+"/../../../buildscripts/"+project.projectName);
+  var err = "";
 
-  fs.writeFileSync(__dirname + "/../../../buildscripts/" + project.projectName + "/deploy.sh", req.body.project_serverscript);
-
-  for(var i = 0; i< req.body.scripts.length; i++) {
-    fs.writeFileSync(__dirname+"/../../../buildscripts/"+project.projectName+"/"+ i.toString()+".sh", req.body.scripts[i].scriptContent);
-    project.scripts.push({ scriptName: i.toString()+".sh", parser: req.body.scripts[i].parser, outputPath: req.body.scripts[i].outputPath });
+  if (!project.repositoryUrl) {
+    err = "Repository URL is empty";
   }
 
-  project.dependencies = (req.body.project_dependencies.replace( /\s/g, "").split(","));
+  if (err) {
+    res.json({info: null, error: err});
+  } else {
 
-  if(req.body.project_dependencies)
+    //console.log(req);
+    if (!fs.existsSync(__dirname + "/../../../buildscripts/" + project.projectName))
+      fs.mkdirSync(__dirname + "/../../../buildscripts/" + project.projectName);
+
+    fs.writeFileSync(__dirname + "/../../../buildscripts/" + project.projectName + "/deploy.sh", req.body.project_serverscript);
+
+    for (var i = 0; i < req.body.scripts.length; i++) {
+      fs.writeFileSync(__dirname + "/../../../buildscripts/" + project.projectName + "/" + i.toString() + ".sh", req.body.scripts[i].scriptContent);
+      project.scripts.push({
+        scriptName: i.toString() + ".sh",
+        parser: req.body.scripts[i].parser,
+        outputPath: req.body.scripts[i].outputPath
+      });
+    }
+
     project.dependencies = (req.body.project_dependencies.replace(/\s/g, "").split(","));
-  else
-    project.dependencies = [];
 
-  projectHandler.updateConfig(project.projectName, project);
+    if (req.body.project_dependencies)
+      project.dependencies = (req.body.project_dependencies.replace(/\s/g, "").split(","));
+    else
+      project.dependencies = [];
 
-  res.json({info: "Nice", error: null});
+    projectHandler.updateConfig(project.projectName, project);
+
+    res.json({info: "Nice", error: null});
+  }
 };
