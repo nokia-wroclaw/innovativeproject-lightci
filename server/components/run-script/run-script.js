@@ -15,11 +15,14 @@ var runMap = {};
 var _ = require("lodash");
 var lastBuildMap = {};
 var Q = require("q");
+var notifier;
 
 module.exports = function(models){
   db = models;
   builder = require("../builder/builder")(db,this);
   deploy = require("../deploy/deploy")(db);
+  notifier = require('../notifier/notifier.js')(db);
+
   return {
     runBuildScript : runBuildScript,
     cancel : cancel
@@ -90,7 +93,7 @@ function run(projectName, scripts, i, build) {
     var newBuildOutput = db.ScriptOutput.create({
       scriptName: scripts[i].scriptName,
       output: "",
-      isSuccess: false
+      isSuccess: null
     });
 
     var buildOut = newBuildOutput.then(function (out) {
@@ -105,10 +108,12 @@ function run(projectName, scripts, i, build) {
           run(projectName, scripts, i + 1, build);
         })
         .fail(function (err) {
+          out.updateAttributes({isSuccess: false});
           if (err.stdout && lastBuildMap[projectName]) {
             websocket.sendProjectStatus('fail', (i + 1) / scripts.length, projectName);
             parser(projectName, scripts[i], out, db);
             build.updateAttributes({build_status: 'fail'});
+            notifier.notifyAll(projectName);
           }
         })
         .progress(function (childProcess) {

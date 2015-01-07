@@ -36,9 +36,9 @@
               <a style="display: block;" ng-href={{baseUrl}}>
                 <button type="button" class="btn btn-link">
                   <span ng-class="{ red_text: output.isSuccess == false, green_text: output.isSuccess == true }">
-                    <i class="fa fa-thumbs-up"  ng-show="output.isSuccess"></i>
-                    <i class="fa fa-thumbs-down"  ng-hide="output.isSuccess"></i>
-                    {{output.isSuccess == true ? "Successful": "Failed"}}
+                    <i class="fa fa-thumbs-up"  ng-show="output.isSuccess ==true"></i>
+                    <i class="fa fa-thumbs-down"  ng-show="output.isSuccess==false"></i>
+                    {{output.isSuccess == true ? "Successful": output.isSuccess == false ? "Failed": "Pending"}}
                   </span>
                 </button>
               </a>
