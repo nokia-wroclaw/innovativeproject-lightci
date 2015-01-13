@@ -16,6 +16,9 @@ body {
 .green_text {
   color: green;
 }
+.orange_text {
+  color: orange;
+}
 
 .scripts-buttons-wrapper {
   float: right;

@@ -11,6 +11,8 @@ angular.module('lightciApp')
     $scope.hasInfo = false;
     $scope.message = "";
 
+    getConfigs();
+
     $scope.formData = {};
     $scope.plugins = [
       { "name": "UberPlugin-1.0.3", "active": true },
@@ -21,6 +23,19 @@ angular.module('lightciApp')
     $scope.goBack = function() {
       window.history.back();
     }
+
+    function getConfigs() {
+      $http.get('/api/configs').success(function (cfgs) {
+        $scope.cfgs = cfgs;
+      });
+    };
+
+    $scope.restoreConfig = function(id) {
+      var data = { id: id };
+      $http.post('/api/configs', data).success(function (result) {
+
+      });
+    };
 
     $scope.saveSettings = function() {
       var data = {};
