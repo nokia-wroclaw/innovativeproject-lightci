@@ -14,10 +14,7 @@ var sequelize = new Sequelize('lightci_db', 'root', 'root', {
   dialect: "sqlite",
   port: 3306,
   storage: globalConfigs.databaseDir,
-  logging: true,
-  dialectOptions: {
-    charset: 'utf8'
-  }
+  logging: false
 });
 
 fs

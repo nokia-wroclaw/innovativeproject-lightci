@@ -19,6 +19,7 @@ angular.module('lightciApp')
       window.history.back();
     };
 
+
     $scope.getTests = function(suite) {
       if ($scope.showTests == false) {
         $http.get('/api/tests', {params: {suite_id: suite.id}}).success(function (tests) {

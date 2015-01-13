@@ -52,7 +52,7 @@ module.exports = function(app) {
 
   app.route('/*')
     .get(function(req, res) {
-      res.sendfile(app.get('appPath') + '/index2.html');
+      res.sendfile('server/views/index.html');
     });
 
 };

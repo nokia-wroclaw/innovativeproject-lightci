@@ -3,7 +3,8 @@
 angular.module('lightciApp', [
   'highcharts-ng',
   'ngRoute',
-  'angular-lodash'
+  'angular-lodash',
+  'ui.bootstrap'
 
 ])
   .config(function ($routeProvider) {

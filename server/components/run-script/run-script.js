@@ -103,12 +103,12 @@ function run(projectName, scripts, i, build) {
     buildOut.then(function(out) {
       exec('cd repos/' + projectName + ' && sh ../../buildscripts/' + projectName + '/' + scripts[i].scriptName)
         .then(function (result) {
-          out.updateAttributes({isSuccess: true});
+          out.updateAttributes({isSuccess: true, output: _.escape(result.stdout + "\n\nScript success")});
           parser(projectName, scripts[i], out, db);
           run(projectName, scripts, i + 1, build);
         })
         .fail(function (err) {
-          out.updateAttributes({isSuccess: false});
+          out.updateAttributes({isSuccess: false, output: _.escape(err.stdout + "\n\nScript failed due to return code 1")});
           if (err.stdout && lastBuildMap[projectName]) {
             websocket.sendProjectStatus('fail', (i + 1) / scripts.length, projectName);
             parser(projectName, scripts[i], out, db);
