@@ -81,7 +81,7 @@ function run(projectName, scripts, i, build) {
             isSuccess: false,
             output: _.escape(err.stdout + "\n\nScript failed due to return code 1")
           });
-          if (err.stdout && lastBuildMap[projectName]) {
+          if ( lastBuildMap[projectName]) {
             websocket.sendProjectStatus('fail', (i + 1) / scripts.length, projectName);
             parser(projectName, scripts[i], out, db);
             build.updateAttributes({build_status: 'fail'});
@@ -90,13 +90,15 @@ function run(projectName, scripts, i, build) {
           return false;
         })
         .progress(function (childProcess) {
-          runMap[projectName] = childProcess;
-          var buff = "";
-          childProcess.stdout.on('data', function (chunk) {
-            buff += chunk;
-            out.updateAttributes({output: _.escape(buff)});
-            global.webSockets.emit('console_update', {});
-          })
+          if(!_.isUndefined(childProcess)) {
+            runMap[projectName] = childProcess;
+            var buff = "";
+            childProcess.stdout.on('data', function (chunk) {
+              buff += chunk;
+              out.updateAttributes({output: _.escape(buff)});
+              global.webSockets.emit('console_update', {});
+            })
+          }
         });
     });
   }
