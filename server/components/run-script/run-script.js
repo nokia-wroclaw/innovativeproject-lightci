@@ -15,6 +15,9 @@ var lastBuildMap = {};
 var notifier = require('../notifier/notifier.js');
 var fs = require('fs');
 
+function escapeColors(string) {
+  return string.replace(/(\x1b|\\E)\[[0-9;]*m/g, '');
+}
 
 function runBuildScript(projectName, scripts, build) {
   return run(projectName, scripts, 0, build);
@@ -73,7 +76,7 @@ function run(projectName, scripts, i, build) {
       return exec('cd repos/' + projectName + ' && sh ../../buildscripts/' + projectName + '/' + scripts[i].scriptName)
         .then(function (result) {
           if(lastBuildMap[projectName]) {
-            out.updateAttributes({isSuccess: true, output: _.escape(result.stdout + "\n\nScript success")});
+            out.updateAttributes({isSuccess: true, output: _.escape(escapeColors(result.stdout) + "\n\nScript success")});
             parser(projectName, scripts[i], out, db);
           }
 
@@ -82,7 +85,7 @@ function run(projectName, scripts, i, build) {
         .fail(function (err) {
           if(lastBuildMap[projectName]) out.updateAttributes({
             isSuccess: false,
-            output: _.escape(err.stdout + "\n\nScript failed due to return code 1")
+            output: _.escape(escapeColors(err.stdout) + "\n\nScript failed due to return code 1")
           });
           if (err.stdout && lastBuildMap[projectName]) {
             websocket.sendProjectStatus('fail', (i + 1) / scripts.length, projectName);
@@ -97,7 +100,7 @@ function run(projectName, scripts, i, build) {
           var buff = "";
           if(childProcess) childProcess.stdout.on('data', function (chunk) {
             buff += chunk;
-            if(lastBuildMap[projectName]) { out.updateAttributes({output: _.escape(buff)}); }
+            if(lastBuildMap[projectName]) { out.updateAttributes({output: _.escape(escapeColors(buff))}); }
             global.webSockets.emit('console_update', {});
           })
         });
