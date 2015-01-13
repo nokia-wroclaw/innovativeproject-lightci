@@ -50,10 +50,10 @@ var globalConfigs = require("./config/global.config.json");
 var projectConfigs = require("./config/projects.config.json");
 
 
-// Create the directory path for the project
+// Create the directory path for the dashboard
 var projectDir = globalConfigs['checkoutDir'];
 
-// A map with crontab jobId's for every running project
+// A map with crontab jobId's for every running dashboard
 global.jobsMap = {};
 
 var socketServer = require("http").createServer(app);

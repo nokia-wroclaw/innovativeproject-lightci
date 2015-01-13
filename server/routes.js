@@ -21,8 +21,8 @@ module.exports = function(app) {
     res.redirect('/login');
   });
 
-  app.use('/api/login', require('./api/login'));
   app.use('/api/users', require('./api/user'));
+
   app.use(function isLoggedIn(req, res, next) {
     if (req.isAuthenticated())
       return next();
@@ -34,17 +34,14 @@ module.exports = function(app) {
 
   app.use('/api/deploys', require('./api/deploy'));
 
-  app.use('/api/cancelbuilds', require('./api/cancelbuild'));
+  app.use('/api/profile', require('./api/profile'));
   app.use('/api/tests', require('./api/test'));
   app.use('/api/scriptdetails', require('./api/scriptdetail'));
-  app.use('/api/editproject', require('./api/editproject'));
-  app.use('/api/remove', require('./api/remove'));
-  app.use('/api/buildnow', require('./api/buildnow'));
-  app.use('/api/create', require('./api/create'));
+  app.use('/api/project', require('./api/project'));
   app.use('/api/outputs', require('./api/output'));
   app.use('/api/commits', require('./api/commit'));
   app.use('/api/builds', require('./api/build'));
-  app.use('/api/projects', require('./api/project'));
+  app.use('/api/dashboard', require('./api/dashboard'));
   app.use('/api/things', require('./api/thing'));
 
   app.route('/:url(api|auth|components|app|bower_components|assets)*//*')

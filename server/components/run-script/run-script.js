@@ -104,7 +104,7 @@ function run(projectName, scripts, i, build) {
 
 function cancel(project) {
   runMap[project.project_name].kill('SIGHUP');
-  db.Build.distroy(lastBuildMap[project.project_name]).then(function () {
+  db.Build.destroy(lastBuildMap[project.project_name]).then(function () {
     lastBuildMap[project.project_name] = null;
   });
 };

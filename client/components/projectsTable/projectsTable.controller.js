@@ -17,20 +17,19 @@ angular.module('lightciApp')
 
     $scope.buildProject = function (id) {
       var data = {project_id: id};
-      $http.post('/api/buildnow', data).success(function () {
+      $http.post('/api/builds', data).success(function () {
 
       });
     };
     $scope.cancelBuilding = function (id) {
       var data = {project_id: id};
-
-      $http.post('/api/cancelbuilds', data).success(function () {
+      $http.put('/api/builds', data).success(function () {
 
       });
     };
     $scope.removeProject = function (id) {
     var data = {project_id: id};
-      $http.post('/api/remove', data).success(function () {
+      $http.put('/api/dashboard', data).success(function () {
         $scope.projects = _.filter($scope.projects, function (project) {
           return project.id != id;
         });
@@ -60,7 +59,7 @@ angular.module('lightciApp')
 
 
     function getProjects($scope, $http, $interval) {
-      return $http.get('/api/projects').success(function (proj) {
+      return $http.get('/api/dashboard').success(function (proj) {
         proj.forEach(function (project) {
           calculateTrend(project);
         });
