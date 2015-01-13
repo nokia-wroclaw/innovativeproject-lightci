@@ -72,12 +72,15 @@ function run(projectName, scripts, i, build) {
     return buildOut.then(function (out) {
       return exec('cd repos/' + projectName + ' && sh ../../buildscripts/' + projectName + '/' + scripts[i].scriptName)
         .then(function (result) {
-          out.updateAttributes({isSuccess: true, output: _.escape(result.stdout + "\n\nScript success")});
-          parser(projectName, scripts[i], out, db);
+          if(lastBuildMap[projectName]) {
+            out.updateAttributes({isSuccess: true, output: _.escape(result.stdout + "\n\nScript success")});
+            parser(projectName, scripts[i], out, db);
+          }
+
           return run(projectName, scripts, i + 1, build);
         })
         .fail(function (err) {
-          out.updateAttributes({
+          if(lastBuildMap[projectName]) out.updateAttributes({
             isSuccess: false,
             output: _.escape(err.stdout + "\n\nScript failed due to return code 1")
           });
@@ -92,9 +95,9 @@ function run(projectName, scripts, i, build) {
         .progress(function (childProcess) {
           runMap[projectName] = childProcess;
           var buff = "";
-          childProcess.stdout.on('data', function (chunk) {
+          if(childProcess) childProcess.stdout.on('data', function (chunk) {
             buff += chunk;
-            out.updateAttributes({output: _.escape(buff)});
+            if(lastBuildMap[projectName]) { out.updateAttributes({output: _.escape(buff)}); }
             global.webSockets.emit('console_update', {});
           })
         });
@@ -104,10 +107,16 @@ function run(projectName, scripts, i, build) {
 
 function cancel(project) {
   runMap[project.project_name].kill('SIGHUP');
-  db.Build.distroy(lastBuildMap[project.project_name]).then(function () {
-    lastBuildMap[project.project_name] = null;
+  lastBuildMap[project.project_name].destroy();
+  lastBuildMap[project.project_name] = null;
+  
+  var lastbuild = project.getBuilds({where: {build_status: {in: ['fail','success']}}, order: 'build_date DESC', limit: 1});
+  lastbuild.then(function(build) {
+    websocket.sendProjectStatus(_.first(build).dataValues.build_status, 1, project.project_name);
   });
-};
+
+
+}
 
 module.exports = {
   runBuildScript: runBuildScript,
