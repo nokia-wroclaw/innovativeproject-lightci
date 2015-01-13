@@ -2,20 +2,20 @@
  * Created by michal on 01.12.14.
  */
 
-var db;
-var run;
+'use strict';
 
-module.exports = function (models, runScript) {
-  db = models;
-  run = runScript;
-  return {
-    cleanPendingBuilds: cleanPendingBuilds,
-    build : build,
-    buildWithCommits : buildWithCommits,
-    addCommits : addCommits
-  };
+var db = require('../../models');
+var run = require('../run-script/run-script');
+var _ = require('lodash');
+var fs = require('fs');
+var Q = require("q");
+
+module.exports = {
+  cleanPendingBuilds: cleanPendingBuilds,
+  build: build,
+  buildWithCommits: buildWithCommits,
+  addCommits: addCommits
 };
-
 
 function cleanPendingBuilds() {
   var Build = db.Build;
@@ -52,14 +52,13 @@ function addCommits(project, commits) {
 function buildWithCommits(project, commits) {
   addCommits(project, commits);
   build(project);
-
 }
 
 function build(project) {
 
   db.Project.findAll({where: {project_name: project.projectName}})
     .then(function (proj) {
-      var dbProject = proj[0];
+      var dbProject = _.first(proj);
 
       db.Build.findAll({
         where: {ProjectId: dbProject.dataValues.id, build_status: 'success'},
@@ -67,46 +66,59 @@ function build(project) {
         order: "build_date DESC"
       })
         .then(function (lastSuccessfulBuild) {
-          if (lastSuccessfulBuild.length > 0) {
-            db.Commit.findAll({where: ["ProjectId=? and commit_date >?", dbProject.dataValues.id, lastSuccessfulBuild[0].dataValues.build_date]})
-              .then(function (commits) {
-                var dbBuild = db.Build.create({
-                  build_status: 'pending',
-                  build_date: new Date()
-                });
-                dbBuild.then(function (c_build) {
-                  run.runBuildScript(project.projectName, project.scripts, c_build, db);
-                  dbProject.addBuild([c_build]);
+          var commitsPromise = getCommits(dbProject, lastSuccessfulBuild);
 
-                  for (var i = 0; i < commits.length; i++) {
-                    commits[i].addBuild([c_build]);
-                  }
-                });
-
+          commitsPromise.then(function (commits) {
+            var dbBuild = db.Build.create({
+              build_status: 'pending',
+              build_date: new Date()
+            });
+            dbBuild.then(function (c_build) {
+              var buildingResult = run.runBuildScript(project.projectName, project.scripts, c_build);
+              buildingResult.then(function (isSuccess) {
+                if (isSuccess) {
+                  buildDependencies(project.projectName);
+                }
               });
-          } else {
-            db.Commit.findAll({where: {ProjectId: dbProject.dataValues.id}, order: "commit_date DESC"})
-              .then(function (commits) {
-                var dbBuild = db.Build.create({
-                  build_status: 'pending',
-                  build_date: new Date()
-                });
-                dbBuild.then(function (c_build) {
-                  run.runBuildScript(project.projectName, project.scripts, c_build);
-                  dbProject.addBuild([c_build]);
+              dbProject.addBuild([c_build]);
 
-                  for (var i = 0; i < commits.length; i++) {
-                    commits[i].addBuild([c_build]);
-                  }
-                });
+              for (var i = 0; i < commits.length; i++) {
+                commits[i].addBuild([c_build]);
+              }
+            });
+          });
 
-              });
-          }
         });
-
     });
-
 }
 
+function getCommits(dbProject, lastSuccessfulBuild) {
+  if (lastSuccessfulBuild.length > 0) {
+    return db.Commit.findAll({where: ["ProjectId=? and commit_date >?", dbProject.dataValues.id, _.first(lastSuccessfulBuild).dataValues.build_date]});
+  } else {
+    return db.Commit.findAll({where: {ProjectId: dbProject.dataValues.id}, order: "commit_date DESC"});
+  }
+}
 
+function buildDependencies(projectName) {
+  var projectsConfig = JSON.parse(fs.readFileSync(__dirname + "/../../config/projects.config.json"));
+  _.each(projectsConfig["projects"], function (proj) {
+    if (_.contains(proj.dependencies, projectName)) {
+      var projectPromises = db.Project.findAll({where: {project_name: {in: proj.dependencies}}});
+      var buildPromises = [];
 
+      Q.all(projectPromises).then(function (results) {
+        buildPromises = _.map(results, function (foundProject) {
+          return foundProject.getBuilds({order: 'build_date DESC', limit: 1});
+        });
+      });
+
+      Q.all(buildPromises).then(function (rows) {
+        rows = _.reduce(rows);
+        if (_.every(rows, {dataValues: {build_status: 'success'}})) {
+          build(proj);
+        }
+      });
+    }
+  });
+}

@@ -6,31 +6,18 @@
 
 var exec = require('child-process-promise').exec;
 var parser = require('../parsers/junitparser').junitParser;
-var db;
+var db = require('../../models');
 var websocket = require("../websocket/websocket");
-var deploy;
-var fs = require("fs");
-var builder;
+var deploy = require("../deploy/deploy");
 var runMap = {};
 var _ = require("lodash");
 var lastBuildMap = {};
-var Q = require("q");
-var notifier;
+var notifier = require('../notifier/notifier.js');
+var fs = require('fs');
 
-module.exports = function(models){
-  db = models;
-  builder = require("../builder/builder")(db,this);
-  deploy = require("../deploy/deploy")(db);
-  notifier = require('../notifier/notifier.js')(db);
-
-  return {
-    runBuildScript : runBuildScript,
-    cancel : cancel
-  };
-};
 
 function runBuildScript(projectName, scripts, build) {
-  run(projectName, scripts, 0, build);
+  return run(projectName, scripts, 0, build);
 }
 
 function run(projectName, scripts, i, build) {
@@ -38,50 +25,32 @@ function run(projectName, scripts, i, build) {
     var project = db.Project.findAll({where: {project_name: projectName}});
 
 
-    project.then(function(resultProjects){
+    project.then(function (resultProjects) {
       var builds = db.Build.findAll({where: {ProjectId: _.first(resultProjects).id}});
 
-      builds.then(function(resultBuilds){
+      builds.then(function (resultBuilds) {
         var oldAverageTime = _.first(resultProjects).project_average_build_time;
-        if(_.isNull(oldAverageTime) || _.isNaN(oldAverageTime)){
+        if (_.isNull(oldAverageTime) || _.isNaN(oldAverageTime)) {
           oldAverageTime = new Date(0);
         }
-        var currentBuildTime = new Date().getTime()-build.build_date.getTime();
-        var averageTime = (currentBuildTime+(resultBuilds.length-1)*oldAverageTime.getTime())/resultBuilds.length;
-        _.first(resultProjects).updateAttributes({project_average_build_time:new Date(averageTime)});
+        var currentBuildTime = new Date().getTime() - build.build_date.getTime();
+        var averageTime = (currentBuildTime + (resultBuilds.length - 1) * oldAverageTime.getTime()) / resultBuilds.length;
+        _.first(resultProjects).updateAttributes({project_average_build_time: new Date(averageTime)});
       });
 
     });
-    build.updateAttributes({build_status: 'success'}).then(function() {
-      websocket.sendProjectStatus('success', 1, projectName );
-      var projectsConfig = JSON.parse(fs.readFileSync(__dirname+"/../../config/projects.config.json"));
+    build.updateAttributes({build_status: 'success'}).then(function () {
+      websocket.sendProjectStatus('success', 1, projectName);
+      var projectsConfig = JSON.parse(fs.readFileSync(__dirname + "/../../config/projects.config.json"));
 
-      _.each(projectsConfig["projects"], function(proj) {
-        if(_.contains(proj.dependencies, projectName)) {
-          var projectPromises = db.Project.findAll({where:{project_name: {in: proj.dependencies} }});
-          var buildPromises =[];
 
-          Q.all(projectPromises).then(function(results){
-            buildPromises = _.map(results,function (foundProject){
-              return foundProject.getBuilds({order: 'build_date DESC', limit: 1});
-            });
-          });
-
-          Q.all(buildPromises).then(function (rows) {
-            rows = _.reduce(rows);
-            if (_.every(rows, {dataValues:{build_status: 'success'}})) {
-              builder.build(proj);
-            }
-          });
-        }
-      });
-
-      var project = _.find(projectsConfig.projects,function(proj){
+      var project = _.find(projectsConfig.projects, function (proj) {
         return projectName === proj.projectName;
       });
-      if(project.useDeployServer)
-        deploy.deploy(project,build);
+      if (project.useDeployServer)
+        deploy.deploy(project, build);
     });
+    return true;
 
   } else if (i < scripts.length) {
     console.log("Running script", i);
@@ -100,21 +69,25 @@ function run(projectName, scripts, i, build) {
       build.addScriptOutput([out]);
       return out;
     });
-    buildOut.then(function(out) {
-      exec('cd repos/' + projectName + ' && sh ../../buildscripts/' + projectName + '/' + scripts[i].scriptName)
+    return buildOut.then(function (out) {
+      return exec('cd repos/' + projectName + ' && sh ../../buildscripts/' + projectName + '/' + scripts[i].scriptName)
         .then(function (result) {
           out.updateAttributes({isSuccess: true, output: _.escape(result.stdout + "\n\nScript success")});
           parser(projectName, scripts[i], out, db);
-          run(projectName, scripts, i + 1, build);
+          return run(projectName, scripts, i + 1, build);
         })
         .fail(function (err) {
-          out.updateAttributes({isSuccess: false, output: _.escape(err.stdout + "\n\nScript failed due to return code 1")});
+          out.updateAttributes({
+            isSuccess: false,
+            output: _.escape(err.stdout + "\n\nScript failed due to return code 1")
+          });
           if (err.stdout && lastBuildMap[projectName]) {
             websocket.sendProjectStatus('fail', (i + 1) / scripts.length, projectName);
             parser(projectName, scripts[i], out, db);
             build.updateAttributes({build_status: 'fail'});
             notifier.notifyAll(projectName);
           }
+          return false;
         })
         .progress(function (childProcess) {
           runMap[projectName] = childProcess;
@@ -130,8 +103,13 @@ function run(projectName, scripts, i, build) {
 }
 
 function cancel(project) {
-    runMap[project.project_name].kill('SIGHUP');
-    db.Build.distroy(lastBuildMap[project.project_name]).then(function () {
+  runMap[project.project_name].kill('SIGHUP');
+  db.Build.distroy(lastBuildMap[project.project_name]).then(function () {
     lastBuildMap[project.project_name] = null;
   });
+};
+
+module.exports = {
+  runBuildScript: runBuildScript,
+  cancel: cancel
 };

@@ -2,9 +2,10 @@
 
 var _ = require('lodash');
 var Q = require("q");
+var db = require('../../models');
+
 // Get list of projects
 exports.index = function (req, res) {
-  var db = req.db;
   var projects = [];
   db.Project.findAll({}).then(function (dbProjects) {
     projects = _.map(dbProjects, function (dbProject) {

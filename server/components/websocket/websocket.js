@@ -3,7 +3,7 @@
  */
 
 function sendProjectStatus(status, progress, projectName) {
-  var data = { 'projectName': projectName, 'status': status, 'progress': progress};
+  var data = {'projectName': projectName, 'status': status, 'progress': progress};
 
   global.webSockets.emit('project_status', data);
 }

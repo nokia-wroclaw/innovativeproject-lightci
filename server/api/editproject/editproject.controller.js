@@ -2,9 +2,9 @@
 
 var _ = require('lodash');
 var fs = require("fs");
+var projectHandler = require("../../components/project-handling/project-handler");
 
 exports.show = function(req, res) {
-  var projectHandler = require("../../components/project-handling/project-handler")(req.db);
 
   projectHandler.getConfigFromId(req.query.project_id,function(config) {
     if (config) {
@@ -33,7 +33,6 @@ exports.show = function(req, res) {
 };
 
 exports.update = function(req, res) {
-  var projectHandler = require("../../components/project-handling/project-handler")(req.db);
 
   var project = {
     projectName: req.body.project_name,

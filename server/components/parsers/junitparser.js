@@ -15,15 +15,15 @@ function parse(projectName, script, buildOutput, db) {
 
     outputFileData
       .then(function (result) {
-        addResultToDB(result.suite,buildOutput,db);
-    })
+        addResultToDB(result.suite, buildOutput, db);
+      })
       .fail(function (err) {
         console.log(err);
       });
   }
 };
 
-function addResultToDB(result,buildOutput,db){
+function addResultToDB(result, buildOutput, db) {
   db.TestSuite.create(resultToTestSuiteModel(result)).then(function (testSuite) {
     buildOutput.addTestSuite([testSuite]);
 
@@ -35,7 +35,7 @@ function addResultToDB(result,buildOutput,db){
   });
 };
 
-function resultToTestSuiteModel(result){
+function resultToTestSuiteModel(result) {
   return {
     name: result['name'],
     time: result['time'],

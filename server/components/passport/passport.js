@@ -3,9 +3,11 @@
  */
 
 
-var LocalStrategy   = require('passport-local').Strategy;
+var LocalStrategy = require('passport-local').Strategy;
 var _ = require('lodash');
-module.exports = function(passport) {
+var db = require('../../models');
+
+module.exports = function (passport) {
 
   // =========================================================================
   // passport session setup ==================================================
@@ -16,7 +18,7 @@ module.exports = function(passport) {
   });
 
   passport.deserializeUser(function (id, done) {
-    var dbUser = passport.db.User.findAll({where: {id: id}});
+    var dbUser = db.User.findAll({where: {id: id}});
     dbUser.then(function (user) {
       done(null, user[0]);
     });
@@ -27,15 +29,15 @@ module.exports = function(passport) {
   // =========================================================================
 
   passport.use('local-login', new LocalStrategy({
-      usernameField : 'email',
-      passwordField : 'password',
-      passReqToCallback : true
+      usernameField: 'email',
+      passwordField: 'password',
+      passReqToCallback: true
     },
 
-    function(req, email, password, done) {
-      var dbUser = req.db.User.findAll({where: {user_email: email}});
+    function (req, email, password, done) {
+      var dbUser = db.User.findAll({where: {user_email: email}});
       dbUser.then(function (user) {
-        if (user.length==0) {
+        if (user.length == 0) {
           req.session.error = 'Incorrect email.';
           console.log(req.session.error);
 
@@ -56,23 +58,23 @@ module.exports = function(passport) {
     }));
 
   passport.use('local-signup', new LocalStrategy({
-      usernameField : 'email',
-      passwordField : 'password',
-      passReqToCallback : true
+      usernameField: 'email',
+      passwordField: 'password',
+      passReqToCallback: true
     },
-    function(req, email, password, done) {
-      process.nextTick(function() {
-        req.db.User.findAll({where : { 'user_email' :  email }}).then(function(users) {
-          if (users.length>0) {
+    function (req, email, password, done) {
+      process.nextTick(function () {
+        db.User.findAll({where: {'user_email': email}}).then(function (users) {
+          if (users.length > 0) {
             return done(null, false, req.flash('signupMessage', 'That email is already taken.'));
           } else {
-            var newUser = req.db.User.create({
+            var newUser = db.User.create({
               user_name: "",
               user_pass: password,
               user_email: email
             });
 
-            newUser.then(function(result){
+            newUser.then(function (result) {
               return done(null, result);
             });
           }

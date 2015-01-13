@@ -3,11 +3,11 @@
 var _ = require('lodash');
 
 var fs = require("fs");
+var db = require('../../models');
+var projectHandler = require("../../components/project-handling/project-handler");
 
 // Get list of creates
 exports.create = function (req, res) {
-  var db =req.db;
-  var projectHandler = require("../../components/project-handling/project-handler")(db);
 
   var project = {
     projectName: req.body.project_name,

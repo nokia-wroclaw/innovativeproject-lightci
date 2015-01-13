@@ -1,6 +1,7 @@
 'use strict';
 
 var _ = require('lodash');
+var db = require('../../models');
 
 exports.update = function(req, res) {
   var email = req.body.email;

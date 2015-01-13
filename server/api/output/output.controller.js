@@ -1,9 +1,9 @@
 'use strict';
 
 var _ = require('lodash');
+var db = require('../../models');
 
 exports.index = function(req, res) {
-  var db = req.db;
   db.ScriptOutput.findAll({where: { BuildId: req.query.build_id }})
     .then(function(outputs){
       for(var i=0;i<outputs.length;i++){

@@ -12,33 +12,29 @@ var config = require('./config/environment');
 var flash    = require('connect-flash');
 var cookieParser = require('cookie-parser');
 var session      = require('express-session');
-
+var models = require('./models');
 // Setup server
 var app = express();
 var server = require('http').createServer(app);
 
 global.passport = require('passport');
 app.set('models', require('./models'));
-app.use(function(req,res,next){
-  req.db = app.get('models');
-  next();
-});
+
 app.use(cookieParser());
 app.use(session({ secret: 'sessionsecret' })); // session secret
 app.use((global.passport).initialize());
 app.use((global.passport).session()); // persistent login sessions
 app.use(flash()); // use connect-flash for flash messages stored in session
-global.passport.db =app.get('models');
 
 require('./config/express')(app);
 require('./routes')(app);
 
 // Our modules
-var projHandler = require("./components/project-handling/project-handler.js")(app.get('models'));
+var projHandler = require("./components/project-handling/project-handler.js");
 
 var fs = require("fs");
-var run = require("./components/run-script/run-script.js")(app.get('models'));
-var builder = require("./components/builder/builder.js")(app.get('models'), run);
+var run = require("./components/run-script/run-script.js");
+var builder = require("./components/builder/builder.js");
 
 var exec = require('child-process-promise').exec;
 
@@ -69,8 +65,8 @@ io.on('connection', function(socket) {
   global.webSockets = io.sockets;
 });
 
-app.get('models').sequelize.sync().then(function(){
-  var Project = app.get('models').Project;
+models.sequelize.sync().then(function(){
+  var Project = models.Project;
 
   projectConfigs['projects'].forEach(function (project) {
     var dbProject = Project.findAll({where: {project_name: project.projectName}});

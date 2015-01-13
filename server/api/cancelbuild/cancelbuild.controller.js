@@ -1,10 +1,10 @@
 'use strict';
 
 var _ = require('lodash');
+var db = require('../../models');
+var run = require('../../components/run-script/run-script');
 
 exports.create = function(req, res) {
-  var db = req.db;
-  var run = require("../../components/run-script/run-script")(db);
   db.Project.findAll({where: {id: req.body.project_id}})
     .then(function (proj) {
 

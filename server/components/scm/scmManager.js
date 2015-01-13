@@ -4,30 +4,27 @@
 
 var exec = require('child-process-promise').exec;
 var fs = require("fs");
-var db;
-function clone(project){
-  var scm = require('./'+project.repositoryType+'/'+project.repositoryType)(db);
+var db = require('../../models');
+
+function clone(project) {
+  var scm = require('./' + project.repositoryType + '/' + project.repositoryType);
   scm.clone(project);
 }
 
-function pull (project){
-  var scm = require('./'+project.repositoryType+'/'+project.repositoryType)(db);
+function pull(project) {
+  var scm = require('./' + project.repositoryType + '/' + project.repositoryType);
 
-  if(project.strategy == "pull")
+  if (project.strategy == "pull")
     scm.pull(project);
-  else if(project.strategy == "clone") {
+  else if (project.strategy == "clone") {
     scm.cloneAgain(project);
-  } else
-  {
+  } else {
     console.log("Unknown update strategy");
   }
 }
 
-module.exports = function(models){
-  db = models;
-  return {
-    pull : pull,
-    clone : clone
-  };
+module.exports = {
+  pull: pull,
+  clone: clone
 };
 

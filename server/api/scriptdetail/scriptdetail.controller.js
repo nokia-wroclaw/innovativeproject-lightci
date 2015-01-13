@@ -1,11 +1,10 @@
 'use strict';
 
 var _ = require('lodash');
-
+var db = require('../../models');
 
 // Get list of scriptdetails
 exports.index = function(req, res) {
-  var db = req.db;
   var scriptDetails = { testSuites: [] };
 
   db.ScriptOutput.findAll({where: { id: req.query.script_id }})

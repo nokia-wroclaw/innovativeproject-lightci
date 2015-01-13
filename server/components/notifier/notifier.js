@@ -2,45 +2,48 @@
  * Created by ms on 06.01.15.
  */
 
-var Gmailer = require("gmail-sender");
-var models;
+var nodemailer = require('nodemailer');
+var db = require('../../models');
 var _ = require('lodash');
-Gmailer.options({
-  smtp: {
-    service: "Gmail",
+
+var transporter = nodemailer.createTransport({
+  service: 'Gmail',
+  auth: {
     user: "lightcilightci@gmail.com",
     pass: "lightcilightci1"
   }
 });
 
-module.exports = function(db){
-  models = db;
-  return {
-    notifyAll: notifyAll
-  };
+module.exports = {
+  notifyAll: notifyAll
 };
 
 function notifyAll(projectName) {
-  var users = models.User.findAll({});
+  var users = db.User.findAll({});
   var subject = "LightCI: Bad news :(";
   var text = "Problem with project " + projectName;
 
-  users.then(function(foundUsers){
-    _.each(foundUsers,function(user){
-      sendMail(user.user_email,subject,text);
+  users.then(function (foundUsers) {
+    _.each(foundUsers, function (user) {
+      sendMail(user.user_email, subject, text);
     });
   });
 
 }
 
-function sendMail(adress,subject,text){
-  Gmailer.send({
+function sendMail(adress, subject, text) {
+  var mailOptions = {
+    from: 'LightCI',
+    to: adress,
     subject: subject,
-    text: text,
-    from: "LightCI",
-    to: {
-      email: adress
-    },
-  });
+    text: text
+  };
 
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log('Message sent: ' + info.response);
+    }
+  });
 }

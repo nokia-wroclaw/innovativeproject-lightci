@@ -1,12 +1,11 @@
 'use strict';
 
 var _ = require('lodash');
-
+var db = require('../../models');
+var projectHandler = require("../../components/project-handling/project-handler");
 
 // Get list of removes
 exports.destroy = function(req, res) {
-  var db = req.db;
-  var projectHandler = require("../../components/project-handling/project-handler")(db);
 
   db.Project.findAll({where: {id: req.body.project_id}})
     .then(function (proj) {

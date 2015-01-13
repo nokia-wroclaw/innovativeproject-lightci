@@ -24,14 +24,14 @@ fs
   })
   .forEach(function(file) {
     var model = sequelize["import"](path.join(__dirname, file));
-    module.exports[model.name] = model;
+    db[model.name] = model;
   });
 
-Object.keys(module.exports).forEach(function(modelName) {
-  if ("associate" in module.exports[modelName]) {
-    module.exports[modelName].associate(module.exports);
+Object.keys(db).forEach(function(modelName) {
+  if ("associate" in db[modelName]) {
+    db[modelName].associate(db);
   }
 });
+db.sequelize = sequelize;
 
-
-module.exports.sequelize = sequelize;
+module.exports = db;

@@ -3,7 +3,7 @@
  */
 
 var exec = require('child-process-promise').exec;
-var db;
+var db = require('../../models');
 
 function deploy(project, build) {
   console.log("[deploy] "+project.projectName+ " deploy in progress")
@@ -38,10 +38,7 @@ function addResultToDataBase(status,message,project,build){
     build.addDeploy([out]);
   });
 }
-module.exports = function(models){
-  db = models;
 
-  return {
+module.exports = {
     deploy : deploy
-    };
 };
