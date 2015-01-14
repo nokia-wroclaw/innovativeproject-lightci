@@ -41,6 +41,7 @@ module.exports = function(app) {
   app.use('/api/outputs', require('./api/output'));
   app.use('/api/commits', require('./api/commit'));
   app.use('/api/builds', require('./api/build'));
+  app.use('/api/configs', require('./api/config'));
   app.use('/api/dashboard', require('./api/dashboard'));
   app.use('/api/things', require('./api/thing'));
 
