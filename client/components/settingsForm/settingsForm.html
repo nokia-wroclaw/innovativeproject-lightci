@@ -34,17 +34,26 @@
             <label>Plugins</label>
             <br>
             <span ng-repeat="plugin in plugins">
-              <label>
-                <input type="checkbox" name="pluginCheckbox" id="pluginCheckboxPlugin" ng-model="plugin.active">
-                {{plugin.name}}
-              </label>
-              <br>
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" name="pluginCheckbox" id="pluginCheckboxPlugin" ng-model="plugin.active">
+                  {{plugin.name}}
+                </label>
+              </div>
             </span>
           </div>
 
-          <div id="deploy-group" class="form-group">
+          <div id="restore-group" class="form-group">
             <label>Configuration Backups</label>
-            <table class="table table-striped table-bordered table-condensed">
+            <br>
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" name="restoreCheckbox" id="restoreCheckboxRestore" ng-model="restore">
+                Restore configuration from Backup
+              </label>
+            </div>
+
+            <table class="table table-striped table-bordered table-condensed" ng-show="restore">
               <thead>
               <tr>
                 <th data-field="date">Date</th>

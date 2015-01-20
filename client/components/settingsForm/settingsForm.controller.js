@@ -10,6 +10,7 @@ angular.module('lightciApp')
     $scope.hasError = false;
     $scope.hasInfo = false;
     $scope.message = "";
+    $scope.restore = false;
 
     getConfigs();
 
@@ -33,7 +34,9 @@ angular.module('lightciApp')
     $scope.restoreConfig = function(id) {
       var data = { id: id };
       $http.post('/api/configs', data).success(function (result) {
-
+        if (result.success) {
+          $location.path("#");
+        }
       });
     };
 

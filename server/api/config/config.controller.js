@@ -13,6 +13,7 @@ exports.index = function (req, res) {
 };
 
 exports.update = function (req, res) {
-  console.log("Restore config "+req.body.id);
+  console.log("Restoring config "+req.body.id);
   conf.restoreConfig(req.body.id);
+  res.json({'success': true})
 };

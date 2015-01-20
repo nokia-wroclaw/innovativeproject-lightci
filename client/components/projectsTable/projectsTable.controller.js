@@ -7,11 +7,23 @@ angular.module('lightciApp')
   .controller('ProjTableCtrl', function ($scope, $http, $location, socket, $interval) {
     var intervals = [];
     $scope.projects = [];
+    $scope.queue = [];
 
     $scope.baseUrl = '#';
 
-    getProjects($scope, $http, $interval).then(function () {
+    $scope.isQEmpty = function(){
+      return $scope.queue.length > 0 ? false : true;
+    }
 
+    function getQueue() {
+      $http.get('/api/buildQueues').success(function (queue) {
+        $scope.queue = queue;
+      });
+    };
+
+    getQueue();
+
+    getProjects($scope, $http, $interval).then(function () {
 
     });
 
