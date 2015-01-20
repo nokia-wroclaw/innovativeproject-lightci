@@ -20,7 +20,7 @@ function projectExists(project) {
 }
 
 function addToConfig(project) {
-  backup.configBackup("Add project " + project.projectName);
+  backup.configBackup("Add dashboard " + project.projectName);
   var projectsConfig = JSON.parse(fs.readFileSync(__dirname + "/../../config/projects.config.json"));
   var copy = projectsConfig["projects"].slice(0);
   copy.push(project);
@@ -29,7 +29,7 @@ function addToConfig(project) {
 }
 
 function updateConfig(project_name, project) {
-  backup.configBackup("Update project " + project.projectName);
+  backup.configBackup("Update dashboard " + project.projectName);
 
   var projectsConfig = JSON.parse(fs.readFileSync(__dirname + "/../../config/projects.config.json"));
   var copy = [];
@@ -78,7 +78,7 @@ function addProject(project) {
 }
 
 function removeProject(project) {
-  backup.configBackup("Remove project " + project.projectName);
+  backup.configBackup("Remove dashboard " + project.projectName);
 
   var projectsConfig = JSON.parse(fs.readFileSync(__dirname + "/../../config/projects.config.json"));
 
@@ -100,7 +100,7 @@ function removeProject(project) {
     });
 
   project.destroy({ProjectId: project.project_id});
-  console.log("Removing project", project.project_name);
+  console.log("Removing dashboard", project.project_name);
 }
 
 function updateProject(project) {

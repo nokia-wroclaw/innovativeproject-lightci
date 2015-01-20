@@ -16,7 +16,7 @@ angular.module('lightciApp')
     $scope.formData = { project_name: $scope.project_name };
     $scope.formData.scripts = [];
 
-    $http.get('/api/editproject', { params: { project_id: $routeParams.project_id } }).success(function (config) {
+    $http.get('/api/project', { params: { project_id: $routeParams.project_id } }).success(function (config) {
         $scope.formData.project_name = config.projectName;
         $scope.formData.project_url = config.repositoryUrl;
         $scope.formData.project_repo = config.repositoryType;
@@ -83,7 +83,7 @@ angular.module('lightciApp')
 
     $scope.editProject = function() {
       var data = $scope.formData;
-      $http.post('/api/editproject', data ).success(function (result) {
+      $http.put('/api/project', data ).success(function (result) {
 
         if (result.error) {
           $scope.hasError = true;

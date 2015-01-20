@@ -11,7 +11,7 @@ var builder = require('../../builder/builder');
 // callback after SVN module checkout/update
 function svnSaveCommitsAndBuild(err, info, project) {
   if (!err) {
-    // project has some new commits - save commits to database
+    // dashboard has some new commits - save commits to database
     if (info.length > 0) {
       builder.buildWithCommits(project, info);
     }

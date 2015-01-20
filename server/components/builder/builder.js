@@ -9,10 +9,11 @@ var run = require('../run-script/run-script');
 var _ = require('lodash');
 var fs = require('fs');
 var Q = require("q");
+var buildQueue = require('./build-queue');
 
 module.exports = {
   cleanPendingBuilds: cleanPendingBuilds,
-  build: build,
+  build: addToQueue,
   buildWithCommits: buildWithCommits,
   addCommits: addCommits
 };
@@ -51,7 +52,7 @@ function addCommits(project, commits) {
 
 function buildWithCommits(project, commits) {
   addCommits(project, commits);
-  build(project);
+  addToQueue(project);
 }
 
 function build(project) {
@@ -76,6 +77,10 @@ function build(project) {
             dbBuild.then(function (c_build) {
               var buildingResult = run.runBuildScript(project.projectName, project.scripts, c_build);
               buildingResult.then(function (isSuccess) {
+                buildQueue.removeFinished(project).then(function(){
+                  updateQueue();
+                });
+
                 if (isSuccess) {
                   buildDependencies(project.projectName);
                 }
@@ -116,9 +121,25 @@ function buildDependencies(projectName) {
       Q.all(buildPromises).then(function (rows) {
         rows = _.reduce(rows);
         if (_.every(rows, {dataValues: {build_status: 'success'}})) {
-          build(proj);
+          //build(proj);
+          buildQueue.addToQueue(proj);
         }
       });
     }
   });
 }
+
+function updateQueue() {
+  var projectsPromise = buildQueue.getProjectsToBuild();
+  projectsPromise.then(function(projects){
+    _.each(projects, function (project) {
+      build(project);
+    });
+  });
+};
+
+function addToQueue(project){
+  buildQueue.addToBuildQueue(project);
+  updateQueue();
+};
+

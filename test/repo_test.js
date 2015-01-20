@@ -56,7 +56,7 @@ var fs = require("fs");
       });
 
 
-      it('should add new SVN project to database and create dir', function (done) {
+      it('should add new SVN dashboard to database and project dir', function (done) {
 
         this.timeout(10000);
 
@@ -73,7 +73,7 @@ var fs = require("fs");
       });
 
 
-      it('should add new GIT project to database and create dir', function (done) {
+      it('should add new GIT dashboard to database and project dir', function (done) {
 
         this.timeout(10000);
 

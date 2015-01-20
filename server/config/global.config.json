@@ -1,5 +1,6 @@
 {
   "checkoutDir": "repos",
   "databaseDir": "database.sqlite",
-  "databaseName": "lightci_db"
+  "databaseName": "lightci_db",
+  "maxBuildingProjects":1
 }

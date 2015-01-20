@@ -52,7 +52,7 @@ angular.module('lightciApp')
 
     $scope.createProject = function() {
       var data = $scope.formData;
-      $http.post('/api/create', data).success(function (result) {
+      $http.post('/api/project', data).success(function (result) {
 
         if (result.error) {
           $scope.hasError = true;

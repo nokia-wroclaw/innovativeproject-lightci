@@ -122,8 +122,6 @@ function cancel(project) {
   lastbuild.then(function (build) {
     websocket.sendProjectStatus(_.first(build).dataValues.build_status, 1, project.project_name);
   });
-
-
 }
 
 module.exports = {
