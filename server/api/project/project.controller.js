@@ -49,7 +49,7 @@ exports.create = function (req, res) {
   } else {
 
 
-    if (!fs.existsSync(__dirname + "/../../../../../buildscripts/" + project.projectName))
+    if (!fs.existsSync(__dirname + "/../../../buildscripts/" + project.projectName))
       fs.mkdirSync(__dirname + "/../../../buildscripts/" + project.projectName);
 
     fs.writeFileSync(__dirname + "/../../../buildscripts/" + project.projectName + "/deploy.sh", req.body.project_serverscript);

@@ -2,6 +2,7 @@
 
 var _ = require('lodash');
 var db = require('../../models');
+var conf = require("../../components/config-backup/config-backup");
 
 // Get list of configs
 exports.index = function (req, res) {
@@ -13,4 +14,5 @@ exports.index = function (req, res) {
 
 exports.update = function (req, res) {
   console.log("Restore config "+req.body.id);
+  conf.restoreConfig(req.body.id);
 };

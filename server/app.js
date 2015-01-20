@@ -31,7 +31,6 @@ require('./routes')(app);
 
 // Our modules
 var projHandler = require("./components/project-handling/project-handler.js");
-
 var fs = require("fs");
 var run = require("./components/run-script/run-script.js");
 var builder = require("./components/builder/builder.js");
@@ -66,21 +65,20 @@ io.on('connection', function(socket) {
 });
 
 models.sequelize.sync().then(function(){
-  var Project = models.Project;
+  //synchronize projects and db with config
+  projHandler.syncProjects();
 
-  projectConfigs['projects'].forEach(function (project) {
-    var dbProject = Project.findAll({where: {project_name: project.projectName}});
-    dbProject.then(function (projects) {
-      if (projects.length == 0) {
-        projHandler.addProject(project);
-      } else
-        projHandler.updateProject(project);
-    });
-  });
-
-//clean builds with pending status
+  //clean builds with pending status
   builder.cleanPendingBuilds();
 });
+
+// create directories if not existing
+if (!fs.existsSync(__dirname + "/../buildscripts"))
+  fs.mkdirSync(__dirname+"/../buildscripts");
+if (!fs.existsSync(__dirname + "/../repos"))
+  fs.mkdirSync(__dirname+"/../repos");
+if (!fs.existsSync(__dirname + "/../config_backups"))
+  fs.mkdirSync(__dirname+"/../config_backups");
 
 
 // Expose app

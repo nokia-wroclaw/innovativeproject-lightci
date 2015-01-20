@@ -96,7 +96,7 @@ function run(projectName, scripts, i, build) {
           return false;
         })
         .progress(function (childProcess) {
-          runMap[projectName] = childProcess;
+          if(childProcess) runMap[projectName] = childProcess;
               var buff = "";
 
               if (childProcess) {

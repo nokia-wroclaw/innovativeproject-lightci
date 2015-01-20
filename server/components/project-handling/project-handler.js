@@ -7,6 +7,18 @@ var exec = require('child-process-promise').exec;
 var db = require('../../models');
 var fs = require("fs");
 var _ = require('lodash');
+
+module.exports = {
+  addProject: addProject,
+  updateProject: updateProject,
+  projectExists: projectExists,
+  removeProject: removeProject,
+  getConfigFromId: getConfigFromId,
+  updateConfig: updateConfig,
+  addToConfig: addToConfig,
+  syncProjects: syncProjects
+};
+
 var backup = require('../config-backup/config-backup');
 
 function projectExists(project) {
@@ -112,14 +124,31 @@ function updateProject(project) {
     console.log(err);
   }
 }
-module.exports = {
-  addProject: addProject,
-  updateProject: updateProject,
-  projectExists: projectExists,
-  removeProject: removeProject,
-  getConfigFromId: getConfigFromId,
-  updateConfig: updateConfig,
-  addToConfig: addToConfig
-};
+
+function syncProjects() {
+  var projectConfigs = JSON.parse(fs.readFileSync(__dirname + "/../../config/projects.config.json"));
+
+  // adding projects that exist in config, but not in db
+  // and updating projects existing in db
+  projectConfigs['projects'].forEach(function (project) {
+    var dbProject = db.Project.findAll({where: {project_name: project.projectName}});
+    dbProject.then(function (projects) {
+      if (projects.length == 0) {
+        addProject(project);
+      } else
+        updateProject(project);
+    });
+  });
+  // removing projects that exist only in db and not in config
+  db.Project.findAll().then(function(projects) {
+    projects.forEach(function(dbProject) {
+      var equivalent = _.where(projectConfigs['projects'], {'projectName': dbProject.project_name});
+      if(_.isEmpty(equivalent)) {
+        dbProject.destroy();
+      }
+    });
+  });
+}
+
 
 
