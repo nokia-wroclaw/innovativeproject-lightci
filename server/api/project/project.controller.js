@@ -23,6 +23,8 @@ exports.create = function (req, res) {
     serverPassword: req.body.project_serverpassword,
     serverAddress: req.body.project_serveraddress,
     deployFilePath: req.body.project_filepath,
+    createArtifact: req.body.project_artifact,
+    artifactFilePath: req.body.project_artifactpath,
     dependencies: [],
     scripts: []
   };
@@ -114,6 +116,8 @@ exports.update = function(req, res) {
     serverPassword: req.body.project_serverpassword,
     serverAddress: req.body.project_serveraddress,
     deployFilePath: req.body.project_filepath,
+    createArtifact: req.body.project_artifact,
+    artifactFilePath: req.body.project_artifactpath,
     dependencies: [],
     scripts: []
 

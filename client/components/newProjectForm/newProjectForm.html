@@ -189,6 +189,21 @@
               </textarea>
               </div>
             </div>
+
+          <div id="artifact-group" class="form-group">
+            <label>Artifact Generation</label>
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" name="artifactCheckbox" id="artifactCheckboxArtifact" ng-model="formData.project_artifact" ng-init="formData.project_artifact=false">
+                Generate an Artifact
+              </label>
+            </div>
+            <div id="artifactdetails-group" class="form-group" ng-show="formData.project_artifact==true">
+              <label>Path to the Artifact</label>
+              <input type="text" name="filepath" class="form-control" placeholder="" ng-model="formData.project_artifactpath">
+              <span class="help-block"></span>
+            </div>
+          </div>
           <br>
           <!-- SUBMIT BUTTON -->
           <button type="submit" class="btn btn-primary btn-lg btn-block">

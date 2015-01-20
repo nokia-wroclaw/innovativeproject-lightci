@@ -32,6 +32,8 @@ angular.module('lightciApp')
         $scope.formData.project_username = config.repositoryUsername;
         $scope.formData.project_password = config.repositoryPassword;
         $scope.formData.project_dependencies = config.dependencies;
+        $scope.formData.project_artifact = config.createArtifact;
+        $scope.formData.project_artifactpath = config.artifactFilePath;
 
         for (var i=0; i<config.scripts.length; i++) {
           currentScriptId += 1;
