@@ -25,7 +25,7 @@
             <td>
               <a style="display: block;" ng-href={{baseUrl+"/project/"+project.id+"/"+project.project_name}}>
                 <button type="button" class="btn btn-link">
-                <img ng-src="../../assets/images/{{project.lastBuilds[0]}}.png"/>
+                <img ng-src="../../assets/images/{{queue.indexOf(project.project_name)>=0?'wait':project.lastBuilds[0]}}.png"/>
                 </button>
               </a>
             </td>

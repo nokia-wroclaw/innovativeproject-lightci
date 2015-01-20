@@ -69,7 +69,21 @@ angular.module('lightciApp')
 
     });
 
+    socket.on('build_queue_change', function (data) {
+      switch(data.change){
+        case 'remove':
+          $scope.queue = _.filter($scope.queue,function(proj){
+          return proj !== data.projectName;
+        });
+          break;
+        case 'add':
+          $scope.queue.push(data.projectName);
+          break;
+      }
 
+
+
+    });
     function getProjects($scope, $http, $interval) {
       return $http.get('/api/dashboard').success(function (proj) {
         proj.forEach(function (project) {

@@ -8,4 +8,13 @@ function sendProjectStatus(status, progress, projectName) {
   global.webSockets.emit('project_status', data);
 }
 
-exports.sendProjectStatus = sendProjectStatus;
+function sendBuildQueueChange(change, projectName) {
+  var data = {'change': change, 'projectName': projectName};
+
+  global.webSockets.emit('build_queue_change', data);
+}
+
+module.exports = {
+  sendProjectStatus : sendProjectStatus,
+  sendBuildQueueChange:sendBuildQueueChange
+};

@@ -2,6 +2,7 @@
  * Created by ms on 14.01.15.
  */
 var _ = require('lodash');
+var websocket = require('../websocket/websocket');
 
 var buildQueue = [];
 var currentBuilding = [];
@@ -23,24 +24,26 @@ function addToBuildQueue(project){
   });
   if(_.isUndefined(foundProject)){
     buildQueue.push(project);
+    websocket.sendBuildQueueChange('add',project.projectName);
   }
 }
 
 
 function getProjectsToBuild() {
   var n = maxBuildingProjects - currentBuilding.length;
-  var curentAdded = [];
+  var currentAdded = [];
   var deferred = Q.defer();
 
   for (var i=0; i<n; i++){
     if(buildQueue.length>0) {
       var currentProject = buildQueue.pop();
-      curentAdded.push(currentProject);
+      websocket.sendBuildQueueChange('remove',currentProject.projectName);
+      currentAdded.push(currentProject);
       currentBuilding.push(currentProject);
     }
   }
 
-  deferred.resolve(curentAdded);
+  deferred.resolve(currentAdded);
 
   return deferred.promise;
 }
