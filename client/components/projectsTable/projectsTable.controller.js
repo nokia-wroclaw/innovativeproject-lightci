@@ -80,9 +80,6 @@ angular.module('lightciApp')
           $scope.queue.push(data.projectName);
           break;
       }
-
-
-
     });
     function getProjects($scope, $http, $interval) {
       return $http.get('/api/dashboard').success(function (proj) {

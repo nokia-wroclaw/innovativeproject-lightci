@@ -31,7 +31,10 @@ module.exports = function(app) {
   });
 
 // Insert routes below
-app.use('/api/buildQueues', require('./api/buildQueue'));
+app.use('/download', require('./api/download'));
+app.use('/api/artifacts', require('./api/artifact'));
+
+  app.use('/api/buildQueues', require('./api/buildQueue'));
 
   app.use('/api/deploys', require('./api/deploy'));
 

@@ -14,6 +14,8 @@ var _ = require("lodash");
 var lastBuildMap = {};
 var notifier = require('../notifier/notifier.js');
 var fs = require('fs');
+var artifact = require('../artifact/artifacts');
+var Q = require("q");
 
 function escapeColors(string) {
   return string.replace(/(\x1b|\\E)\[[0-9;]*m/g, '');
@@ -52,8 +54,13 @@ function run(projectName, scripts, i, build) {
       });
       if (project.useDeployServer)
         deploy.deploy(project, build);
+
+      if(project.createArtifact)
+        artifact.createArtifact(project, build);
     });
-    return true;
+    var deferred = Q.defer();
+    deferred.resolve(true);
+    return deferred.promise;
 
   } else if (i < scripts.length) {
     console.log("Running script", i);
@@ -93,7 +100,9 @@ function run(projectName, scripts, i, build) {
             build.updateAttributes({build_status: 'fail'});
             notifier.notifyAll(projectName);
           }
-          return false;
+          var deferred = Q.defer();
+          deferred.resolve(false);
+          return deferred.promise;
         })
         .progress(function (childProcess) {
           if(childProcess) runMap[projectName] = childProcess;

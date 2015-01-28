@@ -42,15 +42,6 @@ server.listen(config.port, config.ip, function () {
   console.log('Express server listening on %d, in %s mode', config.port, app.get('env'));
 });
 
-// Read the app's config file
-var globalConfigs = require("./config/global.config.json");
-
-// Read the projects' config file
-var projectConfigs = require("./config/projects.config.json");
-
-
-// Create the directory path for the dashboard
-var projectDir = globalConfigs['checkoutDir'];
 
 // A map with crontab jobId's for every running dashboard
 global.jobsMap = {};
@@ -79,6 +70,8 @@ if (!fs.existsSync(__dirname + "/../repos"))
   fs.mkdirSync(__dirname+"/../repos");
 if (!fs.existsSync(__dirname + "/../config_backups"))
   fs.mkdirSync(__dirname+"/../config_backups");
+if (!fs.existsSync(__dirname + "/../artifacts"))
+  fs.mkdirSync(__dirname+"/../artifacts");
 
 
 // Expose app
