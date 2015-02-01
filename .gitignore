@@ -6,6 +6,7 @@ client/bower_components
 dist
 server/config/local.env.js
 repos
+artifacts
 config_backups
 buildscripts
 database.sqlite
