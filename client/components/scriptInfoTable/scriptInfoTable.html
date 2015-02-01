@@ -4,7 +4,7 @@
       <small>Script details</small>
     </h1>
   </div>
-  <div class="col-lg-12">
+  <div class="col-lg-12" ng-show="scriptDetails.testSuites.length>0">
     <div class="row">
     <highchart ng-show="show"class="col-lg-12" id="chart1" config="chartConfig"></highchart>
     </div>
@@ -137,6 +137,11 @@
     <div class="panel panel-primary">
       <div class="panel-heading">
         <h3 class="panel-title"><i class="fa fa-signal"></i>  {{scriptDetails.scriptOutputs.scriptName}} Output</h3>
+        <div class="up-buttons-wrapper">
+          <button id="buttonBack2" type="button" ng-click="goBack()" class="btn btn-default btn-sm" ng-show="scriptDetails.testSuites.length==0">
+            <i class="fa fa-arrow-up"></i>
+          </button>
+        </div>
       </div>
       <div class="panel-body">
         <textarea show-tail class="form-control" rows="10" style="=height: 300px;" >
