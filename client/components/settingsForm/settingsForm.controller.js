@@ -28,6 +28,7 @@ angular.module('lightciApp')
     function getConfigs() {
       $http.get('/api/configs').success(function (cfgs) {
         $scope.cfgs = cfgs;
+        $scope.formData.queue_max = cfgs[cfgs.length-1].maxBuildingProjects;
       });
     };
 
@@ -36,14 +37,22 @@ angular.module('lightciApp')
       $http.post('/api/configs', data).success(function (result) {
         if (result.success) {
           $location.path("#");
+        } else {
+          $scope.hasError = true;
+          $scope.message = result.message;
         }
       });
     };
 
     $scope.saveSettings = function() {
-      var data = {};
-      $http.post('/api/settings', data).success(function (result) {
-
+      var data = { queue_max: $scope.formData.queue_max };
+      $http.put('/api/configs', data).success(function (result) {
+        if (result.success) {
+          $location.path("#");
+        } else {
+          $scope.hasError = true;
+          $scope.message = result.message;
+        }
       });
     }
   });

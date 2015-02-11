@@ -24,23 +24,10 @@
       <div class="panel-body">
         <form ng-submit="saveSettings()">
 
-          <div id="repospath-group" class="form-group">
-            <label>Repositories directory</label>
-            <input type="text" name="repospath" class="form-control" placeholder="" ng-model="formData.repos_path">
+          <div id="maxprojects-group" class="form-group">
+            <label>Max projects in queue</label>
+            <input type="text" name="queuemax" class="form-control" placeholder="" ng-model="formData.queue_max" >
             <span class="help-block"></span>
-          </div>
-
-          <div id="deploy-group" class="form-group">
-            <label>Plugins</label>
-            <br>
-            <span ng-repeat="plugin in plugins">
-              <div class="checkbox">
-                <label>
-                  <input type="checkbox" name="pluginCheckbox" id="pluginCheckboxPlugin" ng-model="plugin.active">
-                  {{plugin.name}}
-                </label>
-              </div>
-            </span>
           </div>
 
           <div id="restore-group" class="form-group">

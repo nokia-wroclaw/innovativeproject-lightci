@@ -67,12 +67,23 @@
               </a>
             </td>
             <td>
-<!--                <button type="button" class="btn btn-link" ng-click="removeProject(dashboard.id)" >
+              <button type="button" class="btn btn-link" ng-click="removeConfirm(true, project.id)" ng-hide="remove_btns[project.id]">
                   <i class="fa fa-remove"></i>   Remove
-                </button>-->
+              </button>
+              <div class="confirmation" ng-show="remove_btns[project.id]">
+                Are you sure? <br>
+                <button type="button" class="btn btn-link" ng-click="removeProject(project.id)">
+                  <span class="green_text"><i class="fa fa-thumbs-up"></i>   Yes</span>
+                </button>
+                <button type="button" class="btn btn-link" ng-click="removeConfirm(false, project.id)">
+                  <span class="red_text"><i class="fa fa-thumbs-down"></i>   No</span>
+                </button>
+              </div>
+              <!--
               <button confirm="Are you sure you want to delete this project?" confirm-placement="top" confirm-title="Are you sure?" class="btn btn-link">
                 <i class="fa fa-remove"></i>   Remove
               </button>
+              -->
             </td>
           </tr>
           </tbody>

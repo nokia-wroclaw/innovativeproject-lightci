@@ -8,6 +8,7 @@ angular.module('lightciApp')
     var intervals = [];
     $scope.projects = [];
     $scope.queue = [];
+    $scope.remove_btns = [];
 
     $scope.baseUrl = '#';
 
@@ -39,8 +40,11 @@ angular.module('lightciApp')
 
       });
     };
+    $scope.removeConfirm = function (show, id) {
+      $scope.remove_btns[id] = show;
+    }
     $scope.removeProject = function (id) {
-    var data = {project_id: id};
+      var data = {project_id: id};
       $http.put('/api/dashboard', data).success(function () {
         $scope.projects = _.filter($scope.projects, function (project) {
           return project.id != id;
