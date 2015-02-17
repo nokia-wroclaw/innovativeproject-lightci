@@ -5,26 +5,35 @@
 var exec = require('child-process-promise').exec;
 var db = require('../../models');
 
-function deploy(project, build) {
-  console.log("[deploy] "+project.projectName+ " deploy in progress")
-  var result = exec('sshpass -p \''+project.serverPassword+'\' scp repos/'+project.projectName+'/'+project.deployFilePath+' ' + project.serverUsername+'@'+project.serverAddress+':/home/'+project.serverUsername+'/');
+function deploy(project, i, build) {
+  if (i < scripts.length) {
+    console.log("[deploy] " + project.projectName + " deploy "+i+" in progress")
+    var result = exec('sshpass -p \'' + project.deploys[i].serverPassword +
+                      '\' scp repos/' + project.projectName + '/' + project.deploys[i].deployFilePath + ' ' +
+                      project.deploys[i].serverUsername + '@' + project.deploys[i].serverAddress +
+                      ':/home/' + project.deploys[i].serverUsername + '/');
 
-  result = result.then(function(){
-    return exec('sshpass -p \''+project.serverPassword+'\' scp buildscripts/'+project.projectName+'/deploy.sh '  + project.serverUsername+'@'+project.serverAddress+':/home/'+project.serverUsername+'/');
-  });
+    result = result.then(function () {
+      return exec('sshpass -p \'' + project.deploys[i].serverPassword + '\' scp buildscripts/' + project.projectName +
+                  '/'+project.deploys[i].scriptName + ' ' + project.deploys[i].serverUsername + '@' + project.deploys[i].serverAddress +
+                  ':/home/' + project.deploys[i].serverUsername + '/');
+    });
 
-  result = result.then(function(){
-   return exec('sshpass -p \''+project.serverPassword+'\' ssh '+project.serverUsername+'@'+project.serverAddress+' <<\'ENDSSH\' sh ./deploy.sh ENDSSH');
-  });
+    result = result.then(function () {
+      return exec('sshpass -p \'' + project.deploys[i].serverPassword + '\' ssh ' + project.deploys[i].serverUsername + '@' +
+                  project.deploys[i].serverAddress + ' <<\'ENDSSH\' sh ./deploy.sh ENDSSH');
+    });
 
-  result.then(function(out){
-    console.log("success");
-    addResultToDataBase('success',"n/a",project,build);
-  }).fail(function(out){
-    console.log(out.stdout.message);
-    addResultToDataBase('fail',out.stdout.message,project,build);
-  });
-
+    result.then(function (out) {
+      console.log("success");
+      addResultToDataBase('success', "n/a", project, build);
+      deploy(project, i+1, build);
+    }).fail(function (out) {
+      console.log(out.stdout.message);
+      addResultToDataBase('fail', out.stdout.message, project, build);
+      deploy(project, i+1, build);
+    });
+  }
 }
 
 function addResultToDataBase(status,message,project,build){

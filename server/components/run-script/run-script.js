@@ -52,11 +52,15 @@ function run(projectName, scripts, i, build) {
       var project = _.find(projectsConfig.projects, function (proj) {
         return projectName === proj.projectName;
       });
-      if (project.useDeployServer)
-        deploy.deploy(project, build);
 
-      if(project.createArtifact)
-        artifact.createArtifact(project, build);
+      if (project.useDeployServer && !_.isEmpty(project.deploys)) {
+        deploy.deploy(project, 0, build);
+      }
+
+      if(project.createArtifact && !_.isEmpty(project.artifacts)) {
+        artifact.createArtifacts(project, build);
+      }
+
     });
     var deferred = Q.defer();
     deferred.resolve(true);
