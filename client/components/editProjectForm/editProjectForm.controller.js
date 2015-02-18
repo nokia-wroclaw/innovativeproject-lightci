@@ -9,12 +9,20 @@ angular.module('lightciApp')
     $scope.baseUrl = '#'+$location.path();
 
     var scriptsNo = 0;
+    var deploysNo = 0;
+    var artifactsNo = 0;
     var scriptsVis = [];
+    var deploysVis = [];
+    var artifactsVis = [];
     var currentScriptId = 0;
+    var currentDeployId = 0;
+    var currentArtifactId = 0;
 
     $scope.project_name = $routeParams.project_name;
     $scope.formData = { project_name: $scope.project_name };
     $scope.formData.scripts = [];
+    $scope.formData.deploys = [];
+    $scope.formData.artifacts = [];
 
     $http.get('/api/project', { params: { project_id: $routeParams.project_id } }).success(function (config) {
         $scope.formData.project_name = config.projectName;
@@ -24,16 +32,10 @@ angular.module('lightciApp')
         $scope.formData.project_usecrone = config.useCrone;
         $scope.formData.project_strategy = config.strategy;
         $scope.formData.project_usedeploy = config.useDeployServer;
-        $scope.formData.project_serverusername = config.serverUsername;
-        $scope.formData.project_serverpassword = config.serverPassword;
-        $scope.formData.project_serveraddress = config.serverAddress;
-        $scope.formData.project_filepath = config.deployFilePath;
-        $scope.formData.project_serverscript = config.serverScript;
         $scope.formData.project_username = config.repositoryUsername;
         $scope.formData.project_password = config.repositoryPassword;
         $scope.formData.project_dependencies = config.dependencies;
         $scope.formData.project_artifact = config.createArtifact;
-        $scope.formData.project_artifactpath = config.artifactFilePath;
 
         for (var i=0; i<config.scripts.length; i++) {
           currentScriptId += 1;
@@ -44,6 +46,29 @@ angular.module('lightciApp')
             scriptContent: config.scripts[i].scriptContent,
             parser: config.scripts[i].parser,
             outputPath: config.scripts[i].outputPath
+          }
+        }
+
+        for (var i=0; i<config.deploys.length; i++) {
+          currentDeployId += 1;
+          deploysNo += 1;
+          deploysVis[i] = false;
+          $scope.formData.deploys[i] = {
+            serverUsername: config.deploys[i].serverUsername,
+            serverPassword: config.deploys[i].serverPassword,
+            serverAddress: config.deploys[i].serverAddress,
+            deployFilePath: config.deploys[i].deployFilePath,
+            scriptContent: config.deploys[i].scriptContent
+          }
+        }
+
+        for (var i=0; i<config.artifacts.length; i++) {
+          currentArtifactId += 1;
+          artifactsNo += 1;
+          artifactsVis[i] = false;
+          $scope.formData.artifacts[i] = {
+            artifactId: currentArtifactId,
+            artifactPath: config.artifacts[i]
           }
         }
     });
@@ -83,8 +108,57 @@ angular.module('lightciApp')
       }
     }
 
+    $scope.addDeploy = function(i) {
+      deploysNo += 1;
+      currentDeployId += 1;
+      $scope.formData.deploys.splice(i+1, 0, { serverUsername: '', serverPassword: '', serverAddress: '', deployFilePath: '', scriptContent: ''});
+      deploysVis.splice(i+1, 0, true);
+    }
+
+    $scope.toggleDeploy = function(i) {
+      deploysVis[i] = !deploysVis[i];
+    }
+
+    $scope.showDeploy = function(i) {
+      return deploysVis[i];
+    }
+
+    $scope.removeDeploy = function(i) {
+      deploysNo -= 1;
+      $scope.formData.deploys.splice(i, 1);
+      deploysVis.splice(i, 1);
+    }
+
+    $scope.addArtifact = function(i) {
+      artifactsNo += 1;
+      currentArtifactId += 1;
+      $scope.formData.artifacts.splice(i+1, 0, { artifactId: currentArtifactId, artifactPath: "" });
+      artifactsVis.splice(i+1, 0, true);
+    }
+
+    $scope.toggleArtifact = function(i) {
+      artifactsVis[i] = !artifactsVis[i];
+    }
+
+    $scope.showArtifact = function(i) {
+      return artifactsVis[i];
+    }
+
+    $scope.removeArtifact = function(i) {
+      artifactsNo -= 1;
+      $scope.formData.artifacts.splice(i, 1);
+      artifactsVis.splice(i, 1);
+    }
+
     $scope.editProject = function() {
+
+      if ($scope.formData.deploys.length>0)
+        $scope.formData.project_usedeploy = true;
+      if ($scope.formData.artifacts.length>0)
+        $scope.formData.project_artifact = true;
+
       var data = $scope.formData;
+
       $http.put('/api/project', data ).success(function (result) {
 
         if (result.error) {

@@ -20,7 +20,7 @@ exports.create = function (req, res) {
     useCrone: req.body.project_usecrone,
     useDeployServer: req.body.project_usedeploy,
     createArtifact: req.body.project_artifact,
-    artifacts: req.body.project_artifacts,
+    artifacts: [],
     deploys: [],
     dependencies: [],
     scripts: []
@@ -69,6 +69,10 @@ exports.create = function (req, res) {
         serverAddress: req.body.deploys[i].serverAddress,
         deployFilePath: req.body.deploys[i].deployFilePath
       });
+    }
+
+    for (var i = 0; i < req.body.artifacts.length; i++) {
+      project.artifacts.push(req.body.artifacts[i].artifactPath);
     }
 
     projectHandler.addProject(project);
@@ -128,8 +132,7 @@ exports.update = function(req, res) {
     useCrone: req.body.project_usecrone,
     useDeployServer: req.body.project_usedeploy,
     createArtifact: req.body.project_artifact,
-    artifactFilePath: req.body.project_artifactpath,
-    artifacts: req.body.project_artifacts,
+    artifacts: [],
     dependencies: [],
     deploys: [],
     scripts: []
@@ -168,6 +171,10 @@ exports.update = function(req, res) {
         serverAddress: req.body.deploys[i].serverAddress,
         deployFilePath: req.body.deploys[i].deployFilePath
       });
+    }
+
+    for (var i = 0; i < req.body.artifacts.length; i++) {
+      project.artifacts.push(req.body.artifacts[i].artifactPath);
     }
 
     project.dependencies = (req.body.project_dependencies.replace(/\s/g, "").split(","));

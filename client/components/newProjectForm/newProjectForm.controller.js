@@ -9,11 +9,19 @@ angular.module('lightciApp')
     $scope.baseUrl = '#'+$location.path();
 
     var scriptsNo = 0;
+    var deploysNo = 0;
+    var artifactsNo = 0;
     var scriptsVis = [];
+    var deploysVis = [];
+    var artifactsVis = [];
     var currentScriptId = 0;
+    var currentDeployId = 0;
+    var currentArtifactId = 0;
 
     $scope.formData = {};
     $scope.formData.scripts = [];
+    $scope.formData.deploys = [];
+    $scope.formData.artifacts = [];
 
     $scope.addScript = function(i) {
       scriptsNo += 1;
@@ -50,8 +58,57 @@ angular.module('lightciApp')
       }
     }
 
+    $scope.addDeploy = function(i) {
+      deploysNo += 1;
+      currentDeployId += 1;
+      $scope.formData.deploys.splice(i+1, 0, { serverUsername: '', serverPassword: '', serverAddress: '', deployFilePath: '', scriptContent: ''});
+      deploysVis.splice(i+1, 0, true);
+    }
+
+    $scope.toggleDeploy = function(i) {
+      deploysVis[i] = !deploysVis[i];
+    }
+
+    $scope.showDeploy = function(i) {
+      return deploysVis[i];
+    }
+
+    $scope.removeDeploy = function(i) {
+      deploysNo -= 1;
+      $scope.formData.deploys.splice(i, 1);
+      deploysVis.splice(i, 1);
+    }
+
+    $scope.addArtifact = function(i) {
+      artifactsNo += 1;
+      currentArtifactId += 1;
+      $scope.formData.artifacts.splice(i+1, 0, { artifactId: currentArtifactId, artifactPath: "" });
+      artifactsVis.splice(i+1, 0, true);
+    }
+
+    $scope.toggleArtifact = function(i) {
+      artifactsVis[i] = !artifactsVis[i];
+    }
+
+    $scope.showArtifact = function(i) {
+      return artifactsVis[i];
+    }
+
+    $scope.removeArtifact = function(i) {
+      artifactsNo -= 1;
+      $scope.formData.artifacts.splice(i, 1);
+      artifactsVis.splice(i, 1);
+    }
+
     $scope.createProject = function() {
+
+      if ($scope.formData.deploys.length>0)
+        $scope.formData.project_usedeploy = true;
+      if ($scope.formData.artifacts.length>0)
+        $scope.formData.project_artifact = true;
+
       var data = $scope.formData;
+
       $http.post('/api/project', data).success(function (result) {
 
         if (result.error) {
