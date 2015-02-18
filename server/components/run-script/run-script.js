@@ -53,11 +53,11 @@ function run(projectName, scripts, i, build) {
         return projectName === proj.projectName;
       });
 
-      if (project.useDeployServer && !_.isEmpty(project.deploys)) {
+      if (!_.isEmpty(project.deploys)) {
         deploy.deploy(project, 0, build);
       }
 
-      if(project.createArtifact && !_.isEmpty(project.artifacts)) {
+      if(!_.isEmpty(project.artifacts)) {
         artifact.createArtifacts(project, build);
       }
 

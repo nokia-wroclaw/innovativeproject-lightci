@@ -6,8 +6,8 @@ var exec = require('child-process-promise').exec;
 var db = require('../../models');
 
 function deploy(project, i, build) {
-  if (i < scripts.length) {
-    console.log("[deploy] " + project.projectName + " deploy "+i+" in progress")
+  if (i < project.deploys.length) {
+    console.log("[deploy "+i+"] " + project.projectName + " deploy in progress")
     var result = exec('sshpass -p \'' + project.deploys[i].serverPassword +
                       '\' scp repos/' + project.projectName + '/' + project.deploys[i].deployFilePath + ' ' +
                       project.deploys[i].serverUsername + '@' + project.deploys[i].serverAddress +
@@ -25,12 +25,12 @@ function deploy(project, i, build) {
     });
 
     result.then(function (out) {
-      console.log("success");
+      console.log("[deploy "+i+"] success");
       addResultToDataBase('success', "n/a", project, build);
       deploy(project, i+1, build);
     }).fail(function (out) {
-      console.log(out.stdout.message);
-      addResultToDataBase('fail', out.stdout.message, project, build);
+      console.log("[deploy "+i+"] fail " + out.stdout.message);
+      addResultToDataBase('fail', out.stdout.message, project.deploys[i], build);
       deploy(project, i+1, build);
     });
   }
