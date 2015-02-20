@@ -21,7 +21,7 @@ module.exports = {
 function notifyAll(projectName) {
   var users = db.User.findAll({});
   var subject = "LightCI: Bad news :(";
-  var text = "Problem with dashboard " + projectName;
+  var text = "Problem with project: " + projectName;
 
   users.then(function (foundUsers) {
     _.each(foundUsers, function (user) {

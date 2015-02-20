@@ -122,7 +122,7 @@ function buildDependencies(projectName) {
         rows = _.reduce(rows);
         if (_.every(rows, {dataValues: {build_status: 'success'}})) {
           //build(proj);
-          buildQueue.addToQueue(proj);
+          addToQueue(proj);
         }
       });
     }

@@ -8,7 +8,6 @@
     "jquery": "~1.11.0",
     "bootstrap": "~3.1.1",
     "angular-resource": ">=1.2.*",
-    "angular-cookies": ">=1.2.*",
     "angular-sanitize": ">=1.2.*",
     "angular-route": ">=1.2.*",
     "angular-bootstrap": "~0.11.0",

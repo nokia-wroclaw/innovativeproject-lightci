@@ -21,12 +21,12 @@ function deploy(project, i, build) {
 
     result = result.then(function () {
       return exec('sshpass -p \'' + project.deploys[i].serverPassword + '\' ssh ' + project.deploys[i].serverUsername + '@' +
-                  project.deploys[i].serverAddress + ' <<\'ENDSSH\' sh ./deploy.sh ENDSSH');
+                  project.deploys[i].serverAddress + ' <<\'ENDSSH\' sh ./'+project.deploys[i].scriptName+' ENDSSH');
     });
 
     result.then(function (out) {
       console.log("[deploy "+i+"] success");
-      addResultToDataBase('success', "n/a", project, build);
+      addResultToDataBase('success', "n/a", project.deploys[i], build);
       deploy(project, i+1, build);
     }).fail(function (out) {
       console.log("[deploy "+i+"] fail " + out.stdout.message);

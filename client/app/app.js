@@ -5,7 +5,6 @@ angular.module('lightciApp', [
   'ngRoute',
   'angular-lodash',
   'ui.bootstrap'
-
 ])
   .config(function ($routeProvider) {
     $routeProvider

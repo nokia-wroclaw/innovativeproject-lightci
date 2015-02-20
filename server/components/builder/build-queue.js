@@ -36,7 +36,7 @@ function getProjectsToBuild() {
 
   for (var i=0; i<n; i++){
     if(buildQueue.length>0) {
-      var currentProject = buildQueue.pop();
+      var currentProject = buildQueue.shift();
       websocket.sendBuildQueueChange('remove',currentProject.projectName);
       currentAdded.push(currentProject);
       currentBuilding.push(currentProject);

@@ -9,7 +9,7 @@ var errors = require('./components/errors');
 module.exports = function(app) {
 
   app.get('/login', function(req, res) {
-    res.render('login.ejs', { message: req.flash('loginMessage') });
+    res.render('login.ejs', { message: req.flash('loginMessage')});
   });
 
   app.get('/signup', function(req, res) {

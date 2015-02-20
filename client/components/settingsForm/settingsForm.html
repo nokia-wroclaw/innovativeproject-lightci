@@ -7,6 +7,7 @@
     <div class="panel panel-primary">
       <div class="panel-heading">
         <h3 class="panel-title"><i class="fa fa-edit"></i> Login details </h3>
+
         <div class="up-buttons-wrapper">
           <button id="buttonBack" type="button" ng-click="goBack()" class="btn btn-default btn-sm">
             <i class="fa fa-arrow-up"></i>
@@ -26,13 +27,14 @@
 
           <div id="maxprojects-group" class="form-group">
             <label>Max projects in queue</label>
-            <input type="text" name="queuemax" class="form-control" placeholder="" ng-model="formData.queue_max" >
+            <input type="text" name="queuemax" class="form-control" placeholder="" ng-model="formData.queue_max">
             <span class="help-block"></span>
           </div>
 
           <div id="restore-group" class="form-group">
             <label>Configuration Backups</label>
             <br>
+
             <div class="checkbox">
               <label>
                 <input type="checkbox" name="restoreCheckbox" id="restoreCheckboxRestore" ng-model="restore">
@@ -46,11 +48,11 @@
                 <th data-field="date">Date</th>
                 <th data-field="operation">Operation</th>
                 <th data-field="filename">Filename</th>
-                <th data-field="action"> </th>
+                <th data-field="action"></th>
               </tr>
               </thead>
               <tbody ng-repeat="cfg in cfgs">
-              <tr >
+              <tr>
                 <td>
                   {{cfg.date}}
                 </td>
