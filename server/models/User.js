@@ -14,6 +14,9 @@ module.exports = function(sequelize, DataTypes) {
       },
       validPassword : function(password) {
         return bcrypt.compareSync(password, this.user_pass);
+      },
+      associate: function(models) {
+        User.hasMany(models.UserRepo);
       }
     }
   });

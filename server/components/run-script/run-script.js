@@ -18,7 +18,8 @@ var artifact = require('../artifact/artifacts');
 var Q = require("q");
 
 function escapeColors(string) {
-  return string.replace(/(\x1b|\\E)\[[0-9;]*m/g, '');
+  if(string) return string.replace(/(\x1b|\\E)\[[0-9;]*m/g, '');
+  else return "";
 }
 
 function runBuildScript(projectName, scripts, build) {
@@ -102,7 +103,7 @@ function run(projectName, scripts, i, build) {
             websocket.sendProjectStatus('fail', (i + 1) / scripts.length, projectName);
             parser(projectName, scripts[i], out, db);
             build.updateAttributes({build_status: 'fail'});
-            notifier.notifyAll(projectName);
+            notifier.notifyAll(projectName, build);
           }
           var deferred = Q.defer();
           deferred.resolve(false);
