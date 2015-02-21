@@ -29,6 +29,9 @@ angular.module('lightciApp')
       $http.get('/api/configs').success(function (cfgs) {
         $scope.cfgs = cfgs;
         $scope.formData.queue_max = cfgs[cfgs.length-1].maxBuildingProjects;
+        $scope.formData.email_service = cfgs[cfgs.length-1].notifierService;
+        $scope.formData.email_login = cfgs[cfgs.length-1].notifierUser;
+        $scope.formData.email_pass = cfgs[cfgs.length-1].notifierPass;
       });
     };
 
@@ -45,7 +48,12 @@ angular.module('lightciApp')
     };
 
     $scope.saveSettings = function() {
-      var data = { queue_max: $scope.formData.queue_max };
+      var data = {
+        queue_max: $scope.formData.queue_max,
+        email_service: $scope.formData.email_service,
+        email_login: $scope.formData.email_login,
+        email_pass: $scope.formData.email_pass
+      };
       $http.put('/api/configs', data).success(function (result) {
         if (result.success) {
           $location.path("#");

@@ -5,7 +5,6 @@ var db = require('../../models');
 
 exports.update = function(req, res) {
   var email = req.body.email;
-  var notifications = req.body.notifications;
   var oldpass = req.body.oldpassword;
   var newpass = req.body.newpassword;
   var user = req.user;

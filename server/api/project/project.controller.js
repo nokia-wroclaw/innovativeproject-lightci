@@ -18,11 +18,15 @@ exports.create = function (req, res) {
     repositoryUsername: req.body.project_username || "",
     repositoryPassword: req.body.project_password || "",
     useCrone: req.body.project_usecrone,
+    notifyStrategy: req.body.project_notify,
+    assignedUsers: req.body.assigned_users || [],
     artifacts: [],
     deploys: [],
     dependencies: [],
     scripts: []
   };
+
+  console.log(project);
 
   if (req.body.project_dependencies)
     project.dependencies = (req.body.project_dependencies.replace(/\s/g, "").split(","));
@@ -128,6 +132,8 @@ exports.update = function(req, res) {
     repositoryPassword: req.body.project_password,
     strategy: req.body.project_strategy,
     useCrone: req.body.project_usecrone,
+    notifyStrategy: req.body.project_notify,
+    assignedUsers: req.body.assigned_users || [],
     artifacts: [],
     dependencies: [],
     deploys: [],

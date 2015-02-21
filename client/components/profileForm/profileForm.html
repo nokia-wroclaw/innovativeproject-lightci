@@ -29,14 +29,7 @@
             <input type="text" name="email" class="form-control" placeholder="e.g. johnny-bravo@example.com" ng-model="formData.email">
             <span class="help-block"></span>
           </div>
-          <!--
-          <div id="notification-group" class="form-group">
-            <label>
-              <input type="checkbox" name="notifyCheckbox" id="notifyCheckboxNotify" ng-model="formData.notifications">
-              Receive email notifications
-            </label>
-          </div>
-          -->
+
           <div id="password-group" class="form-group">
             <label>Old password</label>
             <input type="password" name="oldpassword" class="form-control" placeholder="" ng-model="formData.oldpassword">
@@ -44,7 +37,29 @@
             <input type="password" name="newpassword" class="form-control" placeholder="" ng-model="formData.newpassword">
             <span class="help-block"></span>
           </div>
-
+  <!--
+          <div id="repo-group" class="form-group">
+            <label>Repository type</label>
+            <div class="radio">
+              <label>
+                <input type="radio" name="optionsRadios" id="optionsRadiosSVN" ng-model="formData.repoType" value="svn" ng-init="formData.repoType='svn'">
+                SVN
+              </label>
+            </div>
+            <div class="radio">
+              <label>
+                <input type="radio" name="optionsRadios" id="optionsRadiosGIT" ng-model="formData.repoType" value="git">
+                GIT
+              </label>
+            </div>
+            <label>Repository URL</label>
+            <input type="text" name="address" class="form-control" placeholder="" ng-model="formData.repoAddress">
+            <span class="help-block"></span>
+            <label>Repository Username</label>
+            <input type="text" name="username" class="form-control" placeholder="" ng-model="formData.repoLogin">
+            <span class="help-block"></span>
+          </div>
+  -->
           <!-- SUBMIT BUTTON -->
           <button type="submit" class="btn btn-primary btn-lg btn-block">
             <i class="fa fa-upload"></i> Save!

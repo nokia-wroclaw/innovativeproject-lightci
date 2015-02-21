@@ -24,6 +24,14 @@ angular.module('lightciApp')
     $scope.formData.deploys = [];
     $scope.formData.artifacts = [];
 
+    function getUsers() {
+      $http.put('/api/users', {}).success(function (users) {
+        $scope.formData.users = users;
+      });
+    }
+
+    getUsers();
+
     $http.get('/api/project', { params: { project_id: $routeParams.project_id } }).success(function (config) {
         $scope.formData.project_name = config.projectName;
         $scope.formData.project_url = config.repositoryUrl;
@@ -36,6 +44,8 @@ angular.module('lightciApp')
         $scope.formData.project_password = config.repositoryPassword;
         $scope.formData.project_dependencies = config.dependencies;
         $scope.formData.project_artifact = config.createArtifact;
+        $scope.formData.project_notify = config.notifyStrategy;
+        $scope.formData.assigned_users = config.assignedUsers;
 
         for (var i=0; i<config.scripts.length; i++) {
           currentScriptId += 1;

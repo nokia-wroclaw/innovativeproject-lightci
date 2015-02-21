@@ -100,6 +100,12 @@ angular.module('lightciApp')
       artifactsVis.splice(i, 1);
     }
 
+    function getUsers() {
+      $http.put('/api/users', {}).success(function (users) {
+        $scope.formData.users = users;
+      });
+    }
+
     $scope.createProject = function() {
 
       if ($scope.formData.deploys.length>0)
@@ -130,6 +136,8 @@ angular.module('lightciApp')
     $scope.goBack = function() {
       window.history.back();
     }
+
+    getUsers();
 
     Array.prototype.swap = function (x,y) {
       var b = this[x];

@@ -24,7 +24,6 @@ angular.module('lightciApp')
     $scope.saveSettings = function() {
       var data = {
         'email': $scope.formData.email,
-        'notifications': $scope.formData.notifications,
         'oldpassword': $scope.formData.oldpassword,
         'newpassword': $scope.formData.newpassword
       };

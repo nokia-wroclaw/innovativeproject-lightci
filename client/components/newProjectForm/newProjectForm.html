@@ -101,6 +101,37 @@
             <span class="help-block"></span>
           </div>
 
+          <div id="notification-group" class="form-group">
+            <label>Notify Users</label>
+            <div class="radio">
+              <label>
+                <input type="radio" name="optionsCheckbox" id="optionsCheckboxNotify1" ng-model="formData.project_notify" value="none">
+                None
+              </label>
+            </div>
+            <div class="radio">
+              <label>
+                <input type="radio" name="optionsCheckbox" id="optionsCheckboxNotify2" ng-model="formData.project_notify" value="all" ng-init="formData.project_notify='all'">
+                All Users
+              </label>
+            </div>
+            <div class="radio">
+              <label>
+                <input type="radio" name="optionsCheckbox" id="optionsCheckboxNotify3" ng-model="formData.project_notify" value="repoUsers">
+                Users from Repository
+              </label>
+            </div>
+            <div class="radio">
+              <label>
+                <input type="radio" name="optionsCheckbox" id="optionsCheckboxNotify4" ng-model="formData.project_notify" value ="assigned">
+                Selected Users
+              </label>
+            </div>
+            <select class="form-control" ng-model="formData.assigned_users" multiple ng-options="user.user_email as user.user_email for user in formData.users" ng-show="formData.project_notify=='assigned'">
+            </select>
+            <span class="help-block"></span>
+          </div>
+
           <div id="script-group" class="form-group">
 
             <label>Build Scripts</label>

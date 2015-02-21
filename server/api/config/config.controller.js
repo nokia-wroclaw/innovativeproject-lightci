@@ -22,13 +22,35 @@ exports.create = function (req, res) {
 
 exports.update = function (req, res) {
   var globalConfig = JSON.parse(fs.readFileSync(__dirname + "/../../config/global.config.json"));
+  var error = "";
   var queueMax = req.body.queue_max;
+  var notifierUser = req.body.email_login;
+  var notifierPass = req.body.email_pass;
+
+  globalConfig.notifierService = req.body.email_service;
+
+  if (notifierUser !== "") {
+    globalConfig.notifierUser = notifierUser;
+  } else {
+    error = "Incorrect value: Email service login";
+  }
+
+  if (notifierPass !== "") {
+    globalConfig.notifierPass = notifierPass;
+  } else {
+    error = "Incorrect value: Email service password";
+  }
 
   if (parseInt(Number(queueMax)) == queueMax && queueMax>0) {
     globalConfig.maxBuildingProjects = Number(queueMax);
+  } else {
+    error = "Incorrect value: Max projects in queue";
+  }
+
+  if (error === "") {
     fs.writeFileSync(__dirname + "/../../config/global.config.json", JSON.stringify(globalConfig, undefined, 2));
     res.json({'success': true})
   } else {
-    res.json({'success': false, 'message': 'Incorrect value'})
+    res.json({'success': false, 'message': error})
   }
 };
