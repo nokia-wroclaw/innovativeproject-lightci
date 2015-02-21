@@ -5,9 +5,11 @@
   <title>LightCI Authentication</title>
   <link rel="stylesheet" href="app/app.css"> <!-- load bootstrap css -->
   <link rel="stylesheet" href="app/bower_components/font-awesome/css/font-awesome.css"> <!-- load fontawesome -->
+
   <style>
     body        { padding-top:80px; }
   </style>
+
 </head>
 <body>
 <div class="container">
@@ -22,14 +24,14 @@
     <% } %>
 
     <!-- LOGIN FORM -->
-    <form action="/api/users" method="post">
+    <form id="registerForm" action="/api/users" method="post">
       <div class="form-group">
         <label>Email</label>
-        <input type="text" class="form-control" name="email">
+        <input type="email" class="form-control" name="email" required>
       </div>
       <div class="form-group">
         <label>Password</label>
-        <input type="password" class="form-control" name="password">
+        <input type="password" class="form-control" name="password" required pattern="((?=.*\d).{6,20})">
       </div>
 
       <button type="submit" class="btn btn-warning btn-lg">Signup</button>

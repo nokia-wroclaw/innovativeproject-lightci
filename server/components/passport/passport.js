@@ -41,14 +41,14 @@ module.exports = function (passport) {
           req.session.error = 'Incorrect email.';
           console.log(req.session.error);
 
-          return done(null, false, {message: 'Incorrect email.'});
+          return done(null, false, req.flash('loginMessage', 'Incorrect email.'));
         }
 
-        if (user[0].user_pass !== password) {
+        if (!db.User.validPassword(password,_.first(user))){
           req.session.error = 'Incorrect password.';
           console.log(req.session.error);
 
-          return done(null, false, {message: 'Incorrect password.'});
+          return done(null, false, req.flash('loginMessage', 'Incorrect password.'));
         }
 
         console.log("Auth OK - " + user[0].user_email);
@@ -70,7 +70,7 @@ module.exports = function (passport) {
           } else {
             var newUser = db.User.create({
               user_name: "",
-              user_pass: password,
+              user_pass: db.User.generateHash(password),
               user_email: email
             });
 
