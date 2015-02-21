@@ -5,18 +5,30 @@
 var nodemailer = require('nodemailer');
 var db = require('../../models');
 var _ = require('lodash');
+var globalConfig = require("../../config/global.config.json");
 
 var transporter = nodemailer.createTransport({
-  service: 'Gmail',
+  service: globalConfig.notifierService,
   auth: {
-    user: "lightcilightci@gmail.com",
-    pass: "lightcilightci1"
+    user: globalConfig.notifierUser,
+    pass: globalConfig.notifierPass
   }
 });
 
 module.exports = {
-  notifyAll: notifyAll
+  notifyAll: notifyAll,
+  changeTransporter: changeTransporter
 };
+
+function changeTransporter(service, user, pass) {
+  transporter = nodemailer.createTransport({
+    service: service,
+    auth: {
+      user: user,
+      pass: pass
+    }
+  });
+}
 
 function notifyAll(projectName) {
   var users = db.User.findAll({});

@@ -70,31 +70,42 @@ function build(project) {
           var commitsPromise = getCommits(dbProject, lastSuccessfulBuild);
 
           commitsPromise.then(function (commits) {
-            var dbBuild = db.Build.create({
-              build_status: 'pending',
-              build_date: new Date()
-            });
-            dbBuild.then(function (c_build) {
-              var buildingResult = run.runBuildScript(project.projectName, project.scripts, c_build);
-              buildingResult.then(function (isSuccess) {
-                buildQueue.removeFinished(project).then(function(){
-                  updateQueue();
-                });
-
-                if (isSuccess) {
-                  buildDependencies(project.projectName);
-                }
+            if(_.isEmpty(commits)) {
+              _.first(lastSuccessfulBuild).getCommits().success(function (c) {
+                createAndBuild(project, dbProject, c);
               });
-              dbProject.addBuild([c_build]);
+            } else {
+              createAndBuild(project, dbProject, commits);
+            }
 
-              for (var i = 0; i < commits.length; i++) {
-                commits[i].addBuild([c_build]);
-              }
-            });
           });
 
         });
     });
+}
+
+function createAndBuild(project, dbProject, commits) {
+  var dbBuild = db.Build.create({
+    build_status: 'pending',
+    build_date: new Date()
+  });
+  dbBuild.then(function (c_build) {
+    var buildingResult = run.runBuildScript(project.projectName, project.scripts, c_build);
+    buildingResult.then(function (isSuccess) {
+      buildQueue.removeFinished(project).then(function(){
+        updateQueue();
+      });
+
+      if (isSuccess) {
+        buildDependencies(project.projectName);
+      }
+    });
+    dbProject.addBuild([c_build]);
+
+    for (var i = 0; i < commits.length; i++) {
+      commits[i].addBuild([c_build]);
+    }
+  });
 }
 
 function getCommits(dbProject, lastSuccessfulBuild) {
