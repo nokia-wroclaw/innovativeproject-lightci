@@ -102,7 +102,7 @@
           </div>
 
           <div id="notification-group" class="form-group">
-            <label>Notify Users</label>
+            <label>Notify Users On Failure</label>
             <div class="radio">
               <label>
                 <input type="radio" name="optionsCheckbox" id="optionsCheckboxNotify1" ng-model="formData.project_notify" value="none">
@@ -129,6 +129,16 @@
             </div>
             <select class="form-control" ng-model="formData.assigned_users" multiple ng-options="user.user_email as user.user_email for user in formData.users" ng-show="formData.project_notify=='assigned'">
             </select>
+            <span class="help-block"></span>
+          </div>
+
+          <div id="message-group" class="form-group">
+            <label>Notification Email Title</label>
+            <input type="text" name="title" class="form-control" placeholder="default: 'AgrippaCI: <project_name> - build failed!'" ng-model="formData.project_title">
+            <span class="help-block"></span>
+            <label>Notification Email Message</label>
+            <textarea  rows="3" style="width: 507px; height: 149px;" class="form-control" placeholder="default: 'There has been a problem with project: <project_name>'" ng-model="formData.project_message">
+            </textarea>
             <span class="help-block"></span>
           </div>
 

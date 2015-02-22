@@ -45,6 +45,8 @@ angular.module('lightciApp')
         $scope.formData.project_repo = config.repositoryType;
         $scope.formData.project_pattern = config.cronePattern;
         $scope.formData.project_usecrone = config.useCrone;
+        $scope.formData.project_title = config.notifyTitle;
+        $scope.formData.project_message = config.notifyMessage;
         $scope.formData.project_strategy = config.strategy;
         $scope.formData.project_usedeploy = config.useDeployServer;
         $scope.formData.project_username = config.repositoryUsername;
@@ -173,6 +175,11 @@ angular.module('lightciApp')
         $scope.formData.project_usedeploy = true;
       if ($scope.formData.artifacts.length>0)
         $scope.formData.project_artifact = true;
+
+      if ($scope.formData.project_title==='')
+        $scope.formData.project_title='AgrippaCI: '+$scope.formData.project_name+' - build failed!';
+      if ($scope.formData.project_message==='')
+        $scope.formData.project_message='There has been a problem with project: '+$scope.formData.project_name;
 
       var data = $scope.formData;
 

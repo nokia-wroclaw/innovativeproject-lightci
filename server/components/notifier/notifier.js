@@ -42,8 +42,8 @@ function notifyAll(projectName, build) {
   if(project.notifyStrategy != 'none') {
 
 
-    var subject = "LightCI: Bad news :(";
-    var text = "Problem with project: " + projectName;
+    var subject = project.notifyTitle;
+    var text = project.notifyMessage;
 
     if(project.notifyStrategy == 'all') {
 

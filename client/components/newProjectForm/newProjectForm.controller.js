@@ -119,6 +119,11 @@ angular.module('lightciApp')
       if ($scope.formData.artifacts.length>0)
         $scope.formData.project_artifact = true;
 
+      if ($scope.formData.project_title==='')
+        $scope.formData.project_title='AgrippaCI: '+$scope.formData.project_name+' - build failed!';
+      if ($scope.formData.project_message==='')
+        $scope.formData.project_message='There has been a problem with project: '+$scope.formData.project_name;
+
       var data = $scope.formData;
 
       $http.post('/api/project', data).success(function (result) {
