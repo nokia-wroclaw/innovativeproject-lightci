@@ -71,9 +71,13 @@ function build(project) {
 
           commitsPromise.then(function (commits) {
             if(_.isEmpty(commits)) {
-              _.first(lastSuccessfulBuild).getCommits().success(function (c) {
-                createAndBuild(project, dbProject, c);
-              });
+              if(lastSuccessfulBuild.length >0) {
+                _.first(lastSuccessfulBuild).getCommits().success(function (c) {
+                  createAndBuild(project, dbProject, c);
+                });
+              } else {
+                createAndBuild(project, dbProject, []);
+              }
             } else {
               createAndBuild(project, dbProject, commits);
             }

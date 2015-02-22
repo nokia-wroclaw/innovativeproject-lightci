@@ -6,7 +6,7 @@ var nodemailer = require('nodemailer');
 var db = require('../../models');
 var _ = require('lodash');
 var globalConfig = require("../../config/global.config.json");
-var config = require("../../config/projects.config.json");
+var fs = require("fs");
 
 var transporter = nodemailer.createTransport({
   service: globalConfig.notifierService,
@@ -33,11 +33,12 @@ function changeTransporter(service, user, pass) {
 }
 
 function notifyAll(projectName, build) {
+
+  var config = JSON.parse(fs.readFileSync(__dirname + "/../../config/projects.config.json"));
+
   var project = _.find(config.projects, function (proj) {
     return projectName === proj.projectName;
   });
-
-  var mailArray;
 
   if(project.notifyStrategy != 'none') {
 
@@ -61,9 +62,6 @@ function notifyAll(projectName, build) {
       });
 
     } else if(project.notifyStrategy == 'repoUsers') {
-
-      console.log("HERE");
-
 
         build.getCommits().success(function (commits) {
 
