@@ -37,6 +37,57 @@
             <input type="password" name="newpassword" class="form-control" placeholder="" ng-model="formData.newpassword">
             <span class="help-block"></span>
           </div>
+
+          <div id="repo-group" class="form-group">
+            <label>Repository Accounts</label>
+
+            <div id="repodetails-group" class="form-group">
+              <div ng-repeat="account in formData.accounts">
+                <div class="panel panel-primary">
+                  <div class="panel-heading">
+                    <h3 class="panel-title"><i class="fa fa-file"></i> {{account.repo_name}} {{(account.repo_address !== '' && account.repo_name !== '') ? "-" : ""}} {{account.repo_address}}
+                      <div class="scripts-buttons-wrapper">
+                        <button id="buttonToggle2" type="button" ng-click="toggleAccount($index)" class="btn btn-default btn-sm">
+                          <i class="fa fa-search"></i>
+                        </button>
+                        <button id="buttonAdd2" type="button" ng-click="addAccount($index)" class="btn btn-success btn-sm">
+                          <i class="fa fa-plus"></i>
+                        </button>
+                        <button id="buttonRemove2" type="button" ng-click="removeAccount($index)" class="btn btn-danger btn-sm">
+                          <i class="fa fa-trash"></i>
+                        </button>
+                      </div>
+                    </h3>
+                  </div>
+                  <div class="panel-body" ng-show="showAccount($index)">
+                    <label>Repository type</label>
+                    <div class="radio">
+                      <label>
+                        <input type="radio" id="optionsRadiosSVN" ng-model="account.repo_type" value="svn">
+                        SVN
+                      </label>
+                    </div>
+                    <div class="radio">
+                      <label>
+                        <input type="radio" id="optionsRadiosGIT" ng-model="account.repo_type" value="git">
+                        GIT
+                      </label>
+                    </div>
+                    <label>Repository URL</label>
+                    <input type="text" name="address" class="form-control" placeholder="" ng-model="account.repo_address">
+                    <span class="help-block"></span>
+                    <label>Repository Username</label>
+                    <input type="text" name="username" class="form-control" placeholder="" ng-model="account.repo_name">
+                    <span class="help-block"></span>
+                  </div>
+                </div>
+              </div>
+
+              <button type="button" ng-click="addAccount(formData.accounts.length)" class="btn btn-success">
+                <i class="fa fa-plus"></i> Add Account
+              </button>
+            </div>
+          </div>
   <!--
           <div id="repo-group" class="form-group">
             <label>Repository type</label>

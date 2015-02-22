@@ -30,7 +30,14 @@ angular.module('lightciApp')
       });
     }
 
+    function getProjects() {
+      $http.get('/api/dashboard', {}).success(function (projects) {
+        $scope.formData.projects = projects;
+      });
+    }
+
     getUsers();
+    getProjects();
 
     $http.get('/api/project', { params: { project_id: $routeParams.project_id } }).success(function (config) {
         $scope.formData.project_name = config.projectName;

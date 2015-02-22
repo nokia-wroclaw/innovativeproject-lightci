@@ -26,10 +26,8 @@ exports.create = function (req, res) {
     scripts: []
   };
 
-  console.log(project);
-
   if (req.body.project_dependencies)
-    project.dependencies = (req.body.project_dependencies.replace(/\s/g, "").split(","));
+    project.dependencies = req.body.project_dependencies;
   else
     project.dependencies = [];
 
@@ -110,8 +108,6 @@ exports.show = function(req, res) {
         }
       });
 
-      config.dependencies = config.dependencies.join(", ");
-
       res.json(config);
     }
     else {
@@ -179,10 +175,10 @@ exports.update = function(req, res) {
       project.artifacts.push(req.body.artifacts[i].artifactPath);
     }
 
-    project.dependencies = (req.body.project_dependencies.replace(/\s/g, "").split(","));
+    project.dependencies = req.body.project_dependencies;
 
     if (req.body.project_dependencies)
-      project.dependencies = (req.body.project_dependencies.replace(/\s/g, "").split(","));
+      project.dependencies = req.body.project_dependencies;
     else
       project.dependencies = [];
 

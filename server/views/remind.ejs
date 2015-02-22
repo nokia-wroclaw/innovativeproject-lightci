@@ -14,31 +14,41 @@
 
   <div class="col-sm-6 col-sm-offset-3">
 
-    <h1><span class="fa fa-sign-in"></span> Login</h1>
+    <h1><span class="fa fa-sign-in"></span> Reset Password</h1>
 
     <!-- show any messages that come back with authentication -->
     <% if (message.length > 0) { %>
     <div class="alert alert-danger"><%= message %></div>
     <% } %>
 
-    <!-- LOGIN FORM -->
-    <form action="/api/users" method="get" >
+    <!-- REMINDER FORM -->
+    <form action="/api/profile" method="post" >
       <div class="form-group">
         <label>Email</label>
         <input type="text" class="form-control" name="email" required>
       </div>
-      <div class="form-group">
-        <label>Password</label>
-        <input type="password" class="form-control" name="password" required>
-      </div>
 
-      <button type="submit" class="btn btn-warning btn-lg">Login</button>
+      <button type="submit" class="btn btn-warning btn-lg">Reset </button>
     </form>
 
     <hr>
 
+    <p>
+      <%
+        var texts = [];
+        texts[0] = "Maybe you've made a typo?";
+        texts[1] = "It was CAPS LOCK, wasn't it?";
+        texts[2] = "Have you tried 'password'?";
+        texts[3] = "Maybe 'qwerty' would work?";
+        texts[4] = "Oh! It must be '123456'!";
+        var i = Math.floor(Math.random() * texts.length);
+
+      %>
+      <%=
+        texts[i]
+      %>
+      <a href="/login">Login</a></p>
     <p>Need an account? <a href="/signup">Signup</a></p>
-    <p>Forgot password? <a href="/remind">Remind</a></p>
 
   </div>
 

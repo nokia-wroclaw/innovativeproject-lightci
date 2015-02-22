@@ -106,6 +106,12 @@ angular.module('lightciApp')
       });
     }
 
+    function getProjects() {
+      $http.get('/api/dashboard', {}).success(function (projects) {
+        $scope.formData.projects = projects;
+      });
+    }
+
     $scope.createProject = function() {
 
       if ($scope.formData.deploys.length>0)
@@ -138,6 +144,7 @@ angular.module('lightciApp')
     }
 
     getUsers();
+    getProjects();
 
     Array.prototype.swap = function (x,y) {
       var b = this[x];

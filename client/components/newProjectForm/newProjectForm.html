@@ -1,13 +1,12 @@
 <div class="row" ng-controller="newProjFormCtrl">
   <div class="col-lg-12">
-    <h1>Projects
-      <small>New project </small>
+    <h1>New Project
     </h1>
   </div>
   <div class="col-lg-12">
     <div class="panel panel-primary">
       <div class="panel-heading">
-        <h3 class="panel-title"><i class="fa fa-edit"></i> New project </h3>
+        <h3 class="panel-title"><i class="fa fa-edit"></i> Project details </h3>
         <div class="up-buttons-wrapper">
           <button id="buttonBack" type="button" ng-click="goBack()" class="btn btn-default btn-sm">
             <i class="fa fa-arrow-up"></i>
@@ -97,7 +96,8 @@
 
           <div id="dependencies-group" class="form-group">
             <label>Project Dependency</label>
-            <input type="text" name="url" class="form-control" placeholder="e.g. project_1, project_2, project_3" ng-model="formData.project_dependencies">
+            <select class="form-control" ng-model="formData.project_dependencies" multiple ng-options="proj.project_name as proj.project_name for proj in formData.projects">
+            </select>
             <span class="help-block"></span>
           </div>
 
@@ -247,7 +247,7 @@
               <div ng-repeat="artifact in formData.artifacts">
                 <div class="panel panel-primary">
                   <div class="panel-heading">
-                    <h3 class="panel-title"><i class="fa fa-file"></i> Artifact #{{$index}}
+                    <h3 class="panel-title"><i class="fa fa-file"></i> Artifact {{artifact.artifactPath !== '' ? "-" : ""}} {{artifact.artifactPath}}
                       <div class="scripts-buttons-wrapper">
                         <button id="buttonToggle3" type="button" ng-click="toggleArtifact($index)" class="btn btn-default btn-sm">
                           <i class="fa fa-search"></i>

@@ -17,6 +17,7 @@ var transporter = nodemailer.createTransport({
 });
 
 module.exports = {
+  sendMail: sendMail,
   notifyAll: notifyAll,
   changeTransporter: changeTransporter
 };

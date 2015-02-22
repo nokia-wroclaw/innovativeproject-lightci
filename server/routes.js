@@ -16,12 +16,17 @@ module.exports = function(app) {
     res.render('signup.ejs', { message: req.flash('signupMessage') });
   });
 
+  app.get('/remind', function(req, res) {
+    res.render('remind.ejs', { message: req.flash('signupMessage') });
+  });
+
   app.get('/logout', function(req, res) {
     req.logout();
     res.redirect('/login');
   });
 
   app.use('/api/users', require('./api/user'));
+  app.use('/api/profile', require('./api/profile'));
 
   app.use(function isLoggedIn(req, res, next) {
     if (req.isAuthenticated())
@@ -38,7 +43,6 @@ app.use('/api/artifacts', require('./api/artifact'));
 
   app.use('/api/deploys', require('./api/deploy'));
 
-  app.use('/api/profile', require('./api/profile'));
   app.use('/api/tests', require('./api/test'));
   app.use('/api/scriptdetails', require('./api/scriptdetail'));
   app.use('/api/project', require('./api/project'));
