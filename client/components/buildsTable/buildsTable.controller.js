@@ -40,7 +40,10 @@ $scope.chartConfig = {
   "size": {}
 };
     function getBuilds(){
+      $scope.chartSeries = [];
+
       $http.get('/api/builds', {params: {project_id: $routeParams.project_id}}).success(function (build) {
+
         $scope.builds = build;
         var successed = _.filter(build,function(b){
           return b.build_status==="success";
@@ -69,6 +72,7 @@ $scope.chartConfig = {
         for(var key in failed) {
           failedTab.push([key,failed[key]]);
         }
+
         $scope.chartSeries.push({
           name:"success",
           data: successedTab
@@ -77,6 +81,7 @@ $scope.chartConfig = {
           name:"fail",
           data: failedTab
         });
+
 
         $scope.goBack = function() {
           window.history.back();

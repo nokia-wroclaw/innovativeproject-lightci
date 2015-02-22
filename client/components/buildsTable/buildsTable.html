@@ -32,7 +32,7 @@
             <td>
               <a style="display: block;" ng-href={{baseUrl+"/build/"+build.id}}>
                 <button type="button" class="btn btn-link">
-                  {{build.build_date}}
+                  {{build.build_date | date:'yyyy-MM-dd HH:mm'}}
                 </button>
               </a>
             </td>

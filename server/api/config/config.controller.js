@@ -10,7 +10,7 @@ exports.index = function (req, res) {
   var globalConfig = JSON.parse(fs.readFileSync(__dirname + "/../../config/global.config.json"));
   db.ConfigLog.findAll({})
     .then(function (cfgs) {
-      res.json(cfgs.concat(globalConfig));
+      res.json(cfgs.reverse().concat(globalConfig));
     });
 };
 

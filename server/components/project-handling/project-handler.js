@@ -7,6 +7,8 @@ var exec = require('child-process-promise').exec;
 var db = require('../../models');
 var fs = require("fs");
 var _ = require('lodash');
+var backup = require('../config-backup/config-backup');
+
 
 module.exports = {
   addProject: addProject,
@@ -19,7 +21,6 @@ module.exports = {
   syncProjects: syncProjects
 };
 
-var backup = require('../config-backup/config-backup');
 
 function projectExists(project) {
   var dbProject = db.Project.findAll({where: {project_name: project.projectName}});
@@ -32,7 +33,7 @@ function projectExists(project) {
 }
 
 function addToConfig(project) {
-  backup.configBackup("Add dashboard " + project.projectName);
+  backup.configBackup("Add project " + project.projectName);
   var projectsConfig = JSON.parse(fs.readFileSync(__dirname + "/../../config/projects.config.json"));
   var copy = projectsConfig["projects"].slice(0);
   copy.push(project);
@@ -41,7 +42,7 @@ function addToConfig(project) {
 }
 
 function updateConfig(project_name, project) {
-  backup.configBackup("Update dashboard " + project.projectName);
+  backup.configBackup("Update project " + project.projectName);
 
   var projectsConfig = JSON.parse(fs.readFileSync(__dirname + "/../../config/projects.config.json"));
   var copy = [];
@@ -90,7 +91,7 @@ function addProject(project) {
 }
 
 function removeProject(project) {
-  backup.configBackup("Remove dashboard " + project.projectName);
+  backup.configBackup("Remove project " + project.projectName);
 
   var projectsConfig = JSON.parse(fs.readFileSync(__dirname + "/../../config/projects.config.json"));
 
@@ -112,7 +113,7 @@ function removeProject(project) {
     });
 
   project.destroy({ProjectId: project.project_id});
-  console.log("Removing dashboard", project.project_name);
+  console.log("Removing project", project.project_name);
 }
 
 function updateProject(project) {

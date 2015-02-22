@@ -90,7 +90,7 @@
             <td>
               <a style="display: block;" ng-href={{baseUrl}}>
                 <button type="button" class="btn btn-link">
-                  {{commit.commit_date}}
+                  {{commit.commit_date | date:'yyyy-MM-dd HH:mm'}}
                 </button>
               </a>
             </td>
@@ -153,7 +153,7 @@
           <tbody ng-repeat="artifact in artifacts">
           <tr >
             <td>{{artifact.file_name}}</td>
-            <td>{{artifact.date}}</td>
+            <td>{{artifact.date | date:'yyyy-MM-dd HH:mm'}}</td>
             <td>
               <button type="button"  class="btn btn-link">
                 <a target="_self" href="/download?projectname={{project_name}}&fileName={{artifact.file_name}}" >
