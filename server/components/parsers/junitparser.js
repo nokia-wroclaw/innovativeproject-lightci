@@ -10,7 +10,12 @@ function parse(projectName, script, buildOutput, db) {
     var outputFileData = fs.readFile(__dirname + "/../../../repos/" + projectName + "/" + script.outputPath);
 
     outputFileData = outputFileData.then(function (data) {
-      return parser.parse(data);
+      var new_data;
+      if(data) {
+        new_data = data.toString().match(/<testsuite(.|[ \n])*<\/testsuite>/g);
+      } else new_data = "";
+
+      return parser.parse(_.first(new_data));
     });
 
     outputFileData
