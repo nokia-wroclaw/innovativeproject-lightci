@@ -73,6 +73,12 @@ if (!fs.existsSync(__dirname + "/../config_backups"))
 if (!fs.existsSync(__dirname + "/../artifacts"))
   fs.mkdirSync(__dirname+"/../artifacts");
 
+// create config if not existing
+if(!fs.existsSync(__dirname + "/config/projects.config.json")) {
+  var new_config = { projects: [] };
+  fs.writeFileSync(__dirname + "/config/projects.config.json", JSON.stringify(new_config, undefined, 2));
+}
+
 
 // Expose app
 module.exports = app;
