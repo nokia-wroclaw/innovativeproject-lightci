@@ -1,7 +1,7 @@
 /**
  * Created by ms on 24.11.14.
  */
-var parser = require('junit-xml-parser').parser;
+var parser = require('./junit-xml-parser').parser;
 var fs = require('fs-promise');
 var _ = require("lodash");
 

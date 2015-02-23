@@ -116,7 +116,7 @@
             <td>
               <a style="display: block;" ng-href={{baseUrl}}>
                 <button type="button" class="btn btn-link">
-                  {{test.type == '' ? 'n/a' : test.type}}
+                  {{test.type == '' || test.type == null ? 'n/a' : test.type}}
                 </button>
               </a>
             </td>
