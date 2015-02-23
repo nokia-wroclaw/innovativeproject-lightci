@@ -97,9 +97,11 @@ angular.module('lightciApp')
       },
       "loading": false,
       "size": {},
-      xAxis: {
+      yAxis: {
+        allowDecimals:false,
         currentMin: 0,
-        step:1
+        minTickInterval: 1
+
       }
 
     };

@@ -37,7 +37,11 @@ $scope.chartConfig = {
     "enabled": false
   },
   "loading": false,
-  "size": {}
+  "size": {},
+  xAxis: {
+    currentMin: 0,
+    step:1
+  }
 };
     function getBuilds(){
       $scope.chartSeries = [];
