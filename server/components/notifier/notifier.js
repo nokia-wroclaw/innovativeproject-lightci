@@ -65,12 +65,6 @@ function notifyAll(projectName, build) {
 
         build.getCommits().success(function (commits) {
 
-          if(project.repositoryType == 'git') {
-            _.each(commits, function (commit) {
-              sendMail(commit.dataValues.commit_author, subject, text);
-            });
-          }
-          else {
             var user_list = [];
             _.each(commits, function(commit) {
               user_list = _.union(user_list,[commit.dataValues.commit_author]);
@@ -92,7 +86,7 @@ function notifyAll(projectName, build) {
               });
             });
 
-          }
+
 
         });
       }
