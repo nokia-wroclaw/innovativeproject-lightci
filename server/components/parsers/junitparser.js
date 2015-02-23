@@ -33,6 +33,12 @@ function addResultToDB(result, buildOutput, db) {
     buildOutput.addTestSuite([testSuite]);
 
     _.each(result.tests, function (test) {
+
+      if(test.failure) {
+        if(test.failure.message) test.message = test.failure.message;
+        if(test.failure.type) test.type = test.failure.type;
+      }
+
       db.Test.create(test).then(function (t) {
         testSuite.addTest([t]);
       });
