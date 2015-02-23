@@ -9,11 +9,11 @@
         type="image/png"
         href="assets/images/favico.png">
 </head>
-<body>
+<body style="margin:0;">
 <div class="container">
 
   <div class="col-sm-6 col-sm-offset-3">
-    <img src="assets/images/logo.png">
+    <div class="col-sm-12 col-sm-offset-1"><img src="assets/images/logo.png"></div>
 
     <h1><span class="fa fa-sign-in"></span> Reset Password</h1>
 
@@ -29,11 +29,11 @@
         <input type="text" class="form-control" name="email" required>
       </div>
 
-      <button type="submit" class="btn btn-warning btn-lg">Reset </button>
-    </form>
+
 
     <hr>
-
+    <button style="float:right;" type="submit" class="btn btn-warning btn-lg">Reset </button>
+    </form>
     <p>
       <%
         var texts = [];

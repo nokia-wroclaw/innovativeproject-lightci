@@ -57,7 +57,8 @@ angular.module('lightciApp')
           "connectNulls": false,
           "id": "series-1",
           "type": "column",
-          "dashStyle": "LongDashDotDot"
+          "dashStyle": "LongDashDotDot",
+          color:'green'
         },
         {
           "name": "Failures",
@@ -65,7 +66,18 @@ angular.module('lightciApp')
           "connectNulls": false,
           "id": "series-2",
           "type": "column",
-          "dashStyle": "LongDashDotDot"
+          "dashStyle": "LongDashDotDot",
+          color:'orange'
+        },
+
+        {
+          "name": "Skipped",
+          "data": [],
+          "connectNulls": false,
+          "id": "series-4",
+          "type": "column",
+          "dashStyle": "LongDashDotDot",
+          color:'gray'
         },
         {
           "name": "Errors",
@@ -73,15 +85,8 @@ angular.module('lightciApp')
           "connectNulls": false,
           "id": "series-3",
           "type": "column",
-          "dashStyle": "LongDashDotDot"
-        },
-        {
-          "name": "Skipped",
-          "data": [],
-          "connectNulls": false,
-          "id": "series-4",
-          "type": "column",
-          "dashStyle": "LongDashDotDot"
+          "dashStyle": "LongDashDotDot",
+          color:'red'
         }
       ],
       "title": {
@@ -113,11 +118,12 @@ angular.module('lightciApp')
           allFailure+=suite.failures;
           allSkipped+=suite.skipped;
         });
-        allPassed=allTests-allErrors-allFailure-allSkipped;
+        allPassed=allTests-allFailure-allSkipped;
         $scope.chartConfig.series[0].data.push(allPassed);
-        $scope.chartConfig.series[2].data.push(allErrors);
         $scope.chartConfig.series[1].data.push(allFailure);
-        $scope.chartConfig.series[3].data.push(allSkipped);
+        $scope.chartConfig.series[2].data.push(allSkipped);
+        $scope.chartConfig.series[3].data.push(allErrors);
+
         if(script.testSuites.length>0){
           $scope.show = true;
         } else {

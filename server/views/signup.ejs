@@ -10,11 +10,12 @@
         href="assets/images/favico.png">
 
 </head>
-<body>
+<body style="margin:0;">
 <div class="container">
 
   <div class="col-sm-6 col-sm-offset-3">
-    <img src="assets/images/logo.png">
+    <div class="col-sm-12 col-sm-offset-1"><img src="assets/images/logo.png"></div>
+
     <h1><span class="fa fa-sign-in"></span> Signup</h1>
 
     <!-- show any messages that come back with authentication -->
@@ -33,11 +34,12 @@
         <input type="password" class="form-control" name="password" required pattern="((?=.*\d).{6,20})">
       </div>
 
-      <button type="submit" class="btn btn-warning btn-lg">Signup</button>
-    </form>
+
+
 
     <hr>
-
+    <button style="float:right;" type="submit" class="btn btn-warning btn-lg">Signup</button>
+    </form>
     <p>Already have an account? <a href="/login">Login</a></p>
     <p>Yep, I've forgot it... <a href="/remind">Remind</a></p>
 

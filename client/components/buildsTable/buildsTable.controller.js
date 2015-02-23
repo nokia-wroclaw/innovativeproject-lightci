@@ -75,11 +75,13 @@ $scope.chartConfig = {
 
         $scope.chartSeries.push({
           name:"success",
-          data: successedTab
+          data: successedTab,
+          color:"rgba(15, 105, 10, 0.5)"
         });
         $scope.chartSeries.push({
           name:"fail",
-          data: failedTab
+          data: failedTab,
+          color:"rgba(160, 15, 0, 0.5)"
         });
 
 
